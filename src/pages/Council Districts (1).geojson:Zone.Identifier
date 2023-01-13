@@ -1,0 +1,4 @@
+[ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://data.lacity.org/City-Infrastructure-Service-Requests/Council-Districts/5v3h-vptv
+HostUrl=https://data.lacity.org/api/geospatial/5v3h-vptv?method=export&format=GeoJSON

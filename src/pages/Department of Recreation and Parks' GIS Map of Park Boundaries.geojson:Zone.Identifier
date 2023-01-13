@@ -1,0 +1,4 @@
+[ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://data.lacity.org/Parks-Recreation/Department-of-Recreation-and-Parks-GIS-Map-of-Park/nuub-r4zx
+HostUrl=https://data.lacity.org/api/geospatial/nuub-r4zx?method=export&format=GeoJSON
