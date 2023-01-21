@@ -104,7 +104,7 @@ const Home: NextPage = () => {
 
   const [createdby, setcreatedby] = useState<string[]>(listofcreatedbyoptions);
   const [filteredcouncildistricts, setfilteredcouncildistricts] =
-    useState<string[]>(listofcouncildists);
+    useState<number[]>(listofcouncildists);
 
   const [showtotalarea, setshowtotalarea] = useState(false);
   let [disclaimerOpen, setDisclaimerOpen] = useState(false);
