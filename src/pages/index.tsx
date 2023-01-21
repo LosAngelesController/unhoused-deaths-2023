@@ -3,9 +3,11 @@ import Head from "next/head";
 import Image from "next/image";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, createRef } from "react";
+
+import Slider from 'rc-slider';
+import TooltipSlider, { handleRender } from '../components/TooltipSlider';
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import MapboxLanguage from "@mapbox/mapbox-gl-language";
-
 import { uploadMapboxTrack } from "../components/mapboxtrack";
 
 import { CloseButton } from "../components/CloseButton";
@@ -115,8 +117,18 @@ const Home: NextPage = () => {
   var [metric, setmetric] = useState(false);
   const [showInitInstructions, setshowInitInstructions] = useState(true);
   const [doneloadingmap, setdoneloadingmap] = useState(false);
-
+  const [sliderMonth, setsliderMonthAct] = useState<any>([1,12]);
   const [selectedfilteropened, setselectedfilteropened] = useState("createdby");
+  const [filterpanelopened , setfilterpanelopened  ] = useState(false);
+
+  const setsliderMonth = (event: Event, newValue: number | number[]) => {
+    setsliderMonthAct(newValue as number[]);
+  };
+
+  const setsliderMonthVerTwo = (input:any) => {
+    console.log(input);
+    setsliderMonthAct(input);
+  }
 
   const setcreatedbypre = (input: string[]) => {
     console.log("inputvalidator", input);
@@ -666,6 +678,25 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (doneloadingmap) {
 
+      var sliderMonthProcessed:string[] = [];
+
+      var i = sliderMonth[0];
+
+      while (i <= sliderMonth[1]) {
+        
+        var numberofyearstoadd = Math.floor((i - 1) / 12);
+
+        const year = (2022 + numberofyearstoadd);
+
+        
+        var monthformatted = ("0" + i).slice(-2);
+
+        i++;
+
+        sliderMonthProcessed.push(year + "-" + monthformatted);
+
+      }
+
       const filterinput =JSON.parse(
         JSON.stringify([
           "all",
@@ -682,6 +713,13 @@ const Home: NextPage = () => {
             createdby,
             true,
             false
+          ],
+          [
+            "match",
+            ["get", "Month"],
+            sliderMonthProcessed,
+            true,
+            false
           ]
         ])
       );
@@ -695,7 +733,7 @@ const Home: NextPage = () => {
         );
       }
     }
-  }, [createdby, filteredcouncildistricts]);
+  }, [createdby, filteredcouncildistricts, sliderMonth ]);
 
   return (
     <div className="flex flex-col h-full w-screen absolute">
@@ -795,7 +833,9 @@ const Home: NextPage = () => {
             ></div>
 
             <div className="absolute mt-[5.1em] md:mt-[5.8em] md:ml-3 top-0 z-5">
-              <button className="mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2">
+              <button 
+              onClick={() => {setfilterpanelopened(!filterpanelopened)}}
+              className="mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2">
                 <svg
                   style={{
                     width: "20px",
@@ -813,7 +853,10 @@ const Home: NextPage = () => {
               </button>
             </div>
 
-            <div className="absolute bottom-0 sm:bottom-auto sm:mt-[6.1em] md:mt-[6.8em] md:ml-3 w-screen sm:w-auto">
+            <div className={` bottom-0 sm:bottom-auto sm:mt-[5.1em] md:mt-[5.8em] md:ml-3 w-screen sm:w-auto
+            
+            ${filterpanelopened === true ? 'absolute ' : 'hidden'}
+            `}>
               <div className="bg-zinc-900 w-content bg-opacity-90 px-2 py-1 mt-1 sm:rounded-lg">
                 <div className="gap-x-0 flex flex-row w-full">
                   <button
@@ -854,7 +897,9 @@ const Home: NextPage = () => {
                   >
                     CD #
                   </button>
-
+{
+  false && (
+    
                   <button
                     onClick={() => {
                       setselectedfilteropened("neigh");
@@ -867,6 +912,8 @@ const Home: NextPage = () => {
                   >
                     Neighborhood
                   </button>
+  )
+}
                 </div>
                 <div className="flex flex-col">
                   {selectedfilteropened === "createdby" && (
@@ -933,6 +980,21 @@ const Home: NextPage = () => {
                           ))}
                         </div>
                       </Checkbox.Group>
+                    </div>
+                  )}
+
+                  {selectedfilteropened === "month" && (
+                    <div className="pl-5 pr-2 py-2">
+
+<TooltipSlider
+        range
+        min={1}
+        max={12}
+        value={sliderMonth}
+        onChange={setsliderMonthVerTwo}
+        tipFormatter={(value:any) => `${value}/22`}
+      />
+
                     </div>
                   )}
                 </div>
