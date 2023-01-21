@@ -927,7 +927,7 @@ const Home: NextPage = () => {
                         onChange={setfilteredcouncildistrictspre}
                       >
                         {" "}
-                        <div className="flex flex-col">
+                        <div className="grid grid-cols-2 sm:flex sm:flex-col">
                           {listofcouncildists.map((item, key) => (
                             <Checkbox value={item} label={item} key={key} />
                           ))}
