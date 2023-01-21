@@ -875,6 +875,24 @@ const Home: NextPage = () => {
                   )}
                   {selectedfilteropened === "cd" && (
                     <div className="mt-2">
+                      <div className='flex flex-row gap-x-1'>
+                  <button className='align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base'
+                    onClick={() => {
+                      setfilteredcouncildistricts(listofcouncildists)
+                    }}
+
+                  >Select All</button>
+                  <button className='align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base border border-gray-400'
+                    onClick={() => {
+                      setfilteredcouncildistricts([])
+                    }}
+                  >Unselect All</button>
+                  <button
+                    onClick={() => {
+                      setfilteredcouncildistricts(listofcouncildists.filter(n => !filteredcouncildistricts.includes(n)))
+                    }}
+                    className='align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400'>Invert</button>
+                </div>
                       <Checkbox.Group
                         value={filteredcouncildistricts}
                         onChange={setfilteredcouncildistricts}
