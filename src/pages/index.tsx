@@ -108,6 +108,8 @@ const Home: NextPage = () => {
   const [filteredcouncildistricts, setfilteredcouncildistricts] =
     useState<string[]>(listofcouncildists);
 
+  const shouldfilteropeninit = (typeof window != 'undefined' ? (window.innerWidth >= 640) : false)
+
   const [showtotalarea, setshowtotalarea] = useState(false);
   let [disclaimerOpen, setDisclaimerOpen] = useState(false);
   const touchref = useRef<any>(null);
@@ -119,7 +121,7 @@ const Home: NextPage = () => {
   const [doneloadingmap, setdoneloadingmap] = useState(false);
   const [sliderMonth, setsliderMonthAct] = useState<any>([1,12]);
   const [selectedfilteropened, setselectedfilteropened] = useState("createdby");
-  const [filterpanelopened , setfilterpanelopened  ] = useState(false);
+  const [filterpanelopened , setfilterpanelopened  ] = useState(shouldfilteropeninit);
 
   const setsliderMonth = (event: Event, newValue: number | number[]) => {
     setsliderMonthAct(newValue as number[]);
