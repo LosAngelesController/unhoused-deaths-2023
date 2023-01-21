@@ -119,6 +119,15 @@ const Home: NextPage = () => {
 
   const [selectedfilteropened, setselectedfilteropened] = useState('createdby');
 
+  const setcreatedbypre = (input:string[]) => {
+    console.log('inputvalidator',input)
+    if (input.length === 0) {
+      setcreatedby(["bruh"])
+    } else {
+      setcreatedby(input)
+    }
+  }
+
   function closeModal() {
     setDisclaimerOpen(false);
   }
@@ -812,7 +821,7 @@ const Home: NextPage = () => {
  <div className="flex flex-col">
   {selectedfilteropened === 'createdby' && <div className='mt-2'>
   
-  <Checkbox.Group value={createdby} onChange={setcreatedby}> <div className="flex flex-col">
+  <Checkbox.Group value={createdby} onChange={setcreatedbypre}> <div className="flex flex-col">
     {
       listofcreatedbyoptions.map((item, key) => (
         <Checkbox value={item} label={item} key={key} /> 
