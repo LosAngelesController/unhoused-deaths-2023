@@ -39,24 +39,6 @@ function getLang() {
   return navigator.language;
 }
 
-var councilAreas = {
-  "1": 3461932.7590381783,
-  "2": 1924361.5332737048,
-  "3": 982606.7721339666,
-  "4": 20033630.537280265,
-  "5": 1491713.4892952952,
-  "6": 6519090.819275988,
-  "7": 8866073.813593412,
-  "8": 353877.31328993634,
-  "9": 430437.22653758596,
-  "10": 384810.68904536765,
-  "11": 5663731.197031066,
-  "12": 8126625.680731847,
-  "13": 1439453.7837515455,
-  "14": 1798025.189952638,
-  "15": 3174782.823397767,
-};
-
 var councilareasdistrict: any = {
   "1": 39172374.513557486,
   "2": 56028687.75752604,
@@ -109,43 +91,29 @@ const Home: NextPage = () => {
     }
   };
 
+  const listofcreatedbyoptions = [
+    "Self Service",
+    "LASAN",
+    "Council's Office",
+    "Self Service_SAN",
+    "ITA",
+    "BSS",
+    "Proactive Insert",
+    "BOE"
+  ]
+
+  const [createdby, setcreatedby] = useState<string[]>(listofcreatedbyoptions);
+
   const [showtotalarea, setshowtotalarea] = useState(false);
-  const [showpop, setshowpop] = useState(false);
   let [disclaimerOpen, setDisclaimerOpen] = useState(false);
   const touchref = useRef<any>(null);
-  let [houseClickedData, setHouseClickedData]: any = useState(null);
-  let [parkClickedData, setParkClickedData]: any = useState(null);
   let [housingaddyopen, sethousingaddyopen] = useState(false);
   var mapref: any = useRef(null);
-  let [filterraceopen, setfilterraceopen] = useState(false);
   const okaydeletepoints: any = useRef(null);
   var [metric, setmetric] = useState(false);
   const [showInitInstructions, setshowInitInstructions] = useState(true);
 
- const listofracefilters = {
-  'A' : 'Other Asian',
-  'B' : 'Black',
-  'C' : 'Chinese',
-  'D' : 'Cambodian',
-  'F' : 'Filipino',
-  'G' : 'Guamanian',
-  'H' : 'Hispanic/Latin/Mexican',
-  'I' : 'American Indian/Alaskan Native',
-  'J' : 'Japanese',
-  'K' : 'Korean',
-  'L' : 'Laotian',
-  'O' : 'Other',
-  'P' : 'Pacific Islander',
-  'S' : 'Samoan',
-  'U' : 'Hawaiian',
-  'V' : 'Vietnamese',
-  'W' : 'White',
-  'X' : 'Unknown',
-  'Z' : 'Asian Indian' 
- }
-
- const [enabledRaceFilters, setEnabledRaceFilters] = useState(Object.keys(listofracefilters))
-
+  const [selectedfilteropened, setselectedfilteropened] = useState('createdby');
 
   function closeModal() {
     setDisclaimerOpen(false);
@@ -245,30 +213,6 @@ const Home: NextPage = () => {
   const divRef: any = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log('filter', enabledRaceFilters)
-    console.log(mapref.current)
-
-    var filtersystem = JSON.parse(JSON.stringify(
-      [
-        "match",
-        ["get", "Vict Descent"],
-        enabledRaceFilters,
-        true,
-        false
-      ]
-    ))
-
-    console.log('filtersystem', filtersystem)
-    if (mapref.current) {
-      mapref.current.setFilter('unhoused-crime-victim-data', filtersystem);
-    } else {
-      console.log('no map')
-      console.log(mapref.current)
-    }
-  
-  }, [enabledRaceFilters])
-
-  useEffect(() => {
     console.log("map div", divRef);
 
     if (divRef.current) {
@@ -342,7 +286,68 @@ const Home: NextPage = () => {
     map.on("load", () => {
       setshowtotalarea(window.innerWidth > 640 ? true : false);
 
-     
+      map.addSource('tileset-311', {
+        type: 'vector',
+        // Use any Mapbox-hosted tileset using its tileset id.
+        // Learn more about where to find a tileset id:
+        // https://docs.mapbox.com/help/glossary/tileset-id/
+        url: 'mapbox://comradekyler.1ukbqqbj'
+        });
+
+        map.addLayer(
+          {
+          'id': '311layer',
+          'type': 'heatmap',
+          'source': 'tileset-311',
+          'source-layer': 'MyLA311_Service_Request_Data_-2pbqha',
+          'layout': {
+          },
+          'paint': {
+            'heatmap-intensity': [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              7,
+              0.5,
+              22,
+              0.7
+            ],
+            'heatmap-radius': [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              0,
+              2,
+              9.24,
+              1,
+              10.69,
+              2,
+              13.96,
+              6,
+              22,
+              14
+            ],
+          'heatmap-color': [
+            "interpolate",
+            ["linear"],
+            ["heatmap-density"],
+            0,
+            "rgba(0, 0, 255, 0)",
+            0.1,
+            "royalblue",
+            0.3,
+            "cyan",
+            0.5,
+            "lime",
+            0.7,
+            "yellow",
+            1,
+            "red"
+          ]
+          }
+          }
+          );
+          
 
       console.log("maps parks source", map.getSource("parks"));
 
@@ -674,7 +679,7 @@ const Home: NextPage = () => {
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
         />
-        <title>311 Unhoused Request Statistics | Map</title>
+        <title>311 Homeless Encampment Requests | Map</title>
         <meta property="og:type" content="website" />
         <meta name="twitter:site" content="@lacontroller" />
         <meta name="twitter:creator" content="@lacontroller" />
@@ -682,39 +687,39 @@ const Home: NextPage = () => {
         <meta
           name="twitter:title"
           key="twittertitle"
-          content="Unhoused Crime Victims Statistics"
+          content="311 Homeless Encampment Requests | Map"
         ></meta>
         <meta
           name="twitter:description"
           key="twitterdesc"
-          content="311 Unhoused Request Statistics. View which areas our unhoused community are victims of crime."
+          content="Requests to the City of Los Angeles for homeless encampments."
         ></meta>
         <meta
           name="twitter:image"
           key="twitterimg"
-          content="https://unhousedvictims.lacontroller.io"
+          content="https://311homeless.lacontroller.io/"
         ></meta>
         <meta
           name="description"
-          content="Unhoused Crime Victims Statistics. View which areas our unhoused community are victims of crime."
+          content="Requests to the City of Los Angeles for homeless encampments."
         />
 
         <meta
           property="og:url"
-          content="https://unhousedvictims.lacontroller.io/"
+          content="https://311homeless.lacontroller.io/"
         />
         <meta property="og:type" content="website" />
         <meta
           property="og:title"
-          content="Unhoused Crime Victims | Map and Statistics"
+          content="311 Homeless Encampment Requests | Map"
         />
         <meta
           property="og:description"
-          content="Unhoused Crime Victims Statistics. View which areas our unhoused community are victims of crime."
+          content="Requests to the City of Los Angeles for homeless encampments."
         />
         <meta
           property="og:image"
-          content="https://unhousedvictims.lacontroller.io"
+          content="https://311homeless.lacontroller.io"
         />
       </Head>
 
@@ -731,7 +736,7 @@ const Home: NextPage = () => {
               color: "#ffffff",
             }}
           >
-            <strong className="">Unhoused Crime Victims Statistics</strong>
+            <strong className="">311 Homeless Encampment Requests</strong>
           </div>
 
           <div
@@ -739,7 +744,68 @@ const Home: NextPage = () => {
             id="geocoder"
           ></div>
 
+          <div>
+          <button className='mt-2  rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2'>   
+          <svg style={{
+      width: '20px',
+      height: '20px'
+    }} viewBox="0 0 24 24"
+      className='inline align-middle mt-0.5'
+     
+    >
 
+
+
+      <path fill="currentColor" d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z" />
+    </svg>
+    <span>Filter</span></button>
+          </div>
+
+<div className="w-screen sm:w-auto">
+<div className="bg-zinc-900 w-content bg-opacity-90 px-2 py-1 md:pt-4 mt-1 sm:rounded-lg">
+<div className='gap-x-0 flex flex-row w-full'>
+  <button
+   onClick={() => {setselectedfilteropened('createdby')}}
+  className={`px-2 border-b-2 ${selectedfilteropened === 'createdby' ? 'border-[#41ffca] text-[#41ffca]' : 'hover:border-white border-transparent text-gray-50'}`}>   
+ Created By</button>
+
+ <button
+  onClick={() => {setselectedfilteropened('month')}}
+ className={`px-2 border-b-2 ${selectedfilteropened === 'month' ? 'border-[#41ffca] text-[#41ffca]' : 'hover:border-white border-transparent text-gray-50'}`}>   
+ Month</button>
+
+ 
+ <button
+ 
+ onClick={() => {setselectedfilteropened('cd')}}
+ className={`px-2 border-b-2 ${selectedfilteropened === 'cd' ? 'border-[#41ffca] text-[#41ffca]' : 'hover:border-white border-transparent text-gray-50'}`}> 
+ CD #</button>
+
+ <button
+ 
+ onClick={() => {setselectedfilteropened('neigh')}}
+ className={`px-2 border-b-2 ${selectedfilteropened === 'neigh' ? 'border-[#41ffca] text-[#41ffca]' : 'hover:border-white border-transparent text-gray-50'}`}>  
+ Neighborhood</button>
+ </div>
+ <div className="flex flex-col">
+  {selectedfilteropened === 'createdby' && <div className='mt-2'>
+  
+  <Checkbox.Group value={createdby} onChange={setcreatedby}> <div className="flex flex-col">
+    {
+      listofcreatedbyoptions.map((item, key) => (
+        <Checkbox value={item} label={item} key={key} /> 
+      ))
+    }</div>
+         </Checkbox.Group>
+    
+  
+  </div>
+  }
+ </div>
+</div>
+
+
+</div>
 
           <div className="w-content"></div>
 
