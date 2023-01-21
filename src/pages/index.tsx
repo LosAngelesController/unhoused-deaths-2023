@@ -677,6 +677,19 @@ const Home: NextPage = () => {
     }
   }, []);
 
+  const tooltipformattermonth = (value: number) => {
+
+    var numberofyearstoadd = Math.floor((value - 1) / 12);
+
+    const year = (22 + numberofyearstoadd);
+
+    var numberofmonthstosubtract = numberofyearstoadd * 12;
+
+    var monthtoformat = (value - numberofmonthstosubtract);
+
+    return `${monthtoformat}/${year}`
+  }
+
   useEffect(() => {
     if (doneloadingmap) {
 
@@ -690,8 +703,9 @@ const Home: NextPage = () => {
 
         const year = (2022 + numberofyearstoadd);
 
-        
-        var monthformatted = ("0" + i).slice(-2);
+        var numberofmonthstosubtract = numberofyearstoadd * 12;
+
+        var monthformatted = ("0" + (i - numberofmonthstosubtract)).slice(-2);
 
         i++;
 
@@ -994,7 +1008,7 @@ const Home: NextPage = () => {
         max={12}
         value={sliderMonth}
         onChange={setsliderMonthVerTwo}
-        tipFormatter={(value:any) => `${value}/22`}
+        tipFormatter={(value:any) => `${tooltipformattermonth(value)}`}
       />
 
                     </div>
