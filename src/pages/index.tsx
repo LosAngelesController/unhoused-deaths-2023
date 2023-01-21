@@ -100,11 +100,7 @@ const Home: NextPage = () => {
     "BOE",
   ];
 
-  const listofcouncildists = Array.from({ length: 15 }, (_, i) => i + 1).map(
-    (eachitem) => {
-      return String(eachitem);
-    }
-  );
+  const listofcouncildists = Array.from({ length: 15 }, (_, i) => i + 1);
 
   const [createdby, setcreatedby] = useState<string[]>(listofcreatedbyoptions);
   const [filteredcouncildistricts, setfilteredcouncildistricts] =
