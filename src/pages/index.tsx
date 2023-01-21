@@ -102,7 +102,10 @@ const Home: NextPage = () => {
     "BOE"
   ]
 
+  const listofcouncildists = Array.from({length: 15}, (_, i) => i + 1).map((eachitem) => {return String(eachitem)})
+
   const [createdby, setcreatedby] = useState<string[]>(listofcreatedbyoptions);
+  const [filteredcouncildistricts, setfilteredcouncildistricts] = useState<string[]>(listofcouncildists);
 
   const [showtotalarea, setshowtotalarea] = useState(false);
   let [disclaimerOpen, setDisclaimerOpen] = useState(false);
@@ -348,6 +351,7 @@ const Home: NextPage = () => {
           }
           );
           
+        
 
       console.log("maps parks source", map.getSource("parks"));
 
@@ -648,8 +652,21 @@ const Home: NextPage = () => {
       getmapboxlogo.remove();
     }
 
-    var mapname = "parks";
   }, []);
+
+  useEffect(() => {
+    if  (mapref.current) {
+      mapref.current.setFilter('311layer',JSON.parse(JSON.stringify(
+        [
+          "match",
+          ["get", "Created By"],
+          createdby,
+          true,
+          false
+        ]
+      )))
+    }
+  }, [createdby])
 
   return (
     <div className="flex flex-col h-full w-screen absolute">
