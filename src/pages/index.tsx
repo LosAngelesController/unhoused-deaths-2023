@@ -682,6 +682,23 @@ const Home: NextPage = () => {
  
   }, [createdby])
 
+  useEffect(() => {
+    if (doneloadingmap) {
+      if  (mapref.current) {
+        mapref.current.setFilter('311layer',JSON.parse(JSON.stringify(
+          [
+            "match",
+            ["get", "CD #"],
+            filteredcouncildistricts,
+            true,
+            false
+          ]
+        )))
+      }
+    } 
+ 
+  }, [filteredcouncildistricts])
+
   return (
     <div className="flex flex-col h-full w-screen absolute">
       <MantineProvider theme={{ colorScheme: 'dark' }} withGlobalStyles withNormalizeCSS>
@@ -728,7 +745,7 @@ const Home: NextPage = () => {
         <meta
           name="twitter:image"
           key="twitterimg"
-          content="https://311homeless.lacontroller.io/"
+          content="https://311homeless.lacontroller.io/thumbnail"
         ></meta>
         <meta
           name="description"
@@ -750,7 +767,7 @@ const Home: NextPage = () => {
         />
         <meta
           property="og:image"
-          content="https://311homeless.lacontroller.io"
+          content="https://311homeless.lacontroller.io/thumbnail"
         />
       </Head>
 
@@ -824,6 +841,19 @@ const Home: NextPage = () => {
   <Checkbox.Group value={createdby} onChange={setcreatedbypre}> <div className="flex flex-col">
     {
       listofcreatedbyoptions.map((item, key) => (
+        <Checkbox value={item} label={item} key={key} /> 
+      ))
+    }</div>
+         </Checkbox.Group>
+    
+  
+  </div>
+  }
+  {selectedfilteropened === 'cd' && <div className='mt-2'>
+  
+  <Checkbox.Group value={filteredcouncildistricts} onChange={setfilteredcouncildistricts}> <div className="flex flex-col">
+    {
+      listofcouncildists.map((item, key) => (
         <Checkbox value={item} label={item} key={key} /> 
       ))
     }</div>
