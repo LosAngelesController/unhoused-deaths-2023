@@ -659,33 +659,27 @@ const Home: NextPage = () => {
           "311layer",
           JSON.parse(
             JSON.stringify([
-              "match",
-              ["get", "Created By"],
-              createdby,
-              true,
-              false,
-            ])
-          )
-        );
-      }
-    }
-  }, [createdby]);
-
-  useEffect(() => {
-    if (doneloadingmap) {
-      if (mapref.current) {
-        mapref.current.setFilter(
-          "311layer",
-          JSON.parse(
-            JSON.stringify([
               "all",
-              ["match", ["get", "CD #"], filteredcouncildistricts, true, false],
+              [
+                "match",
+                ["get", "CD #"],
+                filteredcouncildistricts,
+                true,
+                false
+              ],
+              [
+                "match",
+                ["get", "Created By"],
+                createdby,
+                true,
+                false
+              ]
             ])
           )
         );
       }
     }
-  }, [filteredcouncildistricts]);
+  }, [createdby, filteredcouncildistricts]);
 
   return (
     <div className="flex flex-col h-full w-screen absolute">
