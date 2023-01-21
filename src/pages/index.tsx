@@ -778,9 +778,9 @@ const Home: NextPage = () => {
         </div>
 
         <div className="flex-initial h-content flex-col flex z-50">
-          <div className="absolute mt-[3.1em] md:mt-[3.8em] md:ml-3 top-0 max-h-screen flex-col flex z-5">
+          <div className="   max-h-screen flex-col flex z-5">
             <div
-              className="titleBox  ml-2 text-base bold md:semi-bold break-words bg-[#212121]"
+              className="absolute mt-[3.1em] md:mt-[3.8em] md:ml-3 top-0 z-5 titleBox  ml-2 text-base bold md:semi-bold break-words bg-[#212121]"
               style={{
                 backgroundColor: "#212121",
                 color: "#ffffff",
@@ -790,12 +790,12 @@ const Home: NextPage = () => {
             </div>
 
             <div
-              className={`geocoder mt-0 ml-2 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
+              className={`geocoder absolute mt-[4.1em] md:mt-[4.1em] ml-2 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
               id="geocoder"
             ></div>
 
-            <div>
-              <button className="mt-2  rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2">
+            <div className="absolute mt-[5.1em] md:mt-[5.8em] md:ml-3 top-0 z-5">
+              <button className="mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2">
                 <svg
                   style={{
                     width: "20px",
@@ -813,14 +813,14 @@ const Home: NextPage = () => {
               </button>
             </div>
 
-            <div className="w-screen sm:w-auto">
-              <div className="bg-zinc-900 w-content bg-opacity-90 px-2 py-1 md:pt-4 mt-1 sm:rounded-lg">
+            <div className="absolute bottom-0 sm:bottom-auto sm:mt-[6.1em] md:mt-[6.8em] md:ml-3 w-screen sm:w-auto">
+              <div className="bg-zinc-900 w-content bg-opacity-90 px-2 py-1 mt-1 sm:rounded-lg">
                 <div className="gap-x-0 flex flex-row w-full">
                   <button
                     onClick={() => {
                       setselectedfilteropened("createdby");
                     }}
-                    className={`px-2 border-b-2 ${
+                    className={`px-2 border-b-2 py-1  font-semibold ${
                       selectedfilteropened === "createdby"
                         ? "border-[#41ffca] text-[#41ffca]"
                         : "hover:border-white border-transparent text-gray-50"
@@ -833,7 +833,7 @@ const Home: NextPage = () => {
                     onClick={() => {
                       setselectedfilteropened("month");
                     }}
-                    className={`px-2 border-b-2 ${
+                    className={`px-2 border-b-2 py-1 font-semibold ${
                       selectedfilteropened === "month"
                         ? "border-[#41ffca] text-[#41ffca]"
                         : "hover:border-white border-transparent text-gray-50"
@@ -846,7 +846,7 @@ const Home: NextPage = () => {
                     onClick={() => {
                       setselectedfilteropened("cd");
                     }}
-                    className={`px-2 border-b-2 ${
+                    className={`px-2 border-b-2  py-1  font-semibold ${
                       selectedfilteropened === "cd"
                         ? "border-[#41ffca] text-[#41ffca]"
                         : "hover:border-white border-transparent text-gray-50"
@@ -859,7 +859,7 @@ const Home: NextPage = () => {
                     onClick={() => {
                       setselectedfilteropened("neigh");
                     }}
-                    className={`px-2 border-b-2 ${
+                    className={`px-2 border-b-2 py-1  font-semibold ${
                       selectedfilteropened === "neigh"
                         ? "border-[#41ffca] text-[#41ffca]"
                         : "hover:border-white border-transparent text-gray-50"
@@ -874,7 +874,7 @@ const Home: NextPage = () => {
                       <div className='flex flex-row gap-x-1'>
                   <button className='align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base'
                     onClick={() => {
-                      setcreatedbypre(listofcouncildists)
+                      setcreatedbypre(listofcreatedbyoptions)
                     }}
 
                   >Select All</button>
@@ -885,7 +885,7 @@ const Home: NextPage = () => {
                   >Unselect All</button>
                   <button
                     onClick={() => {
-                      setcreatedbypre(listofcouncildists.filter(n => !filteredcouncildistricts.includes(n)))
+                      setcreatedbypre(listofcreatedbyoptions.filter(n => !createdby.includes(n)))
                     }}
                     className='align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400'>Invert</button>
                 </div>
@@ -927,7 +927,7 @@ const Home: NextPage = () => {
                         onChange={setfilteredcouncildistrictspre}
                       >
                         {" "}
-                        <div className="grid grid-cols-2 sm:flex sm:flex-col">
+                        <div className="grid grid-cols-3 gap-x-4 sm:flex sm:flex-col">
                           {listofcouncildists.map((item, key) => (
                             <Checkbox value={item} label={item} key={key} />
                           ))}
