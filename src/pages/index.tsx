@@ -127,6 +127,17 @@ const Home: NextPage = () => {
     }
   };
 
+
+  const setfilteredcouncildistrictspre = (input: string[]) => {
+    console.log("inputvalidator", input);
+    if (input.length === 0) {
+      setfilteredcouncildistricts(['99999']);
+    } else {
+      setfilteredcouncildistricts(input);
+    }
+  };
+
+
   function closeModal() {
     setDisclaimerOpen(false);
   }
@@ -878,24 +889,24 @@ const Home: NextPage = () => {
                       <div className='flex flex-row gap-x-1'>
                   <button className='align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base'
                     onClick={() => {
-                      setfilteredcouncildistricts(listofcouncildists)
+                      setfilteredcouncildistrictspre(listofcouncildists)
                     }}
 
                   >Select All</button>
                   <button className='align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base border border-gray-400'
                     onClick={() => {
-                      setfilteredcouncildistricts([])
+                      setfilteredcouncildistrictspre([])
                     }}
                   >Unselect All</button>
                   <button
                     onClick={() => {
-                      setfilteredcouncildistricts(listofcouncildists.filter(n => !filteredcouncildistricts.includes(n)))
+                      setfilteredcouncildistrictspre(listofcouncildists.filter(n => !filteredcouncildistricts.includes(n)))
                     }}
                     className='align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400'>Invert</button>
                 </div>
                       <Checkbox.Group
                         value={filteredcouncildistricts}
-                        onChange={setfilteredcouncildistricts}
+                        onChange={setfilteredcouncildistrictspre}
                       >
                         {" "}
                         <div className="flex flex-col">
