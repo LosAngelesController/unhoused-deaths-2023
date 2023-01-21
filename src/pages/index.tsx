@@ -731,7 +731,7 @@ const Home: NextPage = () => {
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://311homeless.lacontroller.io/thumbnail"
+            content="https://311homeless.lacontroller.io/homeless-311-thumbnail-min.png"
           ></meta>
           <meta
             name="description"
@@ -753,7 +753,7 @@ const Home: NextPage = () => {
           />
           <meta
             property="og:image"
-            content="https://311homeless.lacontroller.io/thumbnail"
+            content="https://311homeless.lacontroller.io/homeless-311-thumbnail-min.png"
           />
         </Head>
 

@@ -36,42 +36,42 @@ export default function charts() {
         <meta name="twitter:creator" content="@lacontroller" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta
-          name="twitter:title"
-          key="twittertitle"
-          content="Unhoused Crime Victims Statistics"
-        ></meta>
-        <meta
-          name="twitter:description"
-          key="twitterdesc"
-          content="Unhoused Crime Victims Statistics. View which areas our unhoused community are victims of crime."
-        ></meta>
-        <meta
-          name="twitter:image"
-          key="twitterimg"
-          content="https://unhousedvictims.lacontroller.io"
-        ></meta>
-        <meta
-          name="description"
-          content="Unhoused Crime Victims Statistics. View which areas our unhoused community are victims of crime."
-        />
+            name="twitter:title"
+            key="twittertitle"
+            content="311 Homeless Encampment Requests | Charts"
+          ></meta>
+          <meta
+            name="twitter:description"
+            key="twitterdesc"
+            content="Requests to the City of Los Angeles for homeless encampments."
+          ></meta>
+          <meta
+            name="twitter:image"
+            key="twitterimg"
+            content="https://311homeless.lacontroller.io/homeless-311-thumbnail-min.png"
+          ></meta>
+          <meta
+            name="description"
+            content="Requests to the City of Los Angeles for homeless encampments."
+          />
 
-        <meta
-          property="og:url"
-          content="https://unhousedvictims.lacontroller.io/"
-        />
-        <meta property="og:type" content="website" />
-        <meta
-          property="og:title"
-          content="Unhoused Crime Victims | Map and Statistics"
-        />
-        <meta
-          property="og:description"
-          content="Unhoused Crime Victims Statistics. View which areas our unhoused community are victims of crime."
-        />
-        <meta
-          property="og:image"
-          content="https://unhousedvictims.lacontroller.io"
-        />
+          <meta
+            property="og:url"
+            content="https://311homeless.lacontroller.io/"
+          />
+          <meta property="og:type" content="website" />
+          <meta
+            property="og:title"
+            content="311 Homeless Encampment Requests | Charts"
+          />
+          <meta
+            property="og:description"
+            content="Requests to the City of Los Angeles for homeless encampments."
+          />
+          <meta
+            property="og:image"
+            content="https://311homeless.lacontroller.io/homeless-311-thumbnail-min.png"
+          />
       </Head>
       <div className="flex-none">
         <Nav />

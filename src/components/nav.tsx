@@ -4,11 +4,12 @@ const navigationPayroll = [
     name: "Map",
     url: "/",
   },
+  /*
   {
     name: "Charts",
     url: "/charts",
     newtab: true,
-  },
+  },*/
   {
     name: "Los Angeles Controller",
     url: "https://controller.lacity.gov",
