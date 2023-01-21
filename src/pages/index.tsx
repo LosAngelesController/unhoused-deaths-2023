@@ -654,28 +654,33 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (doneloadingmap) {
+
+      const filterinput =JSON.parse(
+        JSON.stringify([
+          "all",
+          [
+            "match",
+            ["get", "CD #"],
+            filteredcouncildistricts,
+            true,
+            false
+          ],
+          [
+            "match",
+            ["get", "Created By"],
+            createdby,
+            true,
+            false
+          ]
+        ])
+      );
+
+      console.log(filterinput)
+
       if (mapref.current) {
         mapref.current.setFilter(
           "311layer",
-          JSON.parse(
-            JSON.stringify([
-              "all",
-              [
-                "match",
-                ["get", "CD #"],
-                filteredcouncildistricts,
-                true,
-                false
-              ],
-              [
-                "match",
-                ["get", "Created By"],
-                createdby,
-                true,
-                false
-              ]
-            ])
-          )
+          filterinput
         );
       }
     }
