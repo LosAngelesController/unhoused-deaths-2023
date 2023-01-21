@@ -16,7 +16,7 @@ import dynamic from "next/dynamic";
 function Payroll() {
   return (
     <div className="height100">
-       <Head>
+      <Head>
         <link
           rel="icon"
           href="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-32x32.png"

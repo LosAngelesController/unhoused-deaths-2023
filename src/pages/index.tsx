@@ -10,7 +10,7 @@ import { uploadMapboxTrack } from "../components/mapboxtrack";
 
 import { CloseButton } from "../components/CloseButton";
 import Nav from "../components/nav";
-import { MantineProvider, Checkbox  } from '@mantine/core';
+import { MantineProvider, Checkbox } from "@mantine/core";
 import React, { useEffect, useState, useRef } from "react";
 
 import CouncilDist from "./CouncilDistricts.json";
@@ -76,8 +76,6 @@ var councilpopulations: any = {
 };
 
 const Home: NextPage = () => {
- 
-
   var councilBounds: any = {
     features: CouncilDist.features,
     type: "FeatureCollection",
@@ -99,13 +97,18 @@ const Home: NextPage = () => {
     "ITA",
     "BSS",
     "Proactive Insert",
-    "BOE"
-  ]
+    "BOE",
+  ];
 
-  const listofcouncildists = Array.from({length: 15}, (_, i) => i + 1).map((eachitem) => {return String(eachitem)})
+  const listofcouncildists = Array.from({ length: 15 }, (_, i) => i + 1).map(
+    (eachitem) => {
+      return String(eachitem);
+    }
+  );
 
   const [createdby, setcreatedby] = useState<string[]>(listofcreatedbyoptions);
-  const [filteredcouncildistricts, setfilteredcouncildistricts] = useState<string[]>(listofcouncildists);
+  const [filteredcouncildistricts, setfilteredcouncildistricts] =
+    useState<string[]>(listofcouncildists);
 
   const [showtotalarea, setshowtotalarea] = useState(false);
   let [disclaimerOpen, setDisclaimerOpen] = useState(false);
@@ -115,18 +118,18 @@ const Home: NextPage = () => {
   const okaydeletepoints: any = useRef(null);
   var [metric, setmetric] = useState(false);
   const [showInitInstructions, setshowInitInstructions] = useState(true);
-  const [doneloadingmap,setdoneloadingmap] = useState(false);
+  const [doneloadingmap, setdoneloadingmap] = useState(false);
 
-  const [selectedfilteropened, setselectedfilteropened] = useState('createdby');
+  const [selectedfilteropened, setselectedfilteropened] = useState("createdby");
 
-  const setcreatedbypre = (input:string[]) => {
-    console.log('inputvalidator',input)
+  const setcreatedbypre = (input: string[]) => {
+    console.log("inputvalidator", input);
     if (input.length === 0) {
-      setcreatedby(["bruh"])
+      setcreatedby(["bruh"]);
     } else {
-      setcreatedby(input)
+      setcreatedby(input);
     }
-  }
+  };
 
   function closeModal() {
     setDisclaimerOpen(false);
@@ -294,54 +297,50 @@ const Home: NextPage = () => {
 
     window.addEventListener("resize", handleResize);
 
-
-
     map.on("load", () => {
-      setdoneloadingmap(true)
+      setdoneloadingmap(true);
       setshowtotalarea(window.innerWidth > 640 ? true : false);
 
-      map.addSource('tileset-311', {
-        type: 'vector',
+      map.addSource("tileset-311", {
+        type: "vector",
         // Use any Mapbox-hosted tileset using its tileset id.
         // Learn more about where to find a tileset id:
         // https://docs.mapbox.com/help/glossary/tileset-id/
-        url: 'mapbox://comradekyler.1ukbqqbj'
-        });
+        url: "mapbox://comradekyler.1ukbqqbj",
+      });
 
-        map.addLayer(
-          {
-          'id': '311layer',
-          'type': 'heatmap',
-          'source': 'tileset-311',
-          'source-layer': 'MyLA311_Service_Request_Data_-2pbqha',
-          'layout': {
-          },
-          'paint': {
-            'heatmap-intensity': [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              7,
-              0.5,
-              22,
-              0.7
-            ],
-            'heatmap-radius': [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              0,
-              2,
-              9.24,
-              1,
-              10.69,
-              2,
-              13.96,
-              6,
-              22,
-              14
-            ],
-          'heatmap-color': [
+      map.addLayer({
+        id: "311layer",
+        type: "heatmap",
+        source: "tileset-311",
+        "source-layer": "MyLA311_Service_Request_Data_-2pbqha",
+        layout: {},
+        paint: {
+          "heatmap-intensity": [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            7,
+            0.5,
+            22,
+            0.7,
+          ],
+          "heatmap-radius": [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            0,
+            2,
+            9.24,
+            1,
+            10.69,
+            2,
+            13.96,
+            6,
+            22,
+            14,
+          ],
+          "heatmap-color": [
             "interpolate",
             ["linear"],
             ["heatmap-density"],
@@ -356,13 +355,10 @@ const Home: NextPage = () => {
             0.7,
             "yellow",
             1,
-            "red"
-          ]
-          }
-          }
-          );
-          
-        
+            "red",
+          ],
+        },
+      });
 
       console.log("maps parks source", map.getSource("parks"));
 
@@ -593,10 +589,6 @@ const Home: NextPage = () => {
         });
       });
 
-    
-
-    
-
       if (
         !document.querySelector(
           ".mapboxgl-ctrl-top-right > .mapboxgl-ctrl-geocoder"
@@ -662,221 +654,255 @@ const Home: NextPage = () => {
     if (getmapboxlogo) {
       getmapboxlogo.remove();
     }
-
   }, []);
 
   useEffect(() => {
     if (doneloadingmap) {
-      if  (mapref.current) {
-        mapref.current.setFilter('311layer',JSON.parse(JSON.stringify(
-          [
-            "match",
-            ["get", "Created By"],
-            createdby,
-            true,
-            false
-          ]
-        )))
+      if (mapref.current) {
+        mapref.current.setFilter(
+          "311layer",
+          JSON.parse(
+            JSON.stringify([
+              "match",
+              ["get", "Created By"],
+              createdby,
+              true,
+              false,
+            ])
+          )
+        );
       }
-    } 
- 
-  }, [createdby])
+    }
+  }, [createdby]);
 
   useEffect(() => {
     if (doneloadingmap) {
-      if  (mapref.current) {
-        mapref.current.setFilter('311layer',JSON.parse(JSON.stringify(
-          [
-            "all",
-            [
-              "match",
-              ["get", "CD #"],
-              filteredcouncildistricts,
-              true,
-              false
-            ]
-          ]
-        )))
+      if (mapref.current) {
+        mapref.current.setFilter(
+          "311layer",
+          JSON.parse(
+            JSON.stringify([
+              "all",
+              ["match", ["get", "CD #"], filteredcouncildistricts, true, false],
+            ])
+          )
+        );
       }
-    } 
- 
-  }, [filteredcouncildistricts])
+    }
+  }, [filteredcouncildistricts]);
 
   return (
     <div className="flex flex-col h-full w-screen absolute">
-      <MantineProvider theme={{ colorScheme: 'dark' }} withGlobalStyles withNormalizeCSS>
-      <Head>
-        <link
-          rel="icon"
-          href="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-32x32.png"
-          sizes="32x32"
-        />
-        <link
-          rel="icon"
-          href="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-192x192.png"
-          sizes="192x192"
-        />
-        <link
-          rel="apple-touch-icon"
-          href="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-180x180.png"
-        />
-        <meta
-          name="msapplication-TileImage"
-          content="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-270x270.png"
-        />
+      <MantineProvider
+        theme={{ colorScheme: "dark" }}
+        withGlobalStyles
+        withNormalizeCSS
+      >
+        <Head>
+          <link
+            rel="icon"
+            href="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-32x32.png"
+            sizes="32x32"
+          />
+          <link
+            rel="icon"
+            href="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-192x192.png"
+            sizes="192x192"
+          />
+          <link
+            rel="apple-touch-icon"
+            href="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-180x180.png"
+          />
+          <meta
+            name="msapplication-TileImage"
+            content="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-270x270.png"
+          />
 
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-        />
-        <title>311 Homeless Encampment Requests | Map</title>
-        <meta property="og:type" content="website" />
-        <meta name="twitter:site" content="@lacontroller" />
-        <meta name="twitter:creator" content="@lacontroller" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:title"
-          key="twittertitle"
-          content="311 Homeless Encampment Requests | Map"
-        ></meta>
-        <meta
-          name="twitter:description"
-          key="twitterdesc"
-          content="Requests to the City of Los Angeles for homeless encampments."
-        ></meta>
-        <meta
-          name="twitter:image"
-          key="twitterimg"
-          content="https://311homeless.lacontroller.io/thumbnail"
-        ></meta>
-        <meta
-          name="description"
-          content="Requests to the City of Los Angeles for homeless encampments."
-        />
+          <meta charSet="utf-8" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+          />
+          <title>311 Homeless Encampment Requests | Map</title>
+          <meta property="og:type" content="website" />
+          <meta name="twitter:site" content="@lacontroller" />
+          <meta name="twitter:creator" content="@lacontroller" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta
+            name="twitter:title"
+            key="twittertitle"
+            content="311 Homeless Encampment Requests | Map"
+          ></meta>
+          <meta
+            name="twitter:description"
+            key="twitterdesc"
+            content="Requests to the City of Los Angeles for homeless encampments."
+          ></meta>
+          <meta
+            name="twitter:image"
+            key="twitterimg"
+            content="https://311homeless.lacontroller.io/thumbnail"
+          ></meta>
+          <meta
+            name="description"
+            content="Requests to the City of Los Angeles for homeless encampments."
+          />
 
-        <meta
-          property="og:url"
-          content="https://311homeless.lacontroller.io/"
-        />
-        <meta property="og:type" content="website" />
-        <meta
-          property="og:title"
-          content="311 Homeless Encampment Requests | Map"
-        />
-        <meta
-          property="og:description"
-          content="Requests to the City of Los Angeles for homeless encampments."
-        />
-        <meta
-          property="og:image"
-          content="https://311homeless.lacontroller.io/thumbnail"
-        />
-      </Head>
+          <meta
+            property="og:url"
+            content="https://311homeless.lacontroller.io/"
+          />
+          <meta property="og:type" content="website" />
+          <meta
+            property="og:title"
+            content="311 Homeless Encampment Requests | Map"
+          />
+          <meta
+            property="og:description"
+            content="Requests to the City of Los Angeles for homeless encampments."
+          />
+          <meta
+            property="og:image"
+            content="https://311homeless.lacontroller.io/thumbnail"
+          />
+        </Head>
 
-      <div className="flex-none">
-        <Nav />
-      </div>
+        <div className="flex-none">
+          <Nav />
+        </div>
 
-      <div className="flex-initial h-content flex-col flex z-50">
-        <div className="absolute mt-[3.1em] md:mt-[3.8em] md:ml-3 top-0 max-h-screen flex-col flex z-5">
-          <div
-            className="titleBox  ml-2 text-base bold md:semi-bold break-words bg-[#212121]"
-            style={{
-              backgroundColor: "#212121",
-              color: "#ffffff",
-            }}
-          >
-            <strong className="">311 Homeless Encampment Requests</strong>
-          </div>
+        <div className="flex-initial h-content flex-col flex z-50">
+          <div className="absolute mt-[3.1em] md:mt-[3.8em] md:ml-3 top-0 max-h-screen flex-col flex z-5">
+            <div
+              className="titleBox  ml-2 text-base bold md:semi-bold break-words bg-[#212121]"
+              style={{
+                backgroundColor: "#212121",
+                color: "#ffffff",
+              }}
+            >
+              <strong className="">311 Homeless Encampment Requests</strong>
+            </div>
 
-          <div
-            className={`geocoder mt-0 ml-2 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
-            id="geocoder"
-          ></div>
+            <div
+              className={`geocoder mt-0 ml-2 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
+              id="geocoder"
+            ></div>
 
-          <div>
-          <button className='mt-2  rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2'>   
-          <svg style={{
-      width: '20px',
-      height: '20px'
-    }} viewBox="0 0 24 24"
-      className='inline align-middle mt-0.5'
-     
-    >
+            <div>
+              <button className="mt-2  rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2">
+                <svg
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                  }}
+                  viewBox="0 0 24 24"
+                  className="inline align-middle mt-0.5"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
+                  />
+                </svg>
+                <span>Filter</span>
+              </button>
+            </div>
 
+            <div className="w-screen sm:w-auto">
+              <div className="bg-zinc-900 w-content bg-opacity-90 px-2 py-1 md:pt-4 mt-1 sm:rounded-lg">
+                <div className="gap-x-0 flex flex-row w-full">
+                  <button
+                    onClick={() => {
+                      setselectedfilteropened("createdby");
+                    }}
+                    className={`px-2 border-b-2 ${
+                      selectedfilteropened === "createdby"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                    Created By
+                  </button>
 
+                  <button
+                    onClick={() => {
+                      setselectedfilteropened("month");
+                    }}
+                    className={`px-2 border-b-2 ${
+                      selectedfilteropened === "month"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                    Month
+                  </button>
 
-      <path fill="currentColor" d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z" />
-    </svg>
-    <span>Filter</span></button>
-          </div>
+                  <button
+                    onClick={() => {
+                      setselectedfilteropened("cd");
+                    }}
+                    className={`px-2 border-b-2 ${
+                      selectedfilteropened === "cd"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                    CD #
+                  </button>
 
-<div className="w-screen sm:w-auto">
-<div className="bg-zinc-900 w-content bg-opacity-90 px-2 py-1 md:pt-4 mt-1 sm:rounded-lg">
-<div className='gap-x-0 flex flex-row w-full'>
-  <button
-   onClick={() => {setselectedfilteropened('createdby')}}
-  className={`px-2 border-b-2 ${selectedfilteropened === 'createdby' ? 'border-[#41ffca] text-[#41ffca]' : 'hover:border-white border-transparent text-gray-50'}`}>   
- Created By</button>
+                  <button
+                    onClick={() => {
+                      setselectedfilteropened("neigh");
+                    }}
+                    className={`px-2 border-b-2 ${
+                      selectedfilteropened === "neigh"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                    Neighborhood
+                  </button>
+                </div>
+                <div className="flex flex-col">
+                  {selectedfilteropened === "createdby" && (
+                    <div className="mt-2">
+                      <Checkbox.Group
+                        value={createdby}
+                        onChange={setcreatedbypre}
+                      >
+                        {" "}
+                        <div className="flex flex-col">
+                          {listofcreatedbyoptions.map((item, key) => (
+                            <Checkbox value={item} label={item} key={key} />
+                          ))}
+                        </div>
+                      </Checkbox.Group>
+                    </div>
+                  )}
+                  {selectedfilteropened === "cd" && (
+                    <div className="mt-2">
+                      <Checkbox.Group
+                        value={filteredcouncildistricts}
+                        onChange={setfilteredcouncildistricts}
+                      >
+                        {" "}
+                        <div className="flex flex-col">
+                          {listofcouncildists.map((item, key) => (
+                            <Checkbox value={item} label={item} key={key} />
+                          ))}
+                        </div>
+                      </Checkbox.Group>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
 
- <button
-  onClick={() => {setselectedfilteropened('month')}}
- className={`px-2 border-b-2 ${selectedfilteropened === 'month' ? 'border-[#41ffca] text-[#41ffca]' : 'hover:border-white border-transparent text-gray-50'}`}>   
- Month</button>
+            <div className="w-content"></div>
 
- 
- <button
- 
- onClick={() => {setselectedfilteropened('cd')}}
- className={`px-2 border-b-2 ${selectedfilteropened === 'cd' ? 'border-[#41ffca] text-[#41ffca]' : 'hover:border-white border-transparent text-gray-50'}`}> 
- CD #</button>
-
- <button
- 
- onClick={() => {setselectedfilteropened('neigh')}}
- className={`px-2 border-b-2 ${selectedfilteropened === 'neigh' ? 'border-[#41ffca] text-[#41ffca]' : 'hover:border-white border-transparent text-gray-50'}`}>  
- Neighborhood</button>
- </div>
- <div className="flex flex-col">
-  {selectedfilteropened === 'createdby' && <div className='mt-2'>
-  
-  <Checkbox.Group value={createdby} onChange={setcreatedbypre}> <div className="flex flex-col">
-    {
-      listofcreatedbyoptions.map((item, key) => (
-        <Checkbox value={item} label={item} key={key} /> 
-      ))
-    }</div>
-         </Checkbox.Group>
-    
-  
-  </div>
-  }
-  {selectedfilteropened === 'cd' && <div className='mt-2'>
-  
-  <Checkbox.Group value={filteredcouncildistricts} onChange={setfilteredcouncildistricts}> <div className="flex flex-col">
-    {
-      listofcouncildists.map((item, key) => (
-        <Checkbox value={item} label={item} key={key} /> 
-      ))
-    }</div>
-         </Checkbox.Group>
-    
-  
-  </div>
-  }
- </div>
-</div>
-
-
-</div>
-
-          <div className="w-content"></div>
-
-          <div
-            className={`text-sm ${
-              housingaddyopen
-                ? `px-3 pt-2 pb-3 fixed sm:relative 
+            <div
+              className={`text-sm ${
+                housingaddyopen
+                  ? `px-3 pt-2 pb-3 fixed sm:relative 
 
  top-auto bottom-0 left-0 right-0
   w-full sm:static sm:mt-2 sm:w-auto 
@@ -887,34 +913,34 @@ const Home: NextPage = () => {
   
    
    `
-                : "hidden"
-            }`}
-          ></div>
-        </div>
-      </div>
-
-      <div ref={divRef} style={{}} className="map-container w-full h-full " />
-
-      {(typeof window !== "undefined" ? window.innerWidth >= 640 : false) && (
-        <>
-          <div
-            className={`absolute md:mx-auto z-9 bottom-2 left-1 md:left-1/2 md:transform md:-translate-x-1/2`}
-          >
-            <a
-              href="https://controller.lacontroller.gov/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img
-                src="https://lacontroller.io/images/KennethMejia-logo-white-elect.png"
-                className="h-9 md:h-10 z-40"
-                alt="Kenneth Mejia LA City Controller Logo"
-              />
-            </a>
+                  : "hidden"
+              }`}
+            ></div>
           </div>
-        </>
-      )}
-        </MantineProvider>
+        </div>
+
+        <div ref={divRef} style={{}} className="map-container w-full h-full " />
+
+        {(typeof window !== "undefined" ? window.innerWidth >= 640 : false) && (
+          <>
+            <div
+              className={`absolute md:mx-auto z-9 bottom-2 left-1 md:left-1/2 md:transform md:-translate-x-1/2`}
+            >
+              <a
+                href="https://controller.lacontroller.gov/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  src="https://lacontroller.io/images/KennethMejia-logo-white-elect.png"
+                  className="h-9 md:h-10 z-40"
+                  alt="Kenneth Mejia LA City Controller Logo"
+                />
+              </a>
+            </div>
+          </>
+        )}
+      </MantineProvider>
     </div>
   );
 };

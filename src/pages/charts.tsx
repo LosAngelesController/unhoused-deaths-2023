@@ -1,11 +1,11 @@
-import Head from 'next/head';
-import * as React from 'react'
+import Head from "next/head";
+import * as React from "react";
 import Nav from "../components/nav";
 
 export default function charts() {
-    return (
-        <div className=" h-full">
-             <Head>
+  return (
+    <div className=" h-full">
+      <Head>
         <link
           rel="icon"
           href="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-32x32.png"
@@ -73,11 +73,13 @@ export default function charts() {
           content="https://unhousedvictims.lacontroller.io"
         />
       </Head>
-             <div className="flex-none">
+      <div className="flex-none">
         <Nav />
       </div>
-           <div className='' dangerouslySetInnerHTML={{
-            __html: `<div class='tableauPlaceholder' id='viz1673550310225' 
+      <div
+        className=""
+        dangerouslySetInnerHTML={{
+          __html: `<div class='tableauPlaceholder' id='viz1673550310225' 
             style='position: relative'>
             <noscript><a href='#'>
             <img alt='Unhoused Crime Victims Dashboard '
@@ -89,8 +91,9 @@ export default function charts() {
                <param name='name' value='UnhousedVictimsCrimeDashboardinLosAngeles&#47;UnhousedVictims' />
                <param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Un&#47;UnhousedVictimsCrimeDashboardinLosAngeles&#47;UnhousedVictims&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1673550310225');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.width='1024px';vizElement.style.height='3795px';} 
             else 
-            if ( divElement.offsetWidth > 500 ) { vizElement.style.width='100%';vizElement.style.height='3795px';} else { vizElement.style.width='100%';vizElement.style.height='3227px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>`
-           }}></div>
-        </div>
-    )
+            if ( divElement.offsetWidth > 500 ) { vizElement.style.width='100%';vizElement.style.height='3795px';} else { vizElement.style.width='100%';vizElement.style.height='3227px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>`,
+        }}
+      ></div>
+    </div>
+  );
 }
