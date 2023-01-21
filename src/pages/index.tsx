@@ -115,6 +115,7 @@ const Home: NextPage = () => {
   const okaydeletepoints: any = useRef(null);
   var [metric, setmetric] = useState(false);
   const [showInitInstructions, setshowInitInstructions] = useState(true);
+  const [doneloadingmap,setdoneloadingmap] = useState(false);
 
   const [selectedfilteropened, setselectedfilteropened] = useState('createdby');
 
@@ -287,6 +288,7 @@ const Home: NextPage = () => {
 
 
     map.on("load", () => {
+      setdoneloadingmap(true)
       setshowtotalarea(window.innerWidth > 640 ? true : false);
 
       map.addSource('tileset-311', {
@@ -655,17 +657,20 @@ const Home: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    if  (mapref.current) {
-      mapref.current.setFilter('311layer',JSON.parse(JSON.stringify(
-        [
-          "match",
-          ["get", "Created By"],
-          createdby,
-          true,
-          false
-        ]
-      )))
-    }
+    if (doneloadingmap) {
+      if  (mapref.current) {
+        mapref.current.setFilter('311layer',JSON.parse(JSON.stringify(
+          [
+            "match",
+            ["get", "Created By"],
+            createdby,
+            true,
+            false
+          ]
+        )))
+      }
+    } 
+ 
   }, [createdby])
 
   return (
