@@ -687,11 +687,14 @@ const Home: NextPage = () => {
       if  (mapref.current) {
         mapref.current.setFilter('311layer',JSON.parse(JSON.stringify(
           [
-            "match",
-            ["get", "CD #"],
-            filteredcouncildistricts,
-            true,
-            false
+            "all",
+            [
+              "match",
+              ["get", "CD #"],
+              filteredcouncildistricts,
+              true,
+              false
+            ]
           ]
         )))
       }
