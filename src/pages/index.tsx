@@ -743,10 +743,12 @@ const Home: NextPage = () => {
       console.log(filterinput)
 
       if (mapref.current) {
+       if (doneloadingmap === true) {
         mapref.current.setFilter(
           "311layer",
           filterinput
         );
+       }
       }
     }
   }, [createdby, filteredcouncildistricts, sliderMonth ]);
@@ -844,11 +846,11 @@ const Home: NextPage = () => {
             </div>
 
             <div
-              className={`geocoder absolute mt-[4.1em] md:mt-[4.1em] ml-2 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
+              className={`geocoder absolute mt-[2.7em] md:mt-[4.1em] ml-1 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
               id="geocoder"
             ></div>
 
-            <div className="absolute mt-[5.1em] md:mt-[5.8em] md:ml-3 top-0 z-5">
+            <div className="absolute mt-[7.9em] md:mt-[5.8em] ml-2 md:ml-3 top-0 z-5">
               <button 
               onClick={() => {setfilterpanelopened(!filterpanelopened)}}
               className="mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2">
