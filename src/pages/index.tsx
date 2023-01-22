@@ -3,15 +3,12 @@ import Head from "next/head";
 import Image from "next/image";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, createRef } from "react";
-
-import Slider from "rc-slider";s
+import Slider from "rc-slider";
 import TooltipSlider, { handleRender } from "../components/TooltipSlider";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import MapboxLanguage from "@mapbox/mapbox-gl-language";
-import { uploadMapboxTrack } from "../components/mapboxtrack";
-
-import { CloseButton } from "../components/CloseButton";
 import Nav from "../components/nav";
+//import { CloseButton } from "@/components/CloseButton";
 import { MantineProvider, Checkbox } from "@mantine/core";
 import React, { useEffect, useState, useRef } from "react";
 
@@ -27,7 +24,7 @@ import mapboxgl from "mapbox-gl";
 
 import { assertDeclareExportAllDeclaration } from "@babel/types";
 
-import { DisclaimerPopup } from "../components/Disclaimer";
+import { DisclaimerPopup } from "@/components/Disclaimer";
 import { GeoJsonProperties, MultiPolygon, Polygon } from "geojson";
 
 function isTouchScreen() {

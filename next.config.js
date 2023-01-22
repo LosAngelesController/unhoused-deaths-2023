@@ -8,4 +8,8 @@ module.exports = {
     // !! WARN !!
     ignoreBuildErrors: false,
   },
+  future: { webpack5: true },
+  experimental: {
+    forceSwcTransforms: true,
+  },
 };
