@@ -383,10 +383,6 @@ const Home: NextPage = () => {
         },
       });
 
-      console.log("maps parks source", map.getSource("parks"));
-
-      console.log("maps parks layer", map.getLayer("parks"));
-
       okaydeletepoints.current = () => {
         try {
           var affordablepoint: any = map.getSource("selected-home-point");
