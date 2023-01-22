@@ -1,9 +1,9 @@
-import * as React from 'react';
-import 'rc-tooltip/assets/bootstrap.css';
-import Slider from 'rc-slider';
-import type { SliderProps } from 'rc-slider';
-import raf from 'rc-util/lib/raf';
-import Tooltip from 'rc-tooltip';
+import * as React from "react";
+import "rc-tooltip/assets/bootstrap.css";
+import Slider from "rc-slider";
+import type { SliderProps } from "rc-slider";
+import raf from "rc-util/lib/raf";
+import Tooltip from "rc-tooltip";
 
 const HandleTooltip = (props: {
   value: number;
@@ -11,7 +11,13 @@ const HandleTooltip = (props: {
   visible: boolean;
   tipFormatter?: (value: number) => React.ReactNode;
 }) => {
-  const { value, children, visible, tipFormatter = (val) => `${val} %`, ...restProps } = props;
+  const {
+    value,
+    children,
+    visible,
+    tipFormatter = (val) => `${val} %`,
+    ...restProps
+  } = props;
 
   const tooltipRef = React.useRef<any>();
   const rafRef = React.useRef<number | null>(null);
@@ -40,7 +46,7 @@ const HandleTooltip = (props: {
     <Tooltip
       placement="top"
       overlay={tipFormatter(value)}
-      overlayInnerStyle={{ minHeight: 'auto' }}
+      overlayInnerStyle={{ minHeight: "auto" }}
       ref={tooltipRef}
       visible={visible}
       {...restProps}
@@ -50,7 +56,10 @@ const HandleTooltip = (props: {
   );
 };
 
-export const handleRender: SliderProps['handleRender'] = (node:any, props:any) => {
+export const handleRender: SliderProps["handleRender"] = (
+  node: any,
+  props: any
+) => {
   return (
     <HandleTooltip value={props.value} visible={props.dragging}>
       {node}
@@ -58,12 +67,11 @@ export const handleRender: SliderProps['handleRender'] = (node:any, props:any) =
   );
 };
 
-const TooltipSlider = ({
-  tipFormatter,
-  tipProps,
-  ...props
-}: any) => {
-  const tipHandleRender: SliderProps['handleRender'] = (node:any, handleProps:any) => {
+const TooltipSlider = ({ tipFormatter, tipProps, ...props }: any) => {
+  const tipHandleRender: SliderProps["handleRender"] = (
+    node: any,
+    handleProps: any
+  ) => {
     return (
       <HandleTooltip
         value={handleProps.value}

@@ -47,42 +47,42 @@ function Payroll() {
         <meta name="twitter:creator" content="@lacontroller" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta
-            name="twitter:title"
-            key="twittertitle"
-            content="311 Homeless Encampment Requests | Charts"
-          ></meta>
-          <meta
-            name="twitter:description"
-            key="twitterdesc"
-            content="Requests to the City of Los Angeles for homeless encampments."
-          ></meta>
-          <meta
-            name="twitter:image"
-            key="twitterimg"
-            content="https://311homeless.lacontroller.io/homeless-311-thumbnail-min.png"
-          ></meta>
-          <meta
-            name="description"
-            content="Requests to the City of Los Angeles for homeless encampments."
-          />
+          name="twitter:title"
+          key="twittertitle"
+          content="311 Homeless Encampment Requests | Charts"
+        ></meta>
+        <meta
+          name="twitter:description"
+          key="twitterdesc"
+          content="Requests to the City of Los Angeles for homeless encampments."
+        ></meta>
+        <meta
+          name="twitter:image"
+          key="twitterimg"
+          content="https://311homeless.lacontroller.io/homeless-311-thumbnail-min.png"
+        ></meta>
+        <meta
+          name="description"
+          content="Requests to the City of Los Angeles for homeless encampments."
+        />
 
-          <meta
-            property="og:url"
-            content="https://311homeless.lacontroller.io/"
-          />
-          <meta property="og:type" content="website" />
-          <meta
-            property="og:title"
-            content="311 Homeless Encampment Requests | Map"
-          />
-          <meta
-            property="og:description"
-            content="Requests to the City of Los Angeles for homeless encampments."
-          />
-          <meta
-            property="og:image"
-            content="https://311homeless.lacontroller.io/homeless-311-thumbnail-min.png"
-          />
+        <meta
+          property="og:url"
+          content="https://311homeless.lacontroller.io/"
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:title"
+          content="311 Homeless Encampment Requests | Map"
+        />
+        <meta
+          property="og:description"
+          content="Requests to the City of Los Angeles for homeless encampments."
+        />
+        <meta
+          property="og:image"
+          content="https://311homeless.lacontroller.io/homeless-311-thumbnail-min.png"
+        />
       </Head>
       <div suppressHydrationWarning={true} className="height100">
         <React.StrictMode>

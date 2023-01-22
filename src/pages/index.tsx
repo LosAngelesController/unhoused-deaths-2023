@@ -4,8 +4,8 @@ import Image from "next/image";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, createRef } from "react";
 
-import Slider from 'rc-slider';
-import TooltipSlider, { handleRender } from '../components/TooltipSlider';
+import Slider from "rc-slider";
+import TooltipSlider, { handleRender } from "../components/TooltipSlider";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import MapboxLanguage from "@mapbox/mapbox-gl-language";
 import { uploadMapboxTrack } from "../components/mapboxtrack";
@@ -102,13 +102,16 @@ const Home: NextPage = () => {
     "BOE",
   ];
 
-  const listofcouncildists = Array.from({ length: 15 }, (_, i) => i + 1).map(eachItem => String(eachItem));
+  const listofcouncildists = Array.from({ length: 15 }, (_, i) => i + 1).map(
+    (eachItem) => String(eachItem)
+  );
 
   const [createdby, setcreatedby] = useState<string[]>(listofcreatedbyoptions);
   const [filteredcouncildistricts, setfilteredcouncildistricts] =
     useState<string[]>(listofcouncildists);
 
-  const shouldfilteropeninit = (typeof window != 'undefined' ? (window.innerWidth >= 640) : false)
+  const shouldfilteropeninit =
+    typeof window != "undefined" ? window.innerWidth >= 640 : false;
 
   const [showtotalarea, setshowtotalarea] = useState(false);
   let [disclaimerOpen, setDisclaimerOpen] = useState(false);
@@ -119,18 +122,19 @@ const Home: NextPage = () => {
   var [metric, setmetric] = useState(false);
   const [showInitInstructions, setshowInitInstructions] = useState(true);
   const [doneloadingmap, setdoneloadingmap] = useState(false);
-  const [sliderMonth, setsliderMonthAct] = useState<any>([1,12]);
+  const [sliderMonth, setsliderMonthAct] = useState<any>([1, 12]);
   const [selectedfilteropened, setselectedfilteropened] = useState("createdby");
-  const [filterpanelopened , setfilterpanelopened  ] = useState(shouldfilteropeninit);
+  const [filterpanelopened, setfilterpanelopened] =
+    useState(shouldfilteropeninit);
 
   const setsliderMonth = (event: Event, newValue: number | number[]) => {
     setsliderMonthAct(newValue as number[]);
   };
 
-  const setsliderMonthVerTwo = (input:any) => {
+  const setsliderMonthVerTwo = (input: any) => {
     console.log(input);
     setsliderMonthAct(input);
-  }
+  };
 
   const setcreatedbypre = (input: string[]) => {
     console.log("inputvalidator", input);
@@ -141,16 +145,14 @@ const Home: NextPage = () => {
     }
   };
 
-
   const setfilteredcouncildistrictspre = (input: string[]) => {
     console.log("inputvalidator", input);
     if (input.length === 0) {
-      setfilteredcouncildistricts(['99999']);
+      setfilteredcouncildistricts(["99999"]);
     } else {
       setfilteredcouncildistricts(input);
     }
   };
-
 
   function closeModal() {
     setDisclaimerOpen(false);
@@ -678,30 +680,27 @@ const Home: NextPage = () => {
   }, []);
 
   const tooltipformattermonth = (value: number) => {
-
     var numberofyearstoadd = Math.floor((value - 1) / 12);
 
-    const year = (22 + numberofyearstoadd);
+    const year = 22 + numberofyearstoadd;
 
     var numberofmonthstosubtract = numberofyearstoadd * 12;
 
-    var monthtoformat = (value - numberofmonthstosubtract);
+    var monthtoformat = value - numberofmonthstosubtract;
 
-    return `${monthtoformat}/${year}`
-  }
+    return `${monthtoformat}/${year}`;
+  };
 
   useEffect(() => {
     if (doneloadingmap) {
-
-      var sliderMonthProcessed:string[] = [];
+      var sliderMonthProcessed: string[] = [];
 
       var i = sliderMonth[0];
 
       while (i <= sliderMonth[1]) {
-        
         var numberofyearstoadd = Math.floor((i - 1) / 12);
 
-        const year = (2022 + numberofyearstoadd);
+        const year = 2022 + numberofyearstoadd;
 
         var numberofmonthstosubtract = numberofyearstoadd * 12;
 
@@ -710,10 +709,9 @@ const Home: NextPage = () => {
         i++;
 
         sliderMonthProcessed.push(year + "-" + monthformatted);
-
       }
 
-      const filterinput =JSON.parse(
+      const filterinput = JSON.parse(
         JSON.stringify([
           "all",
           [
@@ -721,37 +719,22 @@ const Home: NextPage = () => {
             ["get", "CD #"],
             filteredcouncildistricts.map((x) => parseInt(x)),
             true,
-            false
+            false,
           ],
-          [
-            "match",
-            ["get", "Created By"],
-            createdby,
-            true,
-            false
-          ],
-          [
-            "match",
-            ["get", "Month"],
-            sliderMonthProcessed,
-            true,
-            false
-          ]
+          ["match", ["get", "Created By"], createdby, true, false],
+          ["match", ["get", "Month"], sliderMonthProcessed, true, false],
         ])
       );
 
-      console.log(filterinput)
+      console.log(filterinput);
 
       if (mapref.current) {
-       if (doneloadingmap === true) {
-        mapref.current.setFilter(
-          "311layer",
-          filterinput
-        );
-       }
+        if (doneloadingmap === true) {
+          mapref.current.setFilter("311layer", filterinput);
+        }
       }
     }
-  }, [createdby, filteredcouncildistricts, sliderMonth ]);
+  }, [createdby, filteredcouncildistricts, sliderMonth]);
 
   return (
     <div className="flex flex-col h-full w-screen absolute">
@@ -851,9 +834,12 @@ const Home: NextPage = () => {
             ></div>
 
             <div className="absolute mt-[7.9em] md:mt-[5.8em] ml-2 md:ml-3 top-0 z-5">
-              <button 
-              onClick={() => {setfilterpanelopened(!filterpanelopened)}}
-              className="mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2">
+              <button
+                onClick={() => {
+                  setfilterpanelopened(!filterpanelopened);
+                }}
+                className="mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2"
+              >
                 <svg
                   style={{
                     width: "20px",
@@ -871,10 +857,12 @@ const Home: NextPage = () => {
               </button>
             </div>
 
-            <div className={` bottom-0 sm:bottom-auto sm:mt-[5.1em] md:mt-[5.8em] md:ml-3 w-screen sm:w-auto
+            <div
+              className={` bottom-0 sm:bottom-auto sm:mt-[5.1em] md:mt-[5.8em] md:ml-3 w-screen sm:w-auto
             
-            ${filterpanelopened === true ? 'absolute ' : 'hidden'}
-            `}>
+            ${filterpanelopened === true ? "absolute " : "hidden"}
+            `}
+            >
               <div className="bg-zinc-900 w-content bg-opacity-90 px-2 py-1 mt-1 sm:rounded-lg">
                 <div className="gap-x-0 flex flex-row w-full">
                   <button
@@ -915,45 +903,54 @@ const Home: NextPage = () => {
                   >
                     CD #
                   </button>
-{
-  false && (
-    
-                  <button
-                    onClick={() => {
-                      setselectedfilteropened("neigh");
-                    }}
-                    className={`px-2 border-b-2 py-1  font-semibold ${
-                      selectedfilteropened === "neigh"
-                        ? "border-[#41ffca] text-[#41ffca]"
-                        : "hover:border-white border-transparent text-gray-50"
-                    }`}
-                  >
-                    Neighborhood
-                  </button>
-  )
-}
+                  {false && (
+                    <button
+                      onClick={() => {
+                        setselectedfilteropened("neigh");
+                      }}
+                      className={`px-2 border-b-2 py-1  font-semibold ${
+                        selectedfilteropened === "neigh"
+                          ? "border-[#41ffca] text-[#41ffca]"
+                          : "hover:border-white border-transparent text-gray-50"
+                      }`}
+                    >
+                      Neighborhood
+                    </button>
+                  )}
                 </div>
                 <div className="flex flex-col">
                   {selectedfilteropened === "createdby" && (
                     <div className="mt-2">
-                      <div className='flex flex-row gap-x-1'>
-                  <button className='align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base'
-                    onClick={() => {
-                      setcreatedbypre(listofcreatedbyoptions)
-                    }}
-
-                  >Select All</button>
-                  <button className='align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base border border-gray-400'
-                    onClick={() => {
-                      setcreatedbypre([])
-                    }}
-                  >Unselect All</button>
-                  <button
-                    onClick={() => {
-                      setcreatedbypre(listofcreatedbyoptions.filter(n => !createdby.includes(n)))
-                    }}
-                    className='align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400'>Invert</button>
-                </div>
+                      <div className="flex flex-row gap-x-1">
+                        <button
+                          className="align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base"
+                          onClick={() => {
+                            setcreatedbypre(listofcreatedbyoptions);
+                          }}
+                        >
+                          Select All
+                        </button>
+                        <button
+                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base border border-gray-400"
+                          onClick={() => {
+                            setcreatedbypre([]);
+                          }}
+                        >
+                          Unselect All
+                        </button>
+                        <button
+                          onClick={() => {
+                            setcreatedbypre(
+                              listofcreatedbyoptions.filter(
+                                (n) => !createdby.includes(n)
+                              )
+                            );
+                          }}
+                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400"
+                        >
+                          Invert
+                        </button>
+                      </div>
                       <Checkbox.Group
                         value={createdby}
                         onChange={setcreatedbypre}
@@ -969,24 +966,36 @@ const Home: NextPage = () => {
                   )}
                   {selectedfilteropened === "cd" && (
                     <div className="mt-2">
-                      <div className='flex flex-row gap-x-1'>
-                  <button className='align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base'
-                    onClick={() => {
-                      setfilteredcouncildistrictspre(listofcouncildists)
-                    }}
-
-                  >Select All</button>
-                  <button className='align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base border border-gray-400'
-                    onClick={() => {
-                      setfilteredcouncildistrictspre([])
-                    }}
-                  >Unselect All</button>
-                  <button
-                    onClick={() => {
-                      setfilteredcouncildistrictspre(listofcouncildists.filter(n => !filteredcouncildistricts.includes(n)))
-                    }}
-                    className='align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400'>Invert</button>
-                </div>
+                      <div className="flex flex-row gap-x-1">
+                        <button
+                          className="align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base"
+                          onClick={() => {
+                            setfilteredcouncildistrictspre(listofcouncildists);
+                          }}
+                        >
+                          Select All
+                        </button>
+                        <button
+                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base border border-gray-400"
+                          onClick={() => {
+                            setfilteredcouncildistrictspre([]);
+                          }}
+                        >
+                          Unselect All
+                        </button>
+                        <button
+                          onClick={() => {
+                            setfilteredcouncildistrictspre(
+                              listofcouncildists.filter(
+                                (n) => !filteredcouncildistricts.includes(n)
+                              )
+                            );
+                          }}
+                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400"
+                        >
+                          Invert
+                        </button>
+                      </div>
                       <Checkbox.Group
                         value={filteredcouncildistricts}
                         onChange={setfilteredcouncildistrictspre}
@@ -1003,16 +1012,16 @@ const Home: NextPage = () => {
 
                   {selectedfilteropened === "month" && (
                     <div className="pl-5 pr-2 py-2">
-
-<TooltipSlider
-        range
-        min={1}
-        max={12}
-        value={sliderMonth}
-        onChange={setsliderMonthVerTwo}
-        tipFormatter={(value:any) => `${tooltipformattermonth(value)}`}
-      />
-
+                      <TooltipSlider
+                        range
+                        min={1}
+                        max={12}
+                        value={sliderMonth}
+                        onChange={setsliderMonthVerTwo}
+                        tipFormatter={(value: any) =>
+                          `${tooltipformattermonth(value)}`
+                        }
+                      />
                     </div>
                   )}
                 </div>
