@@ -329,59 +329,60 @@ const Home: NextPage = () => {
         url: "mapbox://comradekyler.1ukbqqbj",
       });
 
-     if (true) {
-      map.addLayer({
-        id: "311layer",
-        type: "heatmap",
-        source: "tileset-311",
-        "source-layer": "MyLA311_Service_Request_Data_-2pbqha",
-        layout: {},
-        paint: {
-          "heatmap-intensity": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            7,
-            0.5,
-            22,
-            0.7,
-          ],
-          "heatmap-radius": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            0,
-            2,
-            9.24,
-            1,
-            10.69,
-            2,
-            13.96,
-            6,
-            22,
-            14,
-          ],
-          "heatmap-color": [
-            "interpolate",
-            ["linear"],
-            ["heatmap-density"],
-            0,
-            "rgba(0, 0, 255, 0)",
-            0.1,
-            "royalblue",
-            0.3,
-            "cyan",
-            0.5,
-            "lime",
-            0.7,
-            "yellow",
-            1,
-            "red",
-          ],
-        },
-      });
+      if (true) {
+        map.addLayer({
+          id: "311layer",
+          type: "heatmap",
+          source: "tileset-311",
+          "source-layer": "MyLA311_Service_Request_Data_-2pbqha",
+          layout: {
 
-     }
+          },
+          paint: {
+            "heatmap-intensity": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              7,
+              0.5,
+              22,
+              0.7,
+            ],
+            "heatmap-radius": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              0,
+              2,
+              9.24,
+              1,
+              10.69,
+              2,
+              13.96,
+              6,
+              22,
+              14,
+            ],
+            "heatmap-color": [
+              "interpolate",
+              ["linear"],
+              ["heatmap-density"],
+              0,
+              "rgba(0, 0, 255, 0)",
+              0.1,
+              "royalblue",
+              0.3,
+              "cyan",
+              0.5,
+              "lime",
+              0.7,
+              "yellow",
+              1,
+              "red",
+            ],
+          },
+        }, 'road-label');
+      }
       okaydeletepoints.current = () => {
         try {
           var affordablepoint: any = map.getSource("selected-home-point");
@@ -516,17 +517,17 @@ const Home: NextPage = () => {
         },
       });
 
-if (true) {
-  map.addLayer({
-    id: "point",
-    source: "single-point",
-    type: "circle",
-    paint: {
-      "circle-radius": 10,
-      "circle-color": "#41ffca",
-    },
-  });
-}
+      if (true) {
+        map.addLayer({
+          id: "point",
+          source: "single-point",
+          type: "circle",
+          paint: {
+            "circle-radius": 10,
+            "circle-color": "#41ffca",
+          },
+        }, 'road-label');
+      }
 
       if (debugParam) {
         map.showTileBoundaries = true;
@@ -560,28 +561,28 @@ if (true) {
         },
       });
 
-     if (false) {
-      map.addLayer({
-        id: "selected-park-areas",
-        source: "selected-park-area",
-        type: "line",
-        paint: {
-          "line-color": "#7dd3fc",
-          "line-width": 5,
-          "line-blur": 0,
-        },
-      });
+      if (false) {
+        map.addLayer({
+          id: "selected-park-areas",
+          source: "selected-park-area",
+          type: "line",
+          paint: {
+            "line-color": "#7dd3fc",
+            "line-width": 5,
+            "line-blur": 0,
+          },
+        });
 
-      map.addLayer({
-        id: "selected-park-areasfill",
-        source: "selected-park-area",
-        type: "fill",
-        paint: {
-          "fill-color": "#7dd3fc",
-          "fill-opacity": 0.2,
-        },
-      });
-     }
+        map.addLayer({
+          id: "selected-park-areasfill",
+          source: "selected-park-area",
+          type: "fill",
+          paint: {
+            "fill-color": "#7dd3fc",
+            "fill-opacity": 0.2,
+          },
+        });
+      }
 
       map.loadImage("/map-marker.png", (error, image: any) => {
         if (error) throw error;
@@ -589,6 +590,7 @@ if (true) {
         // Add the image to the map style.
         map.addImage("map-marker", image);
 
+      if (false) {
         map.addLayer({
           id: "points-park",
           type: "symbol",
@@ -609,6 +611,7 @@ if (true) {
             "icon-text-fit": "both",
           },
         });
+      }
       });
 
       if (
@@ -634,7 +637,7 @@ if (true) {
             "line-opacity": 1,
             "line-width": 3,
           },
-        });
+        }, 'road-label');
       }
 
       if (hasStartedControls === false) {

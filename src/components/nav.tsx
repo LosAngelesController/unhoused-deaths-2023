@@ -28,10 +28,7 @@ function Nav() {
             key={itemIdx}
             target={`${item.newtab === true ? "_blank" : ""}`}
           >
-            <p
-              className="text-white py-2 text-sm md:text-base   md:py-3 px-6 block hover:text-green-300 focus:outline-none underline"
-             
-            >
+            <p className="text-white py-2 text-sm md:text-base   md:py-3 px-6 block hover:text-green-300 focus:outline-none underline">
               {item.name}
             </p>
           </ActiveLink>
