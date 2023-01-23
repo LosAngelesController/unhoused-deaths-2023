@@ -282,7 +282,7 @@ const Home: NextPage = () => {
     var mapparams: any = {
       container: divRef.current, // container ID
       //affordablehousing2022-dev-copy
-      style: "mapbox://styles/comradekyler/cld8h1ed8000v01s28dh9q85z", // style URL (THIS IS STREET VIEW)
+      style: "mapbox://styles/comradekyler/cld95p0s6004001qibmrpbjgd", // style URL (THIS IS STREET VIEW)
       //mapbox://styles/comradekyler/cl5c3eukn00al15qxpq4iugtn
       //affordablehousing2022-dev-copy-copy
       //  style: 'mapbox://styles/comradekyler/cl5c3eukn00al15qxpq4iugtn?optimize=true', // style URL
@@ -516,15 +516,17 @@ const Home: NextPage = () => {
         },
       });
 
-      map.addLayer({
-        id: "point",
-        source: "single-point",
-        type: "circle",
-        paint: {
-          "circle-radius": 10,
-          "circle-color": "#41ffca",
-        },
-      });
+if (true) {
+  map.addLayer({
+    id: "point",
+    source: "single-point",
+    type: "circle",
+    paint: {
+      "circle-radius": 10,
+      "circle-color": "#41ffca",
+    },
+  });
+}
 
       if (debugParam) {
         map.showTileBoundaries = true;
@@ -558,6 +560,7 @@ const Home: NextPage = () => {
         },
       });
 
+     if (false) {
       map.addLayer({
         id: "selected-park-areas",
         source: "selected-park-area",
@@ -578,6 +581,7 @@ const Home: NextPage = () => {
           "fill-opacity": 0.2,
         },
       });
+     }
 
       map.loadImage("/map-marker.png", (error, image: any) => {
         if (error) throw error;
@@ -629,19 +633,6 @@ const Home: NextPage = () => {
             "line-color": "#dddddd",
             "line-opacity": 1,
             "line-width": 3,
-          },
-        });
-
-        map.addLayer({
-          id: "cityboundfill",
-          type: "fill",
-          source: {
-            type: "geojson",
-            data: citybounds,
-          },
-          paint: {
-            "fill-color": "#dddddd",
-            "fill-opacity": 0.02,
           },
         });
       }

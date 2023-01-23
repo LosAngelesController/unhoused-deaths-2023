@@ -6,11 +6,11 @@
   ],
   "type": "commonjs",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 84713",
     "cloudrunstart": "next start -p  ${PORT:-8080}",
     "build": " next build",
     "homebuild": "export SET NODE_OPTIONS=--openssl-legacy-provider",
-    "start": "next start",
+    "start": "next start -p 42217",
     "lint": "next lint",
     "export": "next build && next export",
     "lint:fix": "eslint src --fix && yarn format",
