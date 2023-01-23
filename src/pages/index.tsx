@@ -282,7 +282,7 @@ const Home: NextPage = () => {
     var mapparams: any = {
       container: divRef.current, // container ID
       //affordablehousing2022-dev-copy
-      style: "mapbox://styles/comradekyler/cld679wwv000301osv2mjnxdp", // style URL (THIS IS STREET VIEW)
+      style: "mapbox://styles/comradekyler/cld8h1ed8000v01s28dh9q85z", // style URL (THIS IS STREET VIEW)
       //mapbox://styles/comradekyler/cl5c3eukn00al15qxpq4iugtn
       //affordablehousing2022-dev-copy-copy
       //  style: 'mapbox://styles/comradekyler/cl5c3eukn00al15qxpq4iugtn?optimize=true', // style URL
@@ -329,6 +329,7 @@ const Home: NextPage = () => {
         url: "mapbox://comradekyler.1ukbqqbj",
       });
 
+     if (true) {
       map.addLayer({
         id: "311layer",
         type: "heatmap",
@@ -380,6 +381,7 @@ const Home: NextPage = () => {
         },
       });
 
+     }
       okaydeletepoints.current = () => {
         try {
           var affordablepoint: any = map.getSource("selected-home-point");
