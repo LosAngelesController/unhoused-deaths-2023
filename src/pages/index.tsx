@@ -282,7 +282,7 @@ const Home: NextPage = () => {
     var mapparams: any = {
       container: divRef.current, // container ID
       //affordablehousing2022-dev-copy
-      style: "mapbox://styles/comradekyler/cld8h1ed8000v01s28dh9q85z", // style URL (THIS IS STREET VIEW)
+      style: "mapbox://styles/comradekyler/cld95p0s6004001qibmrpbjgd", // style URL (THIS IS STREET VIEW)
       //mapbox://styles/comradekyler/cl5c3eukn00al15qxpq4iugtn
       //affordablehousing2022-dev-copy-copy
       //  style: 'mapbox://styles/comradekyler/cl5c3eukn00al15qxpq4iugtn?optimize=true', // style URL
@@ -329,59 +329,58 @@ const Home: NextPage = () => {
         url: "mapbox://comradekyler.1ukbqqbj",
       });
 
-     if (true) {
-      map.addLayer({
-        id: "311layer",
-        type: "heatmap",
-        source: "tileset-311",
-        "source-layer": "MyLA311_Service_Request_Data_-2pbqha",
-        layout: {},
-        paint: {
-          "heatmap-intensity": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            7,
-            0.5,
-            22,
-            0.7,
-          ],
-          "heatmap-radius": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            0,
-            2,
-            9.24,
-            1,
-            10.69,
-            2,
-            13.96,
-            6,
-            22,
-            14,
-          ],
-          "heatmap-color": [
-            "interpolate",
-            ["linear"],
-            ["heatmap-density"],
-            0,
-            "rgba(0, 0, 255, 0)",
-            0.1,
-            "royalblue",
-            0.3,
-            "cyan",
-            0.5,
-            "lime",
-            0.7,
-            "yellow",
-            1,
-            "red",
-          ],
-        },
-      });
-
-     }
+      if (true) {
+        map.addLayer({
+          id: "311layer",
+          type: "heatmap",
+          source: "tileset-311",
+          "source-layer": "MyLA311_Service_Request_Data_-2pbqha",
+          layout: {},
+          paint: {
+            "heatmap-intensity": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              7,
+              0.5,
+              22,
+              0.7,
+            ],
+            "heatmap-radius": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              0,
+              2,
+              9.24,
+              1,
+              10.69,
+              2,
+              13.96,
+              6,
+              22,
+              14,
+            ],
+            "heatmap-color": [
+              "interpolate",
+              ["linear"],
+              ["heatmap-density"],
+              0,
+              "rgba(0, 0, 255, 0)",
+              0.1,
+              "royalblue",
+              0.3,
+              "cyan",
+              0.5,
+              "lime",
+              0.7,
+              "yellow",
+              1,
+              "red",
+            ],
+          },
+        });
+      }
       okaydeletepoints.current = () => {
         try {
           var affordablepoint: any = map.getSource("selected-home-point");
@@ -1006,6 +1005,8 @@ const Home: NextPage = () => {
                   )}
 
                   {selectedfilteropened === "month" && (
+                    <>
+                    
                     <div className="pl-5 pr-2 py-2">
                       <TooltipSlider
                         range
@@ -1017,7 +1018,12 @@ const Home: NextPage = () => {
                           `${tooltipformattermonth(value)}`
                         }
                       />
+                      <div className="flex flex-row py-1">
+                      <p className="font-semibold">{tooltipformattermonth(sliderMonth[0])}</p>
+                      <p className="font-semibold ml-auto mr-0">{tooltipformattermonth(sliderMonth[1])}</p>
                     </div>
+                    </div>
+                    </>
                   )}
                 </div>
               </div>
