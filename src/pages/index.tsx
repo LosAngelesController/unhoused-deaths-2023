@@ -335,7 +335,9 @@ const Home: NextPage = () => {
           type: "heatmap",
           source: "tileset-311",
           "source-layer": "MyLA311_Service_Request_Data_-2pbqha",
-          layout: {},
+          layout: {
+
+          },
           paint: {
             "heatmap-intensity": [
               "interpolate",
@@ -515,15 +517,17 @@ const Home: NextPage = () => {
         },
       });
 
-      map.addLayer({
-        id: "point",
-        source: "single-point",
-        type: "circle",
-        paint: {
-          "circle-radius": 10,
-          "circle-color": "#41ffca",
-        },
-      });
+      if (true) {
+        map.addLayer({
+          id: "point",
+          source: "single-point",
+          type: "circle",
+          paint: {
+            "circle-radius": 10,
+            "circle-color": "#41ffca",
+          },
+        }, 'road-label');
+      }
 
       if (debugParam) {
         map.showTileBoundaries = true;
@@ -557,26 +561,28 @@ const Home: NextPage = () => {
         },
       });
 
-      map.addLayer({
-        id: "selected-park-areas",
-        source: "selected-park-area",
-        type: "line",
-        paint: {
-          "line-color": "#7dd3fc",
-          "line-width": 5,
-          "line-blur": 0,
-        },
-      });
+      if (false) {
+        map.addLayer({
+          id: "selected-park-areas",
+          source: "selected-park-area",
+          type: "line",
+          paint: {
+            "line-color": "#7dd3fc",
+            "line-width": 5,
+            "line-blur": 0,
+          },
+        });
 
-      map.addLayer({
-        id: "selected-park-areasfill",
-        source: "selected-park-area",
-        type: "fill",
-        paint: {
-          "fill-color": "#7dd3fc",
-          "fill-opacity": 0.2,
-        },
-      });
+        map.addLayer({
+          id: "selected-park-areasfill",
+          source: "selected-park-area",
+          type: "fill",
+          paint: {
+            "fill-color": "#7dd3fc",
+            "fill-opacity": 0.2,
+          },
+        });
+      }
 
       map.loadImage("/map-marker.png", (error, image: any) => {
         if (error) throw error;
@@ -584,6 +590,7 @@ const Home: NextPage = () => {
         // Add the image to the map style.
         map.addImage("map-marker", image);
 
+      if (false) {
         map.addLayer({
           id: "points-park",
           type: "symbol",
@@ -604,6 +611,7 @@ const Home: NextPage = () => {
             "icon-text-fit": "both",
           },
         });
+      }
       });
 
       if (
@@ -629,20 +637,7 @@ const Home: NextPage = () => {
             "line-opacity": 1,
             "line-width": 3,
           },
-        });
-
-        map.addLayer({
-          id: "cityboundfill",
-          type: "fill",
-          source: {
-            type: "geojson",
-            data: citybounds,
-          },
-          paint: {
-            "fill-color": "#dddddd",
-            "fill-opacity": 0.02,
-          },
-        });
+        }, 'road-label');
       }
 
       if (hasStartedControls === false) {
