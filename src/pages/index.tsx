@@ -11,6 +11,10 @@ import Nav from "../components/nav";
 //import { CloseButton } from "@/components/CloseButton";
 import { MantineProvider, Checkbox } from "@mantine/core";
 import React, { useEffect, useState, useRef } from "react";
+import Icon from '@mdi/react';
+import { mdiPlay } from '@mdi/js';
+import { mdiPause } from '@mdi/js';
+
 
 import CouncilDist from "./CouncilDistricts.json";
 
@@ -141,6 +145,30 @@ const Home: NextPage = () => {
       setcreatedby(input);
     }
   };
+
+  const nextMonthAnimate = () => {
+    if (sliderMonth[1] - sliderMonth(0) > 1) {
+      setsliderMonthVerTwo([sliderMonth[0], sliderMonth[0]]);
+    } else {
+     if (sliderMonth[0] === 12) {
+        setsliderMonthVerTwo([1, 1]);
+      } else {
+        setsliderMonthVerTwo([sliderMonth[0] + 1, sliderMonth[0] + 1]);
+      }
+     }
+    }
+
+    const prevMonthAnimate = () => {
+      if (sliderMonth[1] - sliderMonth(0) > 1) {
+        setsliderMonthVerTwo([sliderMonth[0], sliderMonth[0]]);
+      } else {
+       if (sliderMonth[0] === 12) {
+          setsliderMonthVerTwo([1, 1]);
+        } else {
+          setsliderMonthVerTwo([sliderMonth[0] + 1, sliderMonth[0] + 1]);
+        }
+       }
+      }
 
   const setfilteredcouncildistrictspre = (input: string[]) => {
     console.log("inputvalidator", input);
@@ -335,9 +363,7 @@ const Home: NextPage = () => {
           type: "heatmap",
           source: "tileset-311",
           "source-layer": "MyLA311_Service_Request_Data_-2pbqha",
-          layout: {
-
-          },
+          layout: {},
           paint: {
             "heatmap-intensity": [
               "interpolate",
@@ -518,15 +544,18 @@ const Home: NextPage = () => {
       });
 
       if (true) {
-        map.addLayer({
-          id: "point",
-          source: "single-point",
-          type: "circle",
-          paint: {
-            "circle-radius": 10,
-            "circle-color": "#41ffca",
+        map.addLayer(
+          {
+            id: "point",
+            source: "single-point",
+            type: "circle",
+            paint: {
+              "circle-radius": 10,
+              "circle-color": "#41ffca",
+            },
           },
-        }, 'road-label');
+          "road-label"
+        );
       }
 
       if (debugParam) {
@@ -590,28 +619,28 @@ const Home: NextPage = () => {
         // Add the image to the map style.
         map.addImage("map-marker", image);
 
-      if (false) {
-        map.addLayer({
-          id: "points-park",
-          type: "symbol",
-          source: "selected-park-point",
-          paint: {
-            "icon-color": "#f0abfc",
-            "icon-translate": [0, -13],
-          },
-          layout: {
-            "icon-image": "map-marker",
-            // get the title name from the source's "title" property
-            "text-allow-overlap": true,
-            "icon-allow-overlap": true,
-            "icon-ignore-placement": true,
-            "text-ignore-placement": true,
+        if (false) {
+          map.addLayer({
+            id: "points-park",
+            type: "symbol",
+            source: "selected-park-point",
+            paint: {
+              "icon-color": "#f0abfc",
+              "icon-translate": [0, -13],
+            },
+            layout: {
+              "icon-image": "map-marker",
+              // get the title name from the source's "title" property
+              "text-allow-overlap": true,
+              "icon-allow-overlap": true,
+              "icon-ignore-placement": true,
+              "text-ignore-placement": true,
 
-            "icon-size": 0.4,
-            "icon-text-fit": "both",
-          },
-        });
-      }
+              "icon-size": 0.4,
+              "icon-text-fit": "both",
+            },
+          });
+        }
       });
 
       if (
@@ -625,19 +654,22 @@ const Home: NextPage = () => {
       checkHideOrShowTopRightGeocoder();
 
       if (true) {
-        map.addLayer({
-          id: "citybound",
-          type: "line",
-          source: {
-            type: "geojson",
-            data: citybounds,
+        map.addLayer(
+          {
+            id: "citybound",
+            type: "line",
+            source: {
+              type: "geojson",
+              data: citybounds,
+            },
+            paint: {
+              "line-color": "#dddddd",
+              "line-opacity": 1,
+              "line-width": 3,
+            },
           },
-          paint: {
-            "line-color": "#dddddd",
-            "line-opacity": 1,
-            "line-width": 3,
-          },
-        }, 'road-label');
+          "road-label"
+        );
       }
 
       if (hasStartedControls === false) {
@@ -1019,7 +1051,15 @@ const Home: NextPage = () => {
                           <p className="font-semibold ml-auto mr-0">
                             {tooltipformattermonth(sliderMonth[1])}
                           </p>
+
                         </div>
+                        <p>Animate/Seek Months</p>
+                        <div>
+                          
+<div className='px-3 py-2 flex flex-row gap-x-2'><Icon path={mdiPause} size={1}/>
+</div>
+                        </div>
+
                       </div>
                     </>
                   )}
