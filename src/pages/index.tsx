@@ -145,7 +145,7 @@ const Home: NextPage = () => {
   };
 
   const nextMonthAnimate = () => {
-    if (sliderMonth[1] - sliderMonth(0) > 1) {
+    if (sliderMonth[1] - sliderMonth[0] > 1) {
       setsliderMonthVerTwo([sliderMonth[0], sliderMonth[0]]);
     } else {
       if (sliderMonth[0] === 12) {
@@ -157,7 +157,7 @@ const Home: NextPage = () => {
   };
 
   const prevMonthAnimate = () => {
-    if (sliderMonth[1] - sliderMonth(0) > 1) {
+    if (sliderMonth[1] - sliderMonth[0] > 1) {
       setsliderMonthVerTwo([sliderMonth[0], sliderMonth[0]]);
     } else {
       if (sliderMonth[0] === 12) {
@@ -1035,6 +1035,13 @@ const Home: NextPage = () => {
                   {selectedfilteropened === "month" && (
                     <>
                       <div className="pl-5 pr-2 py-2">
+                        <div className="pb-1">
+                          <button   className="align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base"
+                          onClick={() => {
+                            setsliderMonthAct([1, 12]);
+                          }}
+                          >Select All Months</button>
+                        </div>
                         <TooltipSlider
                           range
                           min={1}
