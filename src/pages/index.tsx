@@ -1056,21 +1056,23 @@ const Home: NextPage = () => {
                         <p>Animate/Seek Months</p>
                         <div>
                           <div className="px-3 py-2 flex flex-row gap-x-2">
-                         
-                          <button
-                          
-                                  
-                          onClick={() => {
-                            prevMonthAnimate()
-                          }}
-                          
-                          className="px-3 py-2 rounded-lg  bg-slate-800"> <Icon path={mdiSkipPrevious} size={1} /></button>
-                          <button className="px-3 py-2 rounded-lg bg-slate-800"
-                          
-                          onClick={() => {
-                            nextMonthAnimate()
-                          }}
-                          ><Icon path={mdiSkipNext} size={1} /></button>
+                            <button
+                              onClick={() => {
+                                prevMonthAnimate();
+                              }}
+                              className="px-3 py-2 rounded-lg  bg-slate-800"
+                            >
+                              {" "}
+                              <Icon path={mdiSkipPrevious} size={1} />
+                            </button>
+                            <button
+                              className="px-3 py-2 rounded-lg bg-slate-800"
+                              onClick={() => {
+                                nextMonthAnimate();
+                              }}
+                            >
+                              <Icon path={mdiSkipNext} size={1} />
+                            </button>
                             {/*<Icon path={mdiPause} size={1} />*/}
                           </div>
                         </div>
