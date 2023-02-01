@@ -24,7 +24,6 @@ import mapboxgl from "mapbox-gl";
 
 import { assertDeclareExportAllDeclaration } from "@babel/types";
 
-import { DisclaimerPopup } from "@/components/Disclaimer";
 import { GeoJsonProperties, MultiPolygon, Polygon } from "geojson";
 
 function isTouchScreen() {
@@ -1007,18 +1006,28 @@ const Home: NextPage = () => {
                   )}
 
                   {selectedfilteropened === "month" && (
-                    <div className="pl-5 pr-2 py-2">
-                      <TooltipSlider
-                        range
-                        min={1}
-                        max={12}
-                        value={sliderMonth}
-                        onChange={setsliderMonthVerTwo}
-                        tipFormatter={(value: any) =>
-                          `${tooltipformattermonth(value)}`
-                        }
-                      />
-                    </div>
+                    <>
+                      <div className="pl-5 pr-2 py-2">
+                        <TooltipSlider
+                          range
+                          min={1}
+                          max={12}
+                          value={sliderMonth}
+                          onChange={setsliderMonthVerTwo}
+                          tipFormatter={(value: any) =>
+                            `${tooltipformattermonth(value)}`
+                          }
+                        />
+                        <div className="flex flex-row py-1">
+                          <p className="font-semibold">
+                            {tooltipformattermonth(sliderMonth[0])}
+                          </p>
+                          <p className="font-semibold ml-auto mr-0">
+                            {tooltipformattermonth(sliderMonth[1])}
+                          </p>
+                        </div>
+                      </div>
+                    </>
                   )}
                 </div>
               </div>
