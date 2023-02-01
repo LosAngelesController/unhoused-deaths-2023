@@ -27,7 +27,6 @@ import mapboxgl from "mapbox-gl";
 
 import { assertDeclareExportAllDeclaration } from "@babel/types";
 
-import { DisclaimerPopup } from "@/components/Disclaimer";
 import { GeoJsonProperties, MultiPolygon, Polygon } from "geojson";
 
 function isTouchScreen() {
@@ -357,56 +356,59 @@ const Home: NextPage = () => {
       });
 
       if (true) {
-        map.addLayer({
-          id: "311layer",
-          type: "heatmap",
-          source: "tileset-311",
-          "source-layer": "MyLA311_Service_Request_Data_-2pbqha",
-          layout: {},
-          paint: {
-            "heatmap-intensity": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              7,
-              0.5,
-              22,
-              0.7,
-            ],
-            "heatmap-radius": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              0,
-              2,
-              9.24,
-              1,
-              10.69,
-              2,
-              13.96,
-              6,
-              22,
-              14,
-            ],
-            "heatmap-color": [
-              "interpolate",
-              ["linear"],
-              ["heatmap-density"],
-              0,
-              "rgba(0, 0, 255, 0)",
-              0.1,
-              "royalblue",
-              0.3,
-              "cyan",
-              0.5,
-              "lime",
-              0.7,
-              "yellow",
-              1,
-              "red",
-            ],
+        map.addLayer(
+          {
+            id: "311layer",
+            type: "heatmap",
+            source: "tileset-311",
+            "source-layer": "MyLA311_Service_Request_Data_-2pbqha",
+            layout: {},
+            paint: {
+              "heatmap-intensity": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                7,
+                0.5,
+                22,
+                0.7,
+              ],
+              "heatmap-radius": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0,
+                2,
+                9.24,
+                1,
+                10.69,
+                2,
+                13.96,
+                6,
+                22,
+                14,
+              ],
+              "heatmap-color": [
+                "interpolate",
+                ["linear"],
+                ["heatmap-density"],
+                0,
+                "rgba(0, 0, 255, 0)",
+                0.1,
+                "royalblue",
+                0.3,
+                "cyan",
+                0.5,
+                "lime",
+                0.7,
+                "yellow",
+                1,
+                "red",
+              ],
+            },
           },
-        });
+          "road-label"
+        );
       }
       okaydeletepoints.current = () => {
         try {

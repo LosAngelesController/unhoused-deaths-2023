@@ -35,4 +35,8 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+<<<<<<< HEAD
 
+=======
+.next
+>>>>>>> d95e44f0a8b6afdba94e4259fe55d102d63db2ea
