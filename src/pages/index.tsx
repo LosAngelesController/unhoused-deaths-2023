@@ -11,10 +11,9 @@ import Nav from "../components/nav";
 //import { CloseButton } from "@/components/CloseButton";
 import { MantineProvider, Checkbox } from "@mantine/core";
 import React, { useEffect, useState, useRef } from "react";
-import Icon from '@mdi/react';
-import { mdiPlay } from '@mdi/js';
-import { mdiPause } from '@mdi/js';
-
+import Icon from "@mdi/react";
+import { mdiPlay } from "@mdi/js";
+import { mdiPause } from "@mdi/js";
 
 import CouncilDist from "./CouncilDistricts.json";
 
@@ -150,25 +149,25 @@ const Home: NextPage = () => {
     if (sliderMonth[1] - sliderMonth(0) > 1) {
       setsliderMonthVerTwo([sliderMonth[0], sliderMonth[0]]);
     } else {
-     if (sliderMonth[0] === 12) {
+      if (sliderMonth[0] === 12) {
         setsliderMonthVerTwo([1, 1]);
       } else {
         setsliderMonthVerTwo([sliderMonth[0] + 1, sliderMonth[0] + 1]);
       }
-     }
     }
+  };
 
-    const prevMonthAnimate = () => {
-      if (sliderMonth[1] - sliderMonth(0) > 1) {
-        setsliderMonthVerTwo([sliderMonth[0], sliderMonth[0]]);
+  const prevMonthAnimate = () => {
+    if (sliderMonth[1] - sliderMonth(0) > 1) {
+      setsliderMonthVerTwo([sliderMonth[0], sliderMonth[0]]);
+    } else {
+      if (sliderMonth[0] === 12) {
+        setsliderMonthVerTwo([1, 1]);
       } else {
-       if (sliderMonth[0] === 12) {
-          setsliderMonthVerTwo([1, 1]);
-        } else {
-          setsliderMonthVerTwo([sliderMonth[0] + 1, sliderMonth[0] + 1]);
-        }
-       }
+        setsliderMonthVerTwo([sliderMonth[0] + 1, sliderMonth[0] + 1]);
       }
+    }
+  };
 
   const setfilteredcouncildistrictspre = (input: string[]) => {
     console.log("inputvalidator", input);
@@ -1051,15 +1050,13 @@ const Home: NextPage = () => {
                           <p className="font-semibold ml-auto mr-0">
                             {tooltipformattermonth(sliderMonth[1])}
                           </p>
-
                         </div>
                         <p>Animate/Seek Months</p>
                         <div>
-                          
-<div className='px-3 py-2 flex flex-row gap-x-2'><Icon path={mdiPause} size={1}/>
-</div>
+                          <div className="px-3 py-2 flex flex-row gap-x-2">
+                            <Icon path={mdiPause} size={1} />
+                          </div>
                         </div>
-
                       </div>
                     </>
                   )}
