@@ -330,58 +330,59 @@ const Home: NextPage = () => {
       });
 
       if (true) {
-        map.addLayer({
-          id: "311layer",
-          type: "heatmap",
-          source: "tileset-311",
-          "source-layer": "MyLA311_Service_Request_Data_-2pbqha",
-          layout: {
-
+        map.addLayer(
+          {
+            id: "311layer",
+            type: "heatmap",
+            source: "tileset-311",
+            "source-layer": "MyLA311_Service_Request_Data_-2pbqha",
+            layout: {},
+            paint: {
+              "heatmap-intensity": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                7,
+                0.5,
+                22,
+                0.7,
+              ],
+              "heatmap-radius": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0,
+                2,
+                9.24,
+                1,
+                10.69,
+                2,
+                13.96,
+                6,
+                22,
+                14,
+              ],
+              "heatmap-color": [
+                "interpolate",
+                ["linear"],
+                ["heatmap-density"],
+                0,
+                "rgba(0, 0, 255, 0)",
+                0.1,
+                "royalblue",
+                0.3,
+                "cyan",
+                0.5,
+                "lime",
+                0.7,
+                "yellow",
+                1,
+                "red",
+              ],
+            },
           },
-          paint: {
-            "heatmap-intensity": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              7,
-              0.5,
-              22,
-              0.7,
-            ],
-            "heatmap-radius": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              0,
-              2,
-              9.24,
-              1,
-              10.69,
-              2,
-              13.96,
-              6,
-              22,
-              14,
-            ],
-            "heatmap-color": [
-              "interpolate",
-              ["linear"],
-              ["heatmap-density"],
-              0,
-              "rgba(0, 0, 255, 0)",
-              0.1,
-              "royalblue",
-              0.3,
-              "cyan",
-              0.5,
-              "lime",
-              0.7,
-              "yellow",
-              1,
-              "red",
-            ],
-          },
-        }, 'road-label');
+          "road-label"
+        );
       }
       okaydeletepoints.current = () => {
         try {
@@ -518,15 +519,18 @@ const Home: NextPage = () => {
       });
 
       if (true) {
-        map.addLayer({
-          id: "point",
-          source: "single-point",
-          type: "circle",
-          paint: {
-            "circle-radius": 10,
-            "circle-color": "#41ffca",
+        map.addLayer(
+          {
+            id: "point",
+            source: "single-point",
+            type: "circle",
+            paint: {
+              "circle-radius": 10,
+              "circle-color": "#41ffca",
+            },
           },
-        }, 'road-label');
+          "road-label"
+        );
       }
 
       if (debugParam) {
@@ -590,28 +594,28 @@ const Home: NextPage = () => {
         // Add the image to the map style.
         map.addImage("map-marker", image);
 
-      if (false) {
-        map.addLayer({
-          id: "points-park",
-          type: "symbol",
-          source: "selected-park-point",
-          paint: {
-            "icon-color": "#f0abfc",
-            "icon-translate": [0, -13],
-          },
-          layout: {
-            "icon-image": "map-marker",
-            // get the title name from the source's "title" property
-            "text-allow-overlap": true,
-            "icon-allow-overlap": true,
-            "icon-ignore-placement": true,
-            "text-ignore-placement": true,
+        if (false) {
+          map.addLayer({
+            id: "points-park",
+            type: "symbol",
+            source: "selected-park-point",
+            paint: {
+              "icon-color": "#f0abfc",
+              "icon-translate": [0, -13],
+            },
+            layout: {
+              "icon-image": "map-marker",
+              // get the title name from the source's "title" property
+              "text-allow-overlap": true,
+              "icon-allow-overlap": true,
+              "icon-ignore-placement": true,
+              "text-ignore-placement": true,
 
-            "icon-size": 0.4,
-            "icon-text-fit": "both",
-          },
-        });
-      }
+              "icon-size": 0.4,
+              "icon-text-fit": "both",
+            },
+          });
+        }
       });
 
       if (
@@ -625,19 +629,22 @@ const Home: NextPage = () => {
       checkHideOrShowTopRightGeocoder();
 
       if (true) {
-        map.addLayer({
-          id: "citybound",
-          type: "line",
-          source: {
-            type: "geojson",
-            data: citybounds,
+        map.addLayer(
+          {
+            id: "citybound",
+            type: "line",
+            source: {
+              type: "geojson",
+              data: citybounds,
+            },
+            paint: {
+              "line-color": "#dddddd",
+              "line-opacity": 1,
+              "line-width": 3,
+            },
           },
-          paint: {
-            "line-color": "#dddddd",
-            "line-opacity": 1,
-            "line-width": 3,
-          },
-        }, 'road-label');
+          "road-label"
+        );
       }
 
       if (hasStartedControls === false) {

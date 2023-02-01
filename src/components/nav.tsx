@@ -4,7 +4,7 @@ const navigationPayroll = [
     name: "Map",
     url: "/",
   },
- 
+
   {
     name: "Charts",
     url: "/charts",
