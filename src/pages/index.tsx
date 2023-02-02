@@ -27,9 +27,7 @@ const councildistricts = require("./CouncilDistricts.json");
 const citybounds = require("./citybounds.json");
 // @ts-ignore: Unreachable code error
 import * as turf from "@turf/turf";
-import { datadogRum } from '@datadog/browser-rum';
-
-
+import { datadogRum } from "@datadog/browser-rum";
 
 // added the following 6 lines.
 import mapboxgl from "mapbox-gl";
@@ -184,26 +182,26 @@ const Home: NextPage = () => {
 
   const [user, loading, error] = useAuthState(auth);
 
-    const datadogconfig:any = {
-      applicationId: '54ed9846-68b0-4811-a47a-7330cf1828a0',
-      clientToken: 'pub428d48e3143310cf6a9dd00003773f12',
-      site: 'datadoghq.com',
-      service:'311homeless',
-      env:'prod',
-      // Specify a version number to identify the deployed version of your application in Datadog 
-      // version: '1.0.0',
-      
-      sessionSampleRate: 100,
-      sessionReplaySampleRate: 100,
-      trackUserInteractions: true,
-      trackResources: true,
-      trackLongTasks: true,
-      defaultPrivacyLevel:'allow'
-  }
+  const datadogconfig: any = {
+    applicationId: "54ed9846-68b0-4811-a47a-7330cf1828a0",
+    clientToken: "pub428d48e3143310cf6a9dd00003773f12",
+    site: "datadoghq.com",
+    service: "311homeless",
+    env: "prod",
+    // Specify a version number to identify the deployed version of your application in Datadog
+    // version: '1.0.0',
+
+    sessionSampleRate: 100,
+    sessionReplaySampleRate: 100,
+    trackUserInteractions: true,
+    trackResources: true,
+    trackLongTasks: true,
+    defaultPrivacyLevel: "allow",
+  };
 
   datadogRum.init(datadogconfig);
-    
-datadogRum.startSessionReplayRecording();
+
+  datadogRum.startSessionReplayRecording();
 
   useEffect(() => {
     if (loading) {
@@ -272,6 +270,10 @@ datadogRum.startSessionReplayRecording();
 
   useEffect(() => {
     reassessLogin();
+
+    setTimeout(() => {
+      reassessLogin();
+    }, 5000)
   }, [isLoggedIn]);
 
   const setcreatedbypre = (input: string[]) => {
