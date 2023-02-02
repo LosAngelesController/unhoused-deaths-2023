@@ -20,7 +20,7 @@ import { mdiPlay } from "@mdi/js";
 import { mdiPause, mdiSkipNext, mdiSkipPrevious } from "@mdi/js";
 
 import CouncilDist from "./CouncilDistricts.json";
-import { auth, signInWithGoogle } from "./../components/firebase";
+import { auth, signInWithGoogle, signOutOfApp } from "./../components/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 const councildistricts = require("./CouncilDistricts.json");
@@ -813,51 +813,47 @@ const Home: NextPage = () => {
 
       checkHideOrShowTopRightGeocoder();
 
+      var mapname = "311";
 
-      
-var mapname = '311'
-
-map.on('dragstart', (e) => {
-  uploadMapboxTrack({
-    mapname,
-    eventtype: 'dragstart',
-    globallng: map.getCenter().lng,
-    globallat: map.getCenter().lat,
-    globalzoom: map.getZoom()
-  })
-  })
-  
-  map.on('dragend', (e) => {
-    uploadMapboxTrack({
-      mapname,
-      eventtype: 'dragend',
-      globallng: map.getCenter().lng,
-      globallat: map.getCenter().lat,
-      globalzoom: map.getZoom()
-    })
-    })
-  
-    map.on('zoomstart', (e) => {
-      uploadMapboxTrack({
-        mapname,
-        eventtype: 'dragstart',
-        globallng: map.getCenter().lng,
-        globallat: map.getCenter().lat,
-        globalzoom: map.getZoom()
-      })
-      })
-  
-      map.on('zoomend', (e) => {
+      map.on("dragstart", (e) => {
         uploadMapboxTrack({
           mapname,
-          eventtype: 'zoomend',
+          eventtype: "dragstart",
           globallng: map.getCenter().lng,
           globallat: map.getCenter().lat,
-          globalzoom: map.getZoom()
-        })
-        })
-         
+          globalzoom: map.getZoom(),
+        });
+      });
 
+      map.on("dragend", (e) => {
+        uploadMapboxTrack({
+          mapname,
+          eventtype: "dragend",
+          globallng: map.getCenter().lng,
+          globallat: map.getCenter().lat,
+          globalzoom: map.getZoom(),
+        });
+      });
+
+      map.on("zoomstart", (e) => {
+        uploadMapboxTrack({
+          mapname,
+          eventtype: "dragstart",
+          globallng: map.getCenter().lng,
+          globallat: map.getCenter().lat,
+          globalzoom: map.getZoom(),
+        });
+      });
+
+      map.on("zoomend", (e) => {
+        uploadMapboxTrack({
+          mapname,
+          eventtype: "zoomend",
+          globallng: map.getCenter().lng,
+          globallat: map.getCenter().lat,
+          globalzoom: map.getZoom(),
+        });
+      });
 
       //end of load
     });
@@ -1025,8 +1021,9 @@ map.on('dragstart', (e) => {
               id="geocoder"
             ></div>
 
-            <div className="absolute mt-[7.9em] md:mt-[5.8em] ml-2 md:ml-3 top-0 z-5">
+            <div className="absolute mt-[7.9em] md:mt-[5.8em] ml-2 md:ml-3 top-0 z-5 flex flex-row gap-x-2">
               {isLoggedIn === true && (
+              <>
                 <button
                   onClick={() => {
                     setfilterpanelopened(!filterpanelopened);
@@ -1048,6 +1045,17 @@ map.on('dragstart', (e) => {
                   </svg>
                   <span>Filter</span>
                 </button>
+                <button
+                onClick={() => {
+                  signOutOfApp();
+                }}
+                className="mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2"
+              >
+                
+                <span>Logout</span>
+              </button>
+              
+              </>
               )}
             </div>
 
