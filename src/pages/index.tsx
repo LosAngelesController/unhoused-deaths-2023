@@ -76,6 +76,35 @@ var councilpopulations: any = {
   "15": 258310,
 };
 
+const councilcount:any = {
+  "13":6380,
+"11":5350,
+"5":5102,
+"2":5063,
+"3":4338,
+"6":4050,
+"10":3961,
+"14":3920,
+"1":3905,
+"9":3892,
+"12":3243,
+"4":2942,
+"7":2689,
+"8":2332,
+"15":1681
+}
+
+const createdbycount:any = {
+  "BOE":1,
+  "BSS":73,
+  "Council's Office":2142,
+  "ITA":2978,
+  "LASAN":5518,
+"Proactive Insert":3,
+"Self Service":46007,
+"Self Service_SAN":1509
+}
+
 const Home: NextPage = () => {
   var councilBounds: any = {
     features: CouncilDist.features,
@@ -93,13 +122,14 @@ const Home: NextPage = () => {
   const calculateIntensityCoefficient = () => {
     const monthdomain = sliderMonth[1] - sliderMonth[0];
 
-    if (monthdomain === 0) {return 1} else {
+    if (monthdomain === 0) {
+      return 12;
+    } else {
       const coefficient = 12 / monthdomain;
 
       return coefficient;
     }
-    
-  }
+  };
 
   const listofcreatedbyoptions = [
     "Self Service",
@@ -148,39 +178,41 @@ const Home: NextPage = () => {
     setsliderMonthAct(input);
   };
 
-  useEffect(() => {
-    if (mapref.current) {
-      let bruh = [
+  const recomputeintensity = () => {
+    let bruh = ["interpolate", ["linear"], ["zoom"], 7, 0.5, 22, 0.7];
+
+    if (normalizeintensityon === true) {
+      bruh = [
         "interpolate",
         ["linear"],
         ["zoom"],
         7,
-        0.5 ,
-        22,
-        0.7,
+        0.5 * calculateIntensityCoefficient(),
+        20,
+        0.4 * calculateIntensityCoefficient(),
       ];
+    }
 
-      if (normalizeintensityon === true) {
-        bruh = [
-          "interpolate",
-          ["linear"],
-          ["zoom"],
-          7,
-          0.5 * calculateIntensityCoefficient(),
-          22,
-          0.7 * calculateIntensityCoefficient(),
-        ];
-      }
+    var threeoneonelayer = mapref.current.getLayer("311layer");
 
-      var threeoneonelayer = mapref.current.getLayer("311layer");
+    if (threeoneonelayer) {
+      mapref.current.setPaintProperty(
+        "311layer",
+        "heatmap-intensity",
+        bruh
+      );
+    }
+  
+    
+  }
 
-      if (threeoneonelayer) {
-        mapref.current.setPaintProperty(
-          threeoneonelayer,
-          "heatmap-intensity",
-          bruh
-        )
-      }
+  useEffect(() => {
+    if (mapref.current) {
+
+    
+
+      recomputeintensity();
+   
     }
   }, [normalizeintensityon]);
 
@@ -418,7 +450,7 @@ const Home: NextPage = () => {
                 ["linear"],
                 ["zoom"],
                 7,
-                0.5 ,
+                0.5,
                 22,
                 0.7,
               ],
@@ -805,6 +837,8 @@ const Home: NextPage = () => {
         }
       }
     }
+
+    recomputeintensity();
   }, [createdby, filteredcouncildistricts, sliderMonth]);
 
   return (
@@ -1029,7 +1063,7 @@ const Home: NextPage = () => {
                         {" "}
                         <div className="flex flex-col">
                           {listofcreatedbyoptions.map((item, key) => (
-                            <Checkbox value={item} label={item} key={key} />
+                            <Checkbox value={item} label={`${item} (${Number(createdbycount[item]).toLocaleString()})`} key={key} />
                           ))}
                         </div>
                       </Checkbox.Group>
@@ -1074,7 +1108,7 @@ const Home: NextPage = () => {
                         {" "}
                         <div className="grid grid-cols-3 gap-x-4 sm:flex sm:flex-col">
                           {listofcouncildists.map((item, key) => (
-                            <Checkbox value={item} label={item} key={key} />
+                            <Checkbox value={item} label={`${item} (${Number(councilcount[String(item)]).toLocaleString()})`} key={key} />
                           ))}
                         </div>
                       </Checkbox.Group>
@@ -1119,7 +1153,7 @@ const Home: NextPage = () => {
                               onClick={() => {
                                 prevMonthAnimate();
                               }}
-                              className="px-3 py-2 rounded-lg  bg-slate-800"
+                              className=" py-2 rounded-lg  bg-slate-800"
                             >
                               {" "}
                               <Icon path={mdiSkipPrevious} size={1} />
@@ -1135,16 +1169,23 @@ const Home: NextPage = () => {
                             {/*<Icon path={mdiPause} size={1} />*/}
                           </div>
                           <div>
-                         
                             <input
-                            onChange={(e) => {
-                              setnormalizeintensityon(e.target.checked);
-                            }}
-                            value={normalizeintensityon}
-                            className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckChecked" checked/>
-      <label className="form-check-label inline-block text-gray-800" htmlFor="flexCheckChecked">
-      Normalize Intensity
-      </label>
+                              onChange={(e) => {
+                                setnormalizeintensityon(e.target.checked);
+                              }}
+                              
+                              className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                              type="checkbox"
+                            
+                              id="flexCheckChecked"
+                              checked={normalizeintensityon}
+                            />
+                            <label
+                              className="form-check-label inline-block text-gray-100"
+                              htmlFor="flexCheckChecked"
+                            >
+                              Normalize Intensity
+                            </label>
                           </div>
                         </div>
                       </div>
