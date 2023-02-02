@@ -273,7 +273,7 @@ const Home: NextPage = () => {
 
     setTimeout(() => {
       reassessLogin();
-    }, 5000)
+    }, 5000);
   }, [isLoggedIn]);
 
   const setcreatedbypre = (input: string[]) => {
@@ -1378,12 +1378,17 @@ const Home: NextPage = () => {
         <>
           <div className="fixed w-full h-full top-0 bottom-0 left-0 right-0 bg-slate-900 bg-opacity-80"></div>
           <div className="absolute w-full sm:w-64 sm:h-64 bottom-0 sm:inset-x-0 sm:inset-y-0 sm:max-w-max sm:max-y-auto sm:m-auto bg-gray-700 border-2 rounded-lg px-2 py-2">
-            <p className="text-base md:text-lg font-bold text-white text-center">
+          {
+            loading === false && (
+             <>
+              <p className="text-base md:text-lg font-bold text-white text-center">
               Sign In with Google
             </p>
             <p className="text-gray-200">
               This map is locked, sign in before accessing it.
-            </p>
+            </p></>
+            )
+          }
 
             {loading && <p className="text-gray-200 italics">Loading...</p>}
             <br />
