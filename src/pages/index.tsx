@@ -5,17 +5,23 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, createRef } from "react";
 import Slider from "rc-slider";
 import TooltipSlider, { handleRender } from "../components/TooltipSlider";
+import {getAuth, signInWithCustomToken} from "firebase/auth";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import MapboxLanguage from "@mapbox/mapbox-gl-language";
 import Nav from "../components/nav";
 //import { CloseButton } from "@/components/CloseButton";
 import { MantineProvider, Checkbox } from "@mantine/core";
 import React, { useEffect, useState, useRef } from "react";
+import { initializeApp } from 'firebase/app';
+
+
 import Icon from "@mdi/react";
 import { mdiPlay } from "@mdi/js";
 import { mdiPause, mdiSkipNext, mdiSkipPrevious } from "@mdi/js";
 
 import CouncilDist from "./CouncilDistricts.json";
+import { auth,signInWithGoogle } from "./../components/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const councildistricts = require("./CouncilDistricts.json");
 const citybounds = require("./citybounds.json");
@@ -76,36 +82,39 @@ var councilpopulations: any = {
   "15": 258310,
 };
 
-const councilcount:any = {
-  "13":6380,
-"11":5350,
-"5":5102,
-"2":5063,
-"3":4338,
-"6":4050,
-"10":3961,
-"14":3920,
-"1":3905,
-"9":3892,
-"12":3243,
-"4":2942,
-"7":2689,
-"8":2332,
-"15":1681
-}
+const councilcount: any = {
+  "13": 6380,
+  "11": 5350,
+  "5": 5102,
+  "2": 5063,
+  "3": 4338,
+  "6": 4050,
+  "10": 3961,
+  "14": 3920,
+  "1": 3905,
+  "9": 3892,
+  "12": 3243,
+  "4": 2942,
+  "7": 2689,
+  "8": 2332,
+  "15": 1681,
+};
 
-const createdbycount:any = {
-  "BOE":1,
-  "BSS":73,
-  "Council's Office":2142,
-  "ITA":2978,
-  "LASAN":5518,
-"Proactive Insert":3,
-"Self Service":46007,
-"Self Service_SAN":1509
-}
+const createdbycount: any = {
+  BOE: 1,
+  BSS: 73,
+  "Council's Office": 2142,
+  ITA: 2978,
+  LASAN: 5518,
+  "Proactive Insert": 3,
+  "Self Service": 46007,
+  "Self Service_SAN": 1509,
+};
 
 const Home: NextPage = () => {
+
+  
+
   var councilBounds: any = {
     features: CouncilDist.features,
     type: "FeatureCollection",
@@ -167,7 +176,26 @@ const Home: NextPage = () => {
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
 
+    const [mapboxloaded, setmapboxloaded] = useState(false);
+
   const [normalizeintensityon, setnormalizeintensityon] = useState(false);
+
+  const [isLoggedIn, setisLoggedIn] = useState(false);
+
+  
+const [user, loading, error] = useAuthState(auth);
+  
+useEffect(() => {
+  if (loading) {
+    // maybe trigger a loading screen
+    return;
+  }
+  if (user) {
+    setisLoggedIn(true);
+  } else {
+    setisLoggedIn(false);
+  }
+}, [user, loading]);
 
   const setsliderMonth = (event: Event, newValue: number | number[]) => {
     setsliderMonthAct(newValue as number[]);
@@ -196,25 +224,31 @@ const Home: NextPage = () => {
     var threeoneonelayer = mapref.current.getLayer("311layer");
 
     if (threeoneonelayer) {
-      mapref.current.setPaintProperty(
-        "311layer",
-        "heatmap-intensity",
-        bruh
-      );
+      mapref.current.setPaintProperty("311layer", "heatmap-intensity", bruh);
     }
-  
-    
-  }
+  };
 
   useEffect(() => {
     if (mapref.current) {
-
-    
-
       recomputeintensity();
-   
     }
   }, [normalizeintensityon]);
+
+  const reassessLogin = () => {
+    if (mapref.current) {
+      if (mapboxloaded) {
+        if (isLoggedIn) {
+          mapref.current.setLayoutProperty("311layer", "visibility", "visible");
+        } else {
+          mapref.current.setLayoutProperty("311layer", "visibility", "none");
+        }
+      }
+    }
+  }
+
+  useEffect(() => {
+   reassessLogin()
+  }, [isLoggedIn]);
 
   const setcreatedbypre = (input: string[]) => {
     console.log("inputvalidator", input);
@@ -443,7 +477,9 @@ const Home: NextPage = () => {
             type: "heatmap",
             source: "tileset-311",
             "source-layer": "MyLA311_Service_Request_Data_-2pbqha",
-            layout: {},
+            layout: {
+              visibility: "none",
+            },
             paint: {
               "heatmap-intensity": [
                 "interpolate",
@@ -491,6 +527,9 @@ const Home: NextPage = () => {
           "road-label"
         );
       }
+
+      setmapboxloaded(true);
+
       okaydeletepoints.current = () => {
         try {
           var affordablepoint: any = map.getSource("selected-home-point");
@@ -939,7 +978,8 @@ const Home: NextPage = () => {
             ></div>
 
             <div className="absolute mt-[7.9em] md:mt-[5.8em] ml-2 md:ml-3 top-0 z-5">
-              <button
+              {isLoggedIn === true && (
+                <button
                 onClick={() => {
                   setfilterpanelopened(!filterpanelopened);
                 }}
@@ -960,12 +1000,13 @@ const Home: NextPage = () => {
                 </svg>
                 <span>Filter</span>
               </button>
+              )}
             </div>
 
             <div
               className={` bottom-0 sm:bottom-auto sm:mt-[5.1em] md:mt-[5.8em] md:ml-3 w-screen sm:w-auto
             
-            ${filterpanelopened === true ? "absolute " : "hidden"}
+            ${(filterpanelopened === true && isLoggedIn === true) ? "absolute " : "hidden"}
             `}
             >
               <div className="bg-zinc-900 w-content bg-opacity-90 px-2 py-1 mt-1 sm:rounded-lg">
@@ -1063,7 +1104,13 @@ const Home: NextPage = () => {
                         {" "}
                         <div className="flex flex-col">
                           {listofcreatedbyoptions.map((item, key) => (
-                            <Checkbox value={item} label={`${item} (${Number(createdbycount[item]).toLocaleString()})`} key={key} />
+                            <Checkbox
+                              value={item}
+                              label={`${item} (${Number(
+                                createdbycount[item]
+                              ).toLocaleString()})`}
+                              key={key}
+                            />
                           ))}
                         </div>
                       </Checkbox.Group>
@@ -1108,7 +1155,13 @@ const Home: NextPage = () => {
                         {" "}
                         <div className="grid grid-cols-3 gap-x-4 sm:flex sm:flex-col">
                           {listofcouncildists.map((item, key) => (
-                            <Checkbox value={item} label={`${item} (${Number(councilcount[String(item)]).toLocaleString()})`} key={key} />
+                            <Checkbox
+                              value={item}
+                              label={`${item} (${Number(
+                                councilcount[String(item)]
+                              ).toLocaleString()})`}
+                              key={key}
+                            />
                           ))}
                         </div>
                       </Checkbox.Group>
@@ -1173,10 +1226,8 @@ const Home: NextPage = () => {
                               onChange={(e) => {
                                 setnormalizeintensityon(e.target.checked);
                               }}
-                              
                               className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                               type="checkbox"
-                            
                               id="flexCheckChecked"
                               checked={normalizeintensityon}
                             />
@@ -1219,6 +1270,8 @@ const Home: NextPage = () => {
 
         <div ref={divRef} style={{}} className="map-container w-full h-full " />
 
+  
+
         {(typeof window !== "undefined" ? window.innerWidth >= 640 : false) && (
           <>
             <div
@@ -1239,7 +1292,21 @@ const Home: NextPage = () => {
           </>
         )}
       </MantineProvider>
+      {
+        isLoggedIn === false && (
+         <>
+          <div className="fixed w-full h-full top-0 bottom-0 left-0 right-0 bg-slate-900 bg-opacity-80"></div>
+          <div className='absolute w-full sm:w-64 sm:h-64 bottom-0 sm:inset-x-0 sm:inset-y-0 sm:max-w-max sm:max-y-auto sm:m-auto bg-gray-700 border-2 rounded-lg px-2 py-2'>
+            <p className="text-base md:text-lg font-bold text-white text-center">Sign In with Google</p>
+            <p className='text-gray-200'>This map is locked, sign in before accessing it.</p>
+<br/>
+<button onClick={signInWithGoogle} className="w-full bg-blue-900 hover:bg-blue-800 text-gray-50 font-bold py-2 px-4 rounded">Sign in With Google</button>
+          </div></>
+
+        )
+       }
     </div>
+
   );
 };
 
