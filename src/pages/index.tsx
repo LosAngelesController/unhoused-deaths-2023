@@ -812,6 +812,54 @@ const Home: NextPage = () => {
       }
 
       checkHideOrShowTopRightGeocoder();
+
+
+      
+var mapname = '311'
+
+map.on('dragstart', (e) => {
+  uploadMapboxTrack({
+    mapname,
+    eventtype: 'dragstart',
+    globallng: map.getCenter().lng,
+    globallat: map.getCenter().lat,
+    globalzoom: map.getZoom()
+  })
+  })
+  
+  map.on('dragend', (e) => {
+    uploadMapboxTrack({
+      mapname,
+      eventtype: 'dragend',
+      globallng: map.getCenter().lng,
+      globallat: map.getCenter().lat,
+      globalzoom: map.getZoom()
+    })
+    })
+  
+    map.on('zoomstart', (e) => {
+      uploadMapboxTrack({
+        mapname,
+        eventtype: 'dragstart',
+        globallng: map.getCenter().lng,
+        globallat: map.getCenter().lat,
+        globalzoom: map.getZoom()
+      })
+      })
+  
+      map.on('zoomend', (e) => {
+        uploadMapboxTrack({
+          mapname,
+          eventtype: 'zoomend',
+          globallng: map.getCenter().lng,
+          globallat: map.getCenter().lat,
+          globalzoom: map.getZoom()
+        })
+        })
+         
+
+
+      //end of load
     });
 
     var getmapboxlogo: any = document.querySelector(".mapboxgl-ctrl-logo");
