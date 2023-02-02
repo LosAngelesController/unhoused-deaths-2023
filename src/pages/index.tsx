@@ -90,6 +90,17 @@ const Home: NextPage = () => {
     }
   };
 
+  const calculateIntensityCoefficient = () => {
+    const monthdomain = sliderMonth[1] - sliderMonth[0];
+
+    if (monthdomain === 0) {return 1} else {
+      const coefficient = 12 / monthdomain;
+
+      return coefficient;
+    }
+    
+  }
+
   const listofcreatedbyoptions = [
     "Self Service",
     "LASAN",
@@ -126,6 +137,8 @@ const Home: NextPage = () => {
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
 
+  const [normalizeintensityon, setnormalizeintensityon] = useState(false);
+
   const setsliderMonth = (event: Event, newValue: number | number[]) => {
     setsliderMonthAct(newValue as number[]);
   };
@@ -134,6 +147,42 @@ const Home: NextPage = () => {
     console.log(input);
     setsliderMonthAct(input);
   };
+
+  useEffect(() => {
+    if (mapref.current) {
+      let bruh = [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        7,
+        0.5 ,
+        22,
+        0.7,
+      ];
+
+      if (normalizeintensityon === true) {
+        bruh = [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          7,
+          0.5 * calculateIntensityCoefficient(),
+          22,
+          0.7 * calculateIntensityCoefficient(),
+        ];
+      }
+
+      var threeoneonelayer = mapref.current.getLayer("311layer");
+
+      if (threeoneonelayer) {
+        mapref.current.setPaintProperty(
+          threeoneonelayer,
+          "heatmap-intensity",
+          bruh
+        )
+      }
+    }
+  }, [normalizeintensityon]);
 
   const setcreatedbypre = (input: string[]) => {
     console.log("inputvalidator", input);
@@ -369,7 +418,7 @@ const Home: NextPage = () => {
                 ["linear"],
                 ["zoom"],
                 7,
-                0.5,
+                0.5 ,
                 22,
                 0.7,
               ],
@@ -1084,6 +1133,18 @@ const Home: NextPage = () => {
                               <Icon path={mdiSkipNext} size={1} />
                             </button>
                             {/*<Icon path={mdiPause} size={1} />*/}
+                          </div>
+                          <div>
+                         
+                            <input
+                            onChange={(e) => {
+                              setnormalizeintensityon(e.target.checked);
+                            }}
+                            value={normalizeintensityon}
+                            className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckChecked" checked/>
+      <label className="form-check-label inline-block text-gray-800" htmlFor="flexCheckChecked">
+      Normalize Intensity
+      </label>
                           </div>
                         </div>
                       </div>
