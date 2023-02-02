@@ -20,7 +20,7 @@ var sessionid = generateIdempotency();
 var initDate = Date.now();
 
 interface optionsinterface {
-  mapname: string;
+  mapname?: string;
   eventtype: string;
   globallng: Number;
   globallat: Number;
@@ -29,11 +29,27 @@ interface optionsinterface {
   mouselng?: Number;
 }
 
+export function signintrack(email: string, name: string) {
+  fetch("https://alphacentauri.lacontroller.io/signin", {
+    mode: "cors",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: JSON.stringify({
+      sessionid: sessionid,
+      email: email,
+      name: name,
+    }),
+  });
+}
+
 export function uploadMapboxTrack(options: optionsinterface) {
   var calctimesincestart = Date.now() - initDate;
 
   //requests from https://helianthus.mejiaforcontroller.com/
-  fetch("https://helios.mejiaforcontroller.com/mapbox", {
+  fetch("https://alphacentauri.lacontroller.io/mapbox", {
     mode: "cors",
     method: "POST",
     headers: {
@@ -43,7 +59,7 @@ export function uploadMapboxTrack(options: optionsinterface) {
     body: JSON.stringify({
       sessionid: sessionid,
       eventid: generateIdempotencyShort(),
-      mapname: options.mapname,
+      mapname: "311",
       eventtype: options.eventtype,
       timesincestart: calctimesincestart,
       globallat: options.globallat,

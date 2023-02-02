@@ -4,23 +4,23 @@ import Image from "next/image";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, createRef } from "react";
 import Slider from "rc-slider";
+import { signintrack, uploadMapboxTrack } from "../components/mapboxtrack";
 import TooltipSlider, { handleRender } from "../components/TooltipSlider";
-import {getAuth, signInWithCustomToken} from "firebase/auth";
+import { getAuth, signInWithCustomToken } from "firebase/auth";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import MapboxLanguage from "@mapbox/mapbox-gl-language";
 import Nav from "../components/nav";
 //import { CloseButton } from "@/components/CloseButton";
 import { MantineProvider, Checkbox } from "@mantine/core";
 import React, { useEffect, useState, useRef } from "react";
-import { initializeApp } from 'firebase/app';
-
+import { initializeApp } from "firebase/app";
 
 import Icon from "@mdi/react";
 import { mdiPlay } from "@mdi/js";
 import { mdiPause, mdiSkipNext, mdiSkipPrevious } from "@mdi/js";
 
 import CouncilDist from "./CouncilDistricts.json";
-import { auth,signInWithGoogle } from "./../components/firebase";
+import { auth, signInWithGoogle } from "./../components/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 const councildistricts = require("./CouncilDistricts.json");
@@ -112,9 +112,6 @@ const createdbycount: any = {
 };
 
 const Home: NextPage = () => {
-
-  
-
   var councilBounds: any = {
     features: CouncilDist.features,
     type: "FeatureCollection",
@@ -176,26 +173,29 @@ const Home: NextPage = () => {
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
 
-    const [mapboxloaded, setmapboxloaded] = useState(false);
+  const [mapboxloaded, setmapboxloaded] = useState(false);
 
   const [normalizeintensityon, setnormalizeintensityon] = useState(false);
 
   const [isLoggedIn, setisLoggedIn] = useState(false);
 
-  
-const [user, loading, error] = useAuthState(auth);
-  
-useEffect(() => {
-  if (loading) {
-    // maybe trigger a loading screen
-    return;
-  }
-  if (user) {
-    setisLoggedIn(true);
-  } else {
-    setisLoggedIn(false);
-  }
-}, [user, loading]);
+  const [user, loading, error] = useAuthState(auth);
+
+  useEffect(() => {
+    if (loading) {
+      // maybe trigger a loading screen
+      return;
+    }
+    if (user) {
+      setisLoggedIn(true);
+      signintrack(
+        user.email ? user.email : "nonefound",
+        user.displayName ? user.displayName : "nonefound"
+      );
+    } else {
+      setisLoggedIn(false);
+    }
+  }, [user, loading]);
 
   const setsliderMonth = (event: Event, newValue: number | number[]) => {
     setsliderMonthAct(newValue as number[]);
@@ -244,10 +244,10 @@ useEffect(() => {
         }
       }
     }
-  }
+  };
 
   useEffect(() => {
-   reassessLogin()
+    reassessLogin();
   }, [isLoggedIn]);
 
   const setcreatedbypre = (input: string[]) => {
@@ -980,33 +980,37 @@ useEffect(() => {
             <div className="absolute mt-[7.9em] md:mt-[5.8em] ml-2 md:ml-3 top-0 z-5">
               {isLoggedIn === true && (
                 <button
-                onClick={() => {
-                  setfilterpanelopened(!filterpanelopened);
-                }}
-                className="mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2"
-              >
-                <svg
-                  style={{
-                    width: "20px",
-                    height: "20px",
+                  onClick={() => {
+                    setfilterpanelopened(!filterpanelopened);
                   }}
-                  viewBox="0 0 24 24"
-                  className="inline align-middle mt-0.5"
+                  className="mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2"
                 >
-                  <path
-                    fill="currentColor"
-                    d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
-                  />
-                </svg>
-                <span>Filter</span>
-              </button>
+                  <svg
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                    }}
+                    viewBox="0 0 24 24"
+                    className="inline align-middle mt-0.5"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
+                    />
+                  </svg>
+                  <span>Filter</span>
+                </button>
               )}
             </div>
 
             <div
               className={` bottom-0 sm:bottom-auto sm:mt-[5.1em] md:mt-[5.8em] md:ml-3 w-screen sm:w-auto
             
-            ${(filterpanelopened === true && isLoggedIn === true) ? "absolute " : "hidden"}
+            ${
+              filterpanelopened === true && isLoggedIn === true
+                ? "absolute "
+                : "hidden"
+            }
             `}
             >
               <div className="bg-zinc-900 w-content bg-opacity-90 px-2 py-1 mt-1 sm:rounded-lg">
@@ -1270,8 +1274,6 @@ useEffect(() => {
 
         <div ref={divRef} style={{}} className="map-container w-full h-full " />
 
-  
-
         {(typeof window !== "undefined" ? window.innerWidth >= 640 : false) && (
           <>
             <div
@@ -1292,21 +1294,29 @@ useEffect(() => {
           </>
         )}
       </MantineProvider>
-      {
-        isLoggedIn === false && (
-         <>
+      {isLoggedIn === false && (
+        <>
           <div className="fixed w-full h-full top-0 bottom-0 left-0 right-0 bg-slate-900 bg-opacity-80"></div>
-          <div className='absolute w-full sm:w-64 sm:h-64 bottom-0 sm:inset-x-0 sm:inset-y-0 sm:max-w-max sm:max-y-auto sm:m-auto bg-gray-700 border-2 rounded-lg px-2 py-2'>
-            <p className="text-base md:text-lg font-bold text-white text-center">Sign In with Google</p>
-            <p className='text-gray-200'>This map is locked, sign in before accessing it.</p>
-<br/>
-<button onClick={signInWithGoogle} className="w-full bg-blue-900 hover:bg-blue-800 text-gray-50 font-bold py-2 px-4 rounded">Sign in With Google</button>
-          </div></>
+          <div className="absolute w-full sm:w-64 sm:h-64 bottom-0 sm:inset-x-0 sm:inset-y-0 sm:max-w-max sm:max-y-auto sm:m-auto bg-gray-700 border-2 rounded-lg px-2 py-2">
+            <p className="text-base md:text-lg font-bold text-white text-center">
+              Sign In with Google
+            </p>
+            <p className="text-gray-200">
+              This map is locked, sign in before accessing it.
+            </p>
 
-        )
-       }
+            {loading && <p className="text-gray-200 italics">Loading...</p>}
+            <br />
+            <button
+              onClick={signInWithGoogle}
+              className="w-full bg-blue-900 hover:bg-blue-800 text-gray-50 font-bold py-2 px-4 rounded"
+            >
+              Sign in With Google
+            </button>
+          </div>
+        </>
+      )}
     </div>
-
   );
 };
 
