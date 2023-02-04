@@ -163,6 +163,7 @@ const Home: NextPage = () => {
   const [showtotalarea, setshowtotalarea] = useState(false);
   let [disclaimerOpen, setDisclaimerOpen] = useState(false);
   const touchref = useRef<any>(null);
+  const isLoggedInRef = useRef(false);
   let [housingaddyopen, sethousingaddyopen] = useState(false);
   var mapref: any = useRef(null);
   const okaydeletepoints: any = useRef(null);
@@ -171,6 +172,7 @@ const Home: NextPage = () => {
   const [doneloadingmap, setdoneloadingmap] = useState(false);
   const [sliderMonth, setsliderMonthAct] = useState<any>([1, 12]);
   const [selectedfilteropened, setselectedfilteropened] = useState("createdby");
+  const refismaploaded = useRef(false);
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
 
@@ -210,6 +212,7 @@ const Home: NextPage = () => {
     }
     if (user) {
       setisLoggedIn(true);
+      isLoggedInRef.current = true;
       signintrack(
         user.email ? user.email : "nonefound",
         user.displayName ? user.displayName : "nonefound"
@@ -261,8 +264,8 @@ const Home: NextPage = () => {
 
   function reassessLogin() {
     if (mapref.current) {
-      if (mapboxloaded || mapref.current.isStyleLoaded()) {
-        if (isLoggedIn) {
+      if (mapboxloaded || mapref.current.isStyleLoaded() || refismaploaded.current === true) {
+        if (isLoggedIn || isLoggedInRef.current) {
           console.log("set visible 311");
           mapref.current.setLayoutProperty("311layer", "visibility", "visible");
         } else {
@@ -564,9 +567,8 @@ const Home: NextPage = () => {
           "road-label"
         );
         setmapboxloaded(true);
+        refismaploaded.current = true;
       }
-
-      setmapboxloaded(true);
 
       okaydeletepoints.current = () => {
         try {
