@@ -255,18 +255,25 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (mapref.current) {
       recomputeintensity();
+      reassessLogin();
     }
   }, [normalizeintensityon]);
 
-  const reassessLogin = () => {
+  function reassessLogin() {
     if (mapref.current) {
       if (mapboxloaded) {
         if (isLoggedIn) {
+          console.log('set visible 311')
           mapref.current.setLayoutProperty("311layer", "visibility", "visible");
         } else {
+          console.log('set none 311')
           mapref.current.setLayoutProperty("311layer", "visibility", "none");
         }
+      } else {
+        console.log("mapbox not loaded");
       }
+    } else {
+      console.log("mapref not loaded");
     }
   };
 
@@ -277,7 +284,6 @@ const Home: NextPage = () => {
       reassessLogin();
     }, 5000);
   }, [isLoggedIn]);
-
 
   const setcreatedbypre = (input: string[]) => {
     console.log("inputvalidator", input);
@@ -845,6 +851,8 @@ const Home: NextPage = () => {
       var mapname = "311";
 
       map.on("dragstart", (e) => {
+        
+        reassessLogin();
         uploadMapboxTrack({
           mapname,
           eventtype: "dragstart",
@@ -855,6 +863,8 @@ const Home: NextPage = () => {
       });
 
       map.on("dragend", (e) => {
+        
+        reassessLogin();
         uploadMapboxTrack({
           mapname,
           eventtype: "dragend",
@@ -865,6 +875,7 @@ const Home: NextPage = () => {
       });
 
       map.on("zoomstart", (e) => {
+        reassessLogin();
         uploadMapboxTrack({
           mapname,
           eventtype: "dragstart",
@@ -872,9 +883,12 @@ const Home: NextPage = () => {
           globallat: map.getCenter().lat,
           globalzoom: map.getZoom(),
         });
+       
       });
 
       map.on("zoomend", (e) => {
+        
+        reassessLogin();
         uploadMapboxTrack({
           mapname,
           eventtype: "zoomend",
@@ -895,7 +909,7 @@ const Home: NextPage = () => {
 
     setInterval(() => {
       reassessLogin();
-    }, 1000)
+    }, 1000);
   }, []);
 
   const tooltipformattermonth = (value: number) => {
@@ -955,6 +969,7 @@ const Home: NextPage = () => {
     }
 
     recomputeintensity();
+    reassessLogin();
   }, [createdby, filteredcouncildistricts, sliderMonth]);
 
   return (
