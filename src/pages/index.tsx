@@ -261,12 +261,12 @@ const Home: NextPage = () => {
 
   function reassessLogin() {
     if (mapref.current) {
-      if (mapboxloaded) {
+      if (mapboxloaded || mapref.current.isStyleLoaded()) {
         if (isLoggedIn) {
-          console.log('set visible 311')
+          console.log("set visible 311");
           mapref.current.setLayoutProperty("311layer", "visibility", "visible");
         } else {
-          console.log('set none 311')
+          console.log("set none 311");
           mapref.current.setLayoutProperty("311layer", "visibility", "none");
         }
       } else {
@@ -275,7 +275,7 @@ const Home: NextPage = () => {
     } else {
       console.log("mapref not loaded");
     }
-  };
+  }
 
   useEffect(() => {
     reassessLogin();
@@ -494,6 +494,8 @@ const Home: NextPage = () => {
     window.addEventListener("resize", handleResize);
 
     map.on("load", () => {
+      
+
       setdoneloadingmap(true);
       setshowtotalarea(window.innerWidth > 640 ? true : false);
 
@@ -561,6 +563,7 @@ const Home: NextPage = () => {
           },
           "road-label"
         );
+        setmapboxloaded(true);
       }
 
       setmapboxloaded(true);
@@ -851,7 +854,6 @@ const Home: NextPage = () => {
       var mapname = "311";
 
       map.on("dragstart", (e) => {
-        
         reassessLogin();
         uploadMapboxTrack({
           mapname,
@@ -863,7 +865,6 @@ const Home: NextPage = () => {
       });
 
       map.on("dragend", (e) => {
-        
         reassessLogin();
         uploadMapboxTrack({
           mapname,
@@ -883,11 +884,9 @@ const Home: NextPage = () => {
           globallat: map.getCenter().lat,
           globalzoom: map.getZoom(),
         });
-       
       });
 
       map.on("zoomend", (e) => {
-        
         reassessLogin();
         uploadMapboxTrack({
           mapname,
