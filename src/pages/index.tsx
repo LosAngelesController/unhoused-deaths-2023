@@ -264,7 +264,11 @@ const Home: NextPage = () => {
 
   function reassessLogin() {
     if (mapref.current) {
-      if (mapboxloaded || mapref.current.isStyleLoaded() || refismaploaded.current === true) {
+      if (
+        mapboxloaded ||
+        mapref.current.isStyleLoaded() ||
+        refismaploaded.current === true
+      ) {
         if (isLoggedIn || isLoggedInRef.current) {
           console.log("set visible 311");
           mapref.current.setLayoutProperty("311layer", "visibility", "visible");
@@ -497,8 +501,6 @@ const Home: NextPage = () => {
     window.addEventListener("resize", handleResize);
 
     map.on("load", () => {
-      
-
       setdoneloadingmap(true);
       setshowtotalarea(window.innerWidth > 640 ? true : false);
 
@@ -916,7 +918,7 @@ const Home: NextPage = () => {
   const tooltipformattermonth = (value: number) => {
     var numberofyearstoadd = Math.floor((value - 1) / 12);
 
-    const year = 22 + numberofyearstoadd;
+    const year = 2022 + numberofyearstoadd;
 
     var numberofmonthstosubtract = numberofyearstoadd * 12;
 
