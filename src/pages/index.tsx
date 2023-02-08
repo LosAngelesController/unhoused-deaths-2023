@@ -188,7 +188,7 @@ const Home: NextPage = () => {
     applicationId: "54ed9846-68b0-4811-a47a-7330cf1828a0",
     clientToken: "pub428d48e3143310cf6a9dd00003773f12",
     site: "datadoghq.com",
-    service: "311homeless",
+    service: "beds",
     env: "prod",
     // Specify a version number to identify the deployed version of your application in Datadog
     // version: '1.0.0',
@@ -233,132 +233,8 @@ const Home: NextPage = () => {
     setsliderMonthAct(input);
   };
 
-  const recomputeintensity = () => {
-    let bruh = ["interpolate", ["linear"], ["zoom"], 7, 0.5, 22, 0.7];
 
-    if (normalizeintensityon === true) {
-      bruh = [
-        "interpolate",
-        ["linear"],
-        ["zoom"],
-        7,
-        0.5 * calculateIntensityCoefficient(),
-        20,
-        0.4 * calculateIntensityCoefficient(),
-      ];
-    }
 
-    var threeoneonelayer = mapref.current.getLayer("311layer");
-
-    if (threeoneonelayer) {
-      mapref.current.setPaintProperty("311layer", "heatmap-intensity", bruh);
-    }
-  };
-
-  useEffect(() => {
-    if (mapref.current) {
-      recomputeintensity();
-      reassessLogin();
-    }
-  }, [normalizeintensityon]);
-
-  function reassessLogin() {
-    if (mapref.current) {
-      if (
-        mapboxloaded ||
-        mapref.current.isStyleLoaded() ||
-        refismaploaded.current === true
-      ) {
-        if (isLoggedIn || isLoggedInRef.current) {
-          console.log("set visible 311");
-          mapref.current.setLayoutProperty("311layer", "visibility", "visible");
-        } else {
-          console.log("set none 311");
-          mapref.current.setLayoutProperty("311layer", "visibility", "none");
-        }
-      } else {
-        console.log("mapbox not loaded");
-      }
-    } else {
-      console.log("mapref not loaded");
-    }
-  }
-
-  useEffect(() => {
-    reassessLogin();
-
-    setTimeout(() => {
-      reassessLogin();
-    }, 5000);
-  }, [isLoggedIn]);
-
-  const setcreatedbypre = (input: string[]) => {
-    console.log("inputvalidator", input);
-    if (input.length === 0) {
-      setcreatedby(["bruh"]);
-    } else {
-      setcreatedby(input);
-    }
-  };
-
-  const nextMonthAnimate = () => {
-    if (sliderMonth[1] - sliderMonth[0] > 1) {
-      setsliderMonthVerTwo([sliderMonth[0], sliderMonth[0]]);
-    } else {
-      if (sliderMonth[0] === 12) {
-        setsliderMonthVerTwo([1, 1]);
-      } else {
-        setsliderMonthVerTwo([sliderMonth[0] + 1, sliderMonth[0] + 1]);
-      }
-    }
-  };
-
-  const prevMonthAnimate = () => {
-    if (sliderMonth[1] - sliderMonth[0] > 1) {
-      setsliderMonthVerTwo([sliderMonth[0], sliderMonth[0]]);
-    } else {
-      if (sliderMonth[0] === 1) {
-        setsliderMonthVerTwo([12, 12]);
-      } else {
-        setsliderMonthVerTwo([sliderMonth[0] - 1, sliderMonth[0] - 1]);
-      }
-    }
-  };
-
-  const setfilteredcouncildistrictspre = (input: string[]) => {
-    console.log("inputvalidator", input);
-    if (input.length === 0) {
-      setfilteredcouncildistricts(["99999"]);
-    } else {
-      setfilteredcouncildistricts(input);
-    }
-  };
-
-  function closeModal() {
-    setDisclaimerOpen(false);
-  }
-
-  function checkIfRingsNeedToBeCorrected(polygon: any) {
-    console.log("checking if rings need to be corrected", polygon);
-
-    var polygontoreturn = polygon;
-
-    if (polygon.geometry.type == "Polygon") {
-      if (polygon.geometry.coordinates.length <= 3) {
-        polygontoreturn.geometry.coordinates = [
-          ...polygon.geometry.coordinates,
-          [
-            polygon.geometry.coordinates[0][0] + 0.00000001,
-            polygon.geometry.coordinates[0][1],
-          ],
-        ];
-      } else {
-      }
-    } else {
-    }
-
-    return polygontoreturn;
-  }
 
   function turfify(polygon: any) {
     var turffedpolygon;
@@ -397,9 +273,6 @@ const Home: NextPage = () => {
     }
   }
 
-  function openModal() {
-    setDisclaimerOpen(true);
-  }
 
   var [hasStartedControls, setHasStartedControls] = useState(false);
 
@@ -504,75 +377,8 @@ const Home: NextPage = () => {
       setdoneloadingmap(true);
       setshowtotalarea(window.innerWidth > 640 ? true : false);
 
-      map.addSource("tileset-311", {
-        type: "vector",
-        // Use any Mapbox-hosted tileset using its tileset id.
-        // Learn more about where to find a tileset id:
-        // https://docs.mapbox.com/help/glossary/tileset-id/
-        url: "mapbox://comradekyler.1ukbqqbj",
-      });
 
-      if (true) {
-        map.addLayer(
-          {
-            id: "311layer",
-            type: "heatmap",
-            source: "tileset-311",
-            "source-layer": "MyLA311_Service_Request_Data_-2pbqha",
-            layout: {
-              visibility: "none",
-            },
-            paint: {
-              "heatmap-intensity": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                7,
-                0.5,
-                22,
-                0.7,
-              ],
-              "heatmap-radius": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                0,
-                2,
-                9.24,
-                1,
-                10.69,
-                2,
-                13.96,
-                6,
-                22,
-                14,
-              ],
-              "heatmap-color": [
-                "interpolate",
-                ["linear"],
-                ["heatmap-density"],
-                0,
-                "rgba(0, 0, 255, 0)",
-                0.1,
-                "royalblue",
-                0.3,
-                "cyan",
-                0.5,
-                "lime",
-                0.7,
-                "yellow",
-                1,
-                "red",
-              ],
-            },
-          },
-          "road-label"
-        );
-        setmapboxloaded(true);
-        refismaploaded.current = true;
-      }
-
-      okaydeletepoints.current = () => {
+     okaydeletepoints.current = () => {
         try {
           var affordablepoint: any = map.getSource("selected-home-point");
           affordablepoint.setData(null);
@@ -855,7 +661,7 @@ const Home: NextPage = () => {
 
       checkHideOrShowTopRightGeocoder();
 
-      var mapname = "311";
+      var mapname = "beds";
 
       map.on("dragstart", (e) => {
         reassessLogin();
@@ -910,70 +716,10 @@ const Home: NextPage = () => {
       getmapboxlogo.remove();
     }
 
-    setInterval(() => {
-      reassessLogin();
-    }, 1000);
+ 
   }, []);
 
-  const tooltipformattermonth = (value: number) => {
-    var numberofyearstoadd = Math.floor((value - 1) / 12);
 
-    const year = 2022 + numberofyearstoadd;
-
-    var numberofmonthstosubtract = numberofyearstoadd * 12;
-
-    var monthtoformat = value - numberofmonthstosubtract;
-
-    return `${monthtoformat}/${year}`;
-  };
-
-  useEffect(() => {
-    if (doneloadingmap) {
-      var sliderMonthProcessed: string[] = [];
-
-      var i = sliderMonth[0];
-
-      while (i <= sliderMonth[1]) {
-        var numberofyearstoadd = Math.floor((i - 1) / 12);
-
-        const year = 2022 + numberofyearstoadd;
-
-        var numberofmonthstosubtract = numberofyearstoadd * 12;
-
-        var monthformatted = ("0" + (i - numberofmonthstosubtract)).slice(-2);
-
-        i++;
-
-        sliderMonthProcessed.push(year + "-" + monthformatted);
-      }
-
-      const filterinput = JSON.parse(
-        JSON.stringify([
-          "all",
-          [
-            "match",
-            ["get", "CD #"],
-            filteredcouncildistricts.map((x) => parseInt(x)),
-            true,
-            false,
-          ],
-          ["match", ["get", "Created By"], createdby, true, false],
-          ["match", ["get", "Month"], sliderMonthProcessed, true, false],
-        ])
-      );
-
-      console.log(filterinput);
-
-      if (mapref.current) {
-        if (doneloadingmap === true) {
-          mapref.current.setFilter("311layer", filterinput);
-        }
-      }
-    }
-
-    recomputeintensity();
-    reassessLogin();
-  }, [createdby, filteredcouncildistricts, sliderMonth]);
 
   return (
     <div className="flex flex-col h-full w-screen absolute">
@@ -1007,7 +753,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>311 Homeless Encampment Requests | Map</title>
+          <title>Shelter Beds Occupancy | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -1015,12 +761,12 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="311 Homeless Encampment Requests | Map"
+            content="Shelter Beds Occupancy | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="Requests to the City of Los Angeles for homeless encampments."
+            content="Criteria, Capacity and Occupancy of Los Angeles Homeless Shelters."
           ></meta>
           <meta
             name="twitter:image"
@@ -1029,7 +775,7 @@ const Home: NextPage = () => {
           ></meta>
           <meta
             name="description"
-            content="Requests to the City of Los Angeles for homeless encampments."
+            content="Criteria, Capacity and Occupancy of Los Angeles Homeless Shelters."
           />
 
           <meta
@@ -1043,7 +789,7 @@ const Home: NextPage = () => {
           />
           <meta
             property="og:description"
-            content="Requests to the City of Los Angeles for homeless encampments."
+            content="Criteria, Capacity and Occupancy of Los Angeles Homeless Shelters."
           />
           <meta
             property="og:image"
@@ -1064,297 +810,13 @@ const Home: NextPage = () => {
                 color: "#ffffff",
               }}
             >
-              <strong className="">311 Homeless Encampment Requests</strong>
+              <strong className="">Shelter Beds Occupancy</strong>
             </div>
 
             <div
               className={`geocoder absolute mt-[2.7em] md:mt-[4.1em] ml-1 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
               id="geocoder"
             ></div>
-
-            <div className="absolute mt-[7.9em] md:mt-[5.8em] ml-2 md:ml-3 top-0 z-5 flex flex-row gap-x-2">
-              {isLoggedIn === true && (
-                <>
-                  <button
-                    onClick={() => {
-                      setfilterpanelopened(!filterpanelopened);
-                    }}
-                    className="mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2"
-                  >
-                    <svg
-                      style={{
-                        width: "20px",
-                        height: "20px",
-                      }}
-                      viewBox="0 0 24 24"
-                      className="inline align-middle mt-0.5"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
-                      />
-                    </svg>
-                    <span>Filter</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      signOutOfApp();
-                    }}
-                    className="mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base bg-gray-800 bg-opacity-80 text-white border-white border-2"
-                  >
-                    <span>Logout</span>
-                  </button>
-                </>
-              )}
-            </div>
-
-            <div
-              className={` bottom-0 sm:bottom-auto sm:mt-[5.1em] md:mt-[5.8em] md:ml-3 w-screen sm:w-auto
-            
-            ${
-              filterpanelopened === true && isLoggedIn === true
-                ? "absolute "
-                : "hidden"
-            }
-            `}
-            >
-              <div className="bg-zinc-900 w-content bg-opacity-90 px-2 py-1 mt-1 sm:rounded-lg">
-                <div className="gap-x-0 flex flex-row w-full">
-                  <button
-                    onClick={() => {
-                      setselectedfilteropened("createdby");
-                    }}
-                    className={`px-2 border-b-2 py-1  font-semibold ${
-                      selectedfilteropened === "createdby"
-                        ? "border-[#41ffca] text-[#41ffca]"
-                        : "hover:border-white border-transparent text-gray-50"
-                    }`}
-                  >
-                    Created By
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setselectedfilteropened("month");
-                    }}
-                    className={`px-2 border-b-2 py-1 font-semibold ${
-                      selectedfilteropened === "month"
-                        ? "border-[#41ffca] text-[#41ffca]"
-                        : "hover:border-white border-transparent text-gray-50"
-                    }`}
-                  >
-                    Month
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setselectedfilteropened("cd");
-                    }}
-                    className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "cd"
-                        ? "border-[#41ffca] text-[#41ffca]"
-                        : "hover:border-white border-transparent text-gray-50"
-                    }`}
-                  >
-                    CD #
-                  </button>
-                  {false && (
-                    <button
-                      onClick={() => {
-                        setselectedfilteropened("neigh");
-                      }}
-                      className={`px-2 border-b-2 py-1  font-semibold ${
-                        selectedfilteropened === "neigh"
-                          ? "border-[#41ffca] text-[#41ffca]"
-                          : "hover:border-white border-transparent text-gray-50"
-                      }`}
-                    >
-                      Neighborhood
-                    </button>
-                  )}
-                </div>
-                <div className="flex flex-col">
-                  {selectedfilteropened === "createdby" && (
-                    <div className="mt-2">
-                      <div className="flex flex-row gap-x-1">
-                        <button
-                          className="align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base"
-                          onClick={() => {
-                            setcreatedbypre(listofcreatedbyoptions);
-                          }}
-                        >
-                          Select All
-                        </button>
-                        <button
-                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base border border-gray-400"
-                          onClick={() => {
-                            setcreatedbypre([]);
-                          }}
-                        >
-                          Unselect All
-                        </button>
-                        <button
-                          onClick={() => {
-                            setcreatedbypre(
-                              listofcreatedbyoptions.filter(
-                                (n) => !createdby.includes(n)
-                              )
-                            );
-                          }}
-                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400"
-                        >
-                          Invert
-                        </button>
-                      </div>
-                      <Checkbox.Group
-                        value={createdby}
-                        onChange={setcreatedbypre}
-                      >
-                        {" "}
-                        <div className="flex flex-col">
-                          {listofcreatedbyoptions.map((item, key) => (
-                            <Checkbox
-                              value={item}
-                              label={`${item} (${Number(
-                                createdbycount[item]
-                              ).toLocaleString()})`}
-                              key={key}
-                            />
-                          ))}
-                        </div>
-                      </Checkbox.Group>
-                    </div>
-                  )}
-                  {selectedfilteropened === "cd" && (
-                    <div className="mt-2">
-                      <div className="flex flex-row gap-x-1">
-                        <button
-                          className="align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base"
-                          onClick={() => {
-                            setfilteredcouncildistrictspre(listofcouncildists);
-                          }}
-                        >
-                          Select All
-                        </button>
-                        <button
-                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base border border-gray-400"
-                          onClick={() => {
-                            setfilteredcouncildistrictspre([]);
-                          }}
-                        >
-                          Unselect All
-                        </button>
-                        <button
-                          onClick={() => {
-                            setfilteredcouncildistrictspre(
-                              listofcouncildists.filter(
-                                (n) => !filteredcouncildistricts.includes(n)
-                              )
-                            );
-                          }}
-                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400"
-                        >
-                          Invert
-                        </button>
-                      </div>
-                      <Checkbox.Group
-                        value={filteredcouncildistricts}
-                        onChange={setfilteredcouncildistrictspre}
-                      >
-                        {" "}
-                        <div className="grid grid-cols-3 gap-x-4 sm:flex sm:flex-col">
-                          {listofcouncildists.map((item, key) => (
-                            <Checkbox
-                              value={item}
-                              label={`${item} (${Number(
-                                councilcount[String(item)]
-                              ).toLocaleString()})`}
-                              key={key}
-                            />
-                          ))}
-                        </div>
-                      </Checkbox.Group>
-                    </div>
-                  )}
-
-                  {selectedfilteropened === "month" && (
-                    <>
-                      <div className="pl-5 pr-2 py-2">
-                        <div className="pb-1">
-                          <button
-                            className="align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base"
-                            onClick={() => {
-                              setsliderMonthAct([1, 12]);
-                            }}
-                          >
-                            Select All Months
-                          </button>
-                        </div>
-                        <TooltipSlider
-                          range
-                          min={1}
-                          max={12}
-                          value={sliderMonth}
-                          onChange={setsliderMonthVerTwo}
-                          tipFormatter={(value: any) =>
-                            `${tooltipformattermonth(value)}`
-                          }
-                        />
-                        <div className="flex flex-row py-1">
-                          <p className="font-semibold">
-                            {tooltipformattermonth(sliderMonth[0])}
-                          </p>
-                          <p className="font-semibold ml-auto mr-0">
-                            {tooltipformattermonth(sliderMonth[1])}
-                          </p>
-                        </div>
-                        <p>Animate/Seek Months</p>
-                        <div>
-                          <div className="px-3 py-2 flex flex-row gap-x-2">
-                            <button
-                              onClick={() => {
-                                prevMonthAnimate();
-                              }}
-                              className=" py-2 rounded-lg  bg-slate-800"
-                            >
-                              {" "}
-                              <Icon path={mdiSkipPrevious} size={1} />
-                            </button>
-                            <button
-                              className="px-3 py-2 rounded-lg bg-slate-800"
-                              onClick={() => {
-                                nextMonthAnimate();
-                              }}
-                            >
-                              <Icon path={mdiSkipNext} size={1} />
-                            </button>
-                            {/*<Icon path={mdiPause} size={1} />*/}
-                          </div>
-                          <div>
-                            <input
-                              onChange={(e) => {
-                                setnormalizeintensityon(e.target.checked);
-                              }}
-                              className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                              type="checkbox"
-                              id="flexCheckChecked"
-                              checked={normalizeintensityon}
-                            />
-                            <label
-                              className="form-check-label inline-block text-gray-100"
-                              htmlFor="flexCheckChecked"
-                            >
-                              Normalize Intensity
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-
             <div className="w-content"></div>
 
             <div
@@ -1390,7 +852,7 @@ const Home: NextPage = () => {
                 rel="noreferrer"
               >
                 <img
-                  src="https://lacontroller.io/images/KennethMejia-logo-white-elect.png"
+                  src="https://controller.lacity.gov/images/KennethMejia-logo-white-elect.png"
                   className="h-9 md:h-10 z-40"
                   alt="Kenneth Mejia LA City Controller Logo"
                 />
@@ -1399,57 +861,7 @@ const Home: NextPage = () => {
           </>
         )}
       </MantineProvider>
-      {isLoggedIn === false && (
-        <>
-          <div className="fixed w-full h-full top-0 bottom-0 left-0 right-0 bg-slate-900 bg-opacity-80"></div>
-          <div className="absolute w-full sm:w-64 sm:h-64 bottom-0 sm:inset-x-0 sm:inset-y-0 sm:max-w-max sm:max-y-auto sm:m-auto bg-gray-700 border-2 rounded-lg px-2 py-2">
-            {loading === false && (
-              <>
-                <p className="text-base md:text-lg font-bold text-white text-center">
-                  Sign In with Google
-                </p>
-                <p className="text-gray-200">
-                  This map is locked, sign in before accessing it.
-                </p>
-              </>
-            )}
-
-            {loading && (
-              <>
-                <p className="text-gray-200 italics">Loading...</p>
-
-                <br />
-                <div className="mx-auto flex justify-center items-center">
-                  {" "}
-                  <svg
-                    aria-hidden="true"
-                    className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-500"
-                    viewBox="0 0 100 101"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                      fill="currentColor"
-                    />
-                    <path
-                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                      fill="currentFill"
-                    />
-                  </svg>
-                </div>
-              </>
-            )}
-            <br />
-            <button
-              onClick={signInWithGoogle}
-              className="w-full bg-blue-900 hover:bg-blue-800 text-gray-50 font-bold py-2 px-4 rounded"
-            >
-              Sign in With Google
-            </button>
-          </div>
-        </>
-      )}
+    
     </div>
   );
 };
