@@ -479,7 +479,7 @@ const Home: NextPage = () => {
 
         setdatasetloaded(true)
 
-        map.on('mouseenter', 'places', (e:any) => {
+        map.on('mouseenter', 'shelterslayer', (e:any) => {
           // Change the cursor style as a UI indicator.
           map.getCanvas().style.cursor = 'pointer';
            
