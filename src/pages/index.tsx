@@ -172,6 +172,7 @@ const Home: NextPage = () => {
   const [doneloadingmap, setdoneloadingmap] = useState(false);
   const [sliderMonth, setsliderMonthAct] = useState<any>([1, 12]);
   const [selectedfilteropened, setselectedfilteropened] = useState("createdby");
+  const [datasetloaded, setdatasetloaded] = useState(false);
   const refismaploaded = useRef(false);
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
@@ -204,25 +205,6 @@ const Home: NextPage = () => {
   datadogRum.init(datadogconfig);
 
   datadogRum.startSessionReplayRecording();
-
-  useEffect(() => {
-    if (loading) {
-      // maybe trigger a loading screen
-      return;
-    }
-    if (user) {
-      setisLoggedIn(true);
-      isLoggedInRef.current = true;
-      signintrack(
-        user.email ? user.email : "nonefound",
-        user.displayName ? user.displayName : "nonefound"
-      );
-    } else {
-      setisLoggedIn(false);
-    }
-
-    reassessLogin();
-  }, [user, loading]);
 
   const setsliderMonth = (event: Event, newValue: number | number[]) => {
     setsliderMonthAct(newValue as number[]);
@@ -427,6 +409,100 @@ const Home: NextPage = () => {
           latitude: 34,
         },
         marker: true,
+      });
+
+      fetch("https://backend-beds-tracker-q73wor3ixa-uw.a.run.app/shelters")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+
+        var featuresarray = data.rows.map((eachRow:any) => {
+          return {
+            "type": "Feature",
+      "properties": {
+        ...eachRow
+      },
+      "geometry": {
+        "coordinates": [
+          eachRow.lng,
+         eachRow.lat
+        ],
+        "type": "Point"
+          }
+        }})
+        
+        const geojsonsdflsf:any = {
+          "type": "FeatureCollection",
+          "features": featuresarray
+        }
+
+        map.addSource('sheltersv2', {
+          type: 'geojson',
+          data: geojsonsdflsf
+        });
+
+        map.addLayer( {
+          id: "shelterslayer",
+          type: "circle",
+          source: "sheltersv2",
+          paint: {
+            "circle-radius": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              10,
+              [
+                "*",
+                1.2,
+                [
+                  "ln",
+                  ["get", "total_beds"]
+                ]
+              ],
+              22,
+              [
+                "*",
+                5,
+                [
+                  "ln",
+                  ["get", "total_beds"]
+                ]
+              ]
+            ],
+            "circle-color": "#facc15",
+            "circle-stroke-opacity": 0.9,
+            "circle-opacity": 0.9,
+            "circle-stroke-width": 2,
+            "circle-stroke-color": "hsl(0, 12%, 13%)",
+          }
+        });
+
+        setdatasetloaded(true)
+
+        map.on('mouseenter', 'places', (e:any) => {
+          // Change the cursor style as a UI indicator.
+          map.getCanvas().style.cursor = 'pointer';
+           
+          // Copy coordinates array.
+          const coordinates = e.features[0].geometry.coordinates.slice();
+          const description = `
+          ${e.features[0].properties.organization_name}<br/>
+          ${e.features[0].properties.projectname}<br/>
+          ${e.features[0].properties.address}
+          `;
+           
+          // Ensure that if the map is zoomed out such that multiple
+          // copies of the feature are visible, the popup appears
+          // over the copy being pointed to.
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
+           
+          // Populate the popup and set its coordinates
+          // based on the feature found.
+          popup.setLngLat(coordinates).setHTML(description).addTo(map);
+          });
+
       });
 
       var colormarker = new mapboxgl.Marker({
@@ -664,7 +740,7 @@ const Home: NextPage = () => {
       var mapname = "beds";
 
       map.on("dragstart", (e) => {
-        reassessLogin();
+       
         uploadMapboxTrack({
           mapname,
           eventtype: "dragstart",
@@ -675,7 +751,6 @@ const Home: NextPage = () => {
       });
 
       map.on("dragend", (e) => {
-        reassessLogin();
         uploadMapboxTrack({
           mapname,
           eventtype: "dragend",
@@ -686,7 +761,6 @@ const Home: NextPage = () => {
       });
 
       map.on("zoomstart", (e) => {
-        reassessLogin();
         uploadMapboxTrack({
           mapname,
           eventtype: "dragstart",
@@ -697,7 +771,6 @@ const Home: NextPage = () => {
       });
 
       map.on("zoomend", (e) => {
-        reassessLogin();
         uploadMapboxTrack({
           mapname,
           eventtype: "zoomend",
