@@ -1074,8 +1074,10 @@ const Home: NextPage = () => {
                   <p>{shelterselected.properties.address}</p>
                   <div className="flex flex-col gap-y-2 ">
                     {JSON.parse(shelterselected.properties.shelterarray).map(
-                      (eachShelter: any) => (
-                        <div className="rounded-sm bg-slate-700 bg-opacity-90 px-1 py-1">
+                      (eachShelter: any, index: number) => (
+                        <div
+                        key={index}
+                        className="rounded-sm bg-slate-700 bg-opacity-90 px-1 py-1">
                           <span className="font-bold">
                             {eachShelter.projectname}
                           </span>
