@@ -411,11 +411,14 @@ const Home: NextPage = () => {
         marker: true,
       });
 
+      
+
       fetch("https://backend-beds-tracker-q73wor3ixa-uw.a.run.app/shelters")
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
 
+        /*
         var featuresarray = data.rows.map((eachRow:any) => {
           return {
             "type": "Feature",
@@ -429,7 +432,67 @@ const Home: NextPage = () => {
         ],
         "type": "Point"
           }
-        }})
+
+        }*/
+      
+     
+
+        var objectbylocation:any = {};
+
+        data.rows.forEach((eachRow:any) => {
+          const uniq = `eachRow.lat` + `eachRow.lng`;
+
+          if (objectbylocation[uniq] === undefined) {
+            objectbylocation[uniq] = {};
+          }
+          
+          if (eachRow.total_beds === null) {
+            eachRow.total_beds = 0;
+          }  
+           
+          if (eachRow.beds_available === null) {
+            eachRow.beds_available = 0;
+          }  
+           
+
+          if (objectbylocation[uniq].total_beds === undefined) {
+            objectbylocation[uniq].total_beds = eachRow.total_beds;
+          } else {
+            objectbylocation[uniq].total_beds += eachRow.total_beds;
+          }
+        
+          if (objectbylocation[uniq].beds_available === undefined) {
+            objectbylocation[uniq].beds_available = eachRow.beds_available;
+          } else {
+            objectbylocation[uniq].beds_available += eachRow.beds_available;
+          }
+
+        
+            objectbylocation[uniq].organization_name = eachRow.organization_name;
+            objectbylocation[uniq].lat = eachRow.lat;
+            objectbylocation[uniq].lng = eachRow.lng;
+         
+            if (objectbylocation[uniq].shelterarray === undefined) {
+              objectbylocation[uniq].shelterarray = [];
+            }
+            objectbylocation[uniq].shelterarray.push(eachRow);
+        });
+
+        const featuresarray = Object.values(objectbylocation).map((eachLocation:any) => {
+          return {
+            "type": "Feature",
+      "properties": {
+        ...eachLocation
+      },
+      "geometry": {
+        "coordinates": [
+          eachLocation.lng,
+         eachLocation.lat
+        ],
+        "type": "Point"
+          }
+        }}
+        )
         
         const geojsonsdflsf:any = {
           "type": "FeatureCollection",
