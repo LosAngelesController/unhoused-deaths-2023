@@ -4,6 +4,8 @@ import Image from "next/image";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, createRef } from "react";
 import Slider from "rc-slider";
+
+import { CloseButton } from "../components/CloseButton";
 import { signintrack, uploadMapboxTrack } from "../components/mapboxtrack";
 import TooltipSlider, { handleRender } from "../components/TooltipSlider";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
@@ -179,9 +181,7 @@ const Home: NextPage = () => {
 
   const [mapboxloaded, setmapboxloaded] = useState(false);
 
-  const [normalizeintensityon, setnormalizeintensityon] = useState(false);
-
-  const [isLoggedIn, setisLoggedIn] = useState(false);
+  const [shelterselected, setshelterselected] = useState<any>(null);
 
   const [user, loading, error] = useAuthState(auth);
 
@@ -214,9 +214,6 @@ const Home: NextPage = () => {
     console.log(input);
     setsliderMonthAct(input);
   };
-
-
-
 
   function turfify(polygon: any) {
     var turffedpolygon;
@@ -254,7 +251,6 @@ const Home: NextPage = () => {
       }
     }
   }
-
 
   var [hasStartedControls, setHasStartedControls] = useState(false);
 
@@ -359,8 +355,7 @@ const Home: NextPage = () => {
       setdoneloadingmap(true);
       setshowtotalarea(window.innerWidth > 640 ? true : false);
 
-
-     okaydeletepoints.current = () => {
+      okaydeletepoints.current = () => {
         try {
           var affordablepoint: any = map.getSource("selected-home-point");
           affordablepoint.setData(null);
@@ -411,14 +406,12 @@ const Home: NextPage = () => {
         marker: true,
       });
 
-      
-
       fetch("https://backend-beds-tracker-q73wor3ixa-uw.a.run.app/shelters")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
 
-        /*
+          /*
         var featuresarray = data.rows.map((eachRow:any) => {
           return {
             "type": "Feature",
@@ -434,139 +427,224 @@ const Home: NextPage = () => {
           }
 
         }*/
-      
-     
 
-        var objectbylocation:any = {};
+          var objectbylocation: any = {};
 
-        data.rows.forEach((eachRow:any) => {
-          const uniq = `eachRow.lat` + `eachRow.lng`;
+          data.rows.forEach((eachRow: any) => {
+            const uniq = `${eachRow.lat}` + `${eachRow.lng}`;
 
-          if (objectbylocation[uniq] === undefined) {
-            objectbylocation[uniq] = {};
-          }
-          
-          if (eachRow.total_beds === null) {
-            eachRow.total_beds = 0;
-          }  
-           
-          if (eachRow.beds_available === null) {
-            eachRow.beds_available = 0;
-          }  
-           
+            if (objectbylocation[uniq] === undefined) {
+              objectbylocation[uniq] = {};
+            }
 
-          if (objectbylocation[uniq].total_beds === undefined) {
-            objectbylocation[uniq].total_beds = eachRow.total_beds;
-          } else {
-            objectbylocation[uniq].total_beds += eachRow.total_beds;
-          }
-        
-          if (objectbylocation[uniq].beds_available === undefined) {
-            objectbylocation[uniq].beds_available = eachRow.beds_available;
-          } else {
-            objectbylocation[uniq].beds_available += eachRow.beds_available;
-          }
+            if (eachRow.total_beds === null) {
+              eachRow.total_beds = 0;
+            }
 
-        
-            objectbylocation[uniq].organization_name = eachRow.organization_name;
+            if (eachRow.beds_available === null) {
+              eachRow.beds_available = 0;
+            }
+
+            if (objectbylocation[uniq].total_beds === undefined) {
+              objectbylocation[uniq].total_beds = eachRow.total_beds;
+            } else {
+              objectbylocation[uniq].total_beds += eachRow.total_beds;
+            }
+
+            if (objectbylocation[uniq].beds_available === undefined) {
+              objectbylocation[uniq].beds_available = eachRow.beds_available;
+            } else {
+              objectbylocation[uniq].beds_available += eachRow.beds_available;
+            }
+
+            objectbylocation[uniq].occper =
+              1 -
+              objectbylocation[uniq].beds_available /
+                objectbylocation[uniq].total_beds;
+
+            objectbylocation[uniq].organization_name =
+              eachRow.organization_name;
             objectbylocation[uniq].lat = eachRow.lat;
             objectbylocation[uniq].lng = eachRow.lng;
-         
+            objectbylocation[uniq].address = eachRow.address;
+
             if (objectbylocation[uniq].shelterarray === undefined) {
               objectbylocation[uniq].shelterarray = [];
             }
             objectbylocation[uniq].shelterarray.push(eachRow);
-        });
-
-        const featuresarray = Object.values(objectbylocation).map((eachLocation:any) => {
-          return {
-            "type": "Feature",
-      "properties": {
-        ...eachLocation
-      },
-      "geometry": {
-        "coordinates": [
-          eachLocation.lng,
-         eachLocation.lat
-        ],
-        "type": "Point"
-          }
-        }}
-        )
-        
-        const geojsonsdflsf:any = {
-          "type": "FeatureCollection",
-          "features": featuresarray
-        }
-
-        map.addSource('sheltersv2', {
-          type: 'geojson',
-          data: geojsonsdflsf
-        });
-
-        map.addLayer( {
-          id: "shelterslayer",
-          type: "circle",
-          source: "sheltersv2",
-          paint: {
-            "circle-radius": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              10,
-              [
-                "*",
-                1.2,
-                [
-                  "ln",
-                  ["get", "total_beds"]
-                ]
-              ],
-              22,
-              [
-                "*",
-                5,
-                [
-                  "ln",
-                  ["get", "total_beds"]
-                ]
-              ]
-            ],
-            "circle-color": "#facc15",
-            "circle-stroke-opacity": 0.9,
-            "circle-opacity": 0.9,
-            "circle-stroke-width": 2,
-            "circle-stroke-color": "hsl(0, 12%, 13%)",
-          }
-        });
-
-        setdatasetloaded(true)
-
-        map.on('mouseenter', 'shelterslayer', (e:any) => {
-          // Change the cursor style as a UI indicator.
-          map.getCanvas().style.cursor = 'pointer';
-           
-          // Copy coordinates array.
-          const coordinates = e.features[0].geometry.coordinates.slice();
-          const description = `
-          ${e.features[0].properties.organization_name}<br/>
-          ${e.features[0].properties.projectname}<br/>
-          ${e.features[0].properties.address}
-          `;
-           
-          // Ensure that if the map is zoomed out such that multiple
-          // copies of the feature are visible, the popup appears
-          // over the copy being pointed to.
-          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
-           
-          // Populate the popup and set its coordinates
-          // based on the feature found.
-          popup.setLngLat(coordinates).setHTML(description).addTo(map);
           });
 
-      });
+          console.log(objectbylocation);
+
+          const featuresarray = Object.values(objectbylocation).map(
+            (eachLocation: any) => {
+              return {
+                type: "Feature",
+                properties: {
+                  ...eachLocation,
+                },
+                geometry: {
+                  coordinates: [eachLocation.lng, eachLocation.lat],
+                  type: "Point",
+                },
+              };
+            }
+          );
+
+          console.log(featuresarray);
+
+          const geojsonsdflsf: any = {
+            type: "FeatureCollection",
+            features: featuresarray,
+          };
+
+          map.addSource("sheltersv2", {
+            type: "geojson",
+            data: geojsonsdflsf,
+          });
+
+          map.addLayer({
+            id: "shelterslayer",
+            type: "circle",
+            source: "sheltersv2",
+            paint: {
+              "circle-radius": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                10,
+                ["*", 1.2, ["ln", ["get", "total_beds"]]],
+                22,
+                ["*", 5, ["ln", ["get", "total_beds"]]],
+              ],
+              "circle-color": [
+                "interpolate",
+                ["linear"],
+                ["get", "occper"],
+                0,
+                "#34d399",
+                0.7,
+                "#4ade80",
+                0.8,
+                "#facc15",
+                0.9,
+                "#b91c1c",
+              ],
+              "circle-stroke-opacity": 0.9,
+              "circle-opacity": 0.9,
+              "circle-stroke-width": 2,
+              "circle-stroke-color": "hsl(0, 12%, 13%)",
+            },
+          });
+
+          setdatasetloaded(true);
+
+          map.on("mousedown", "shelterslayer", (e: any) => {
+            setshelterselected(e.features[0]);
+
+            var affordablepoint: any = map.getSource("selected-shelter-point");
+            affordablepoint.setData(e.features[0].geometry);
+
+            mapref.current.setLayoutProperty(
+              "points-selected-shelter-layer",
+              "visibility",
+              "visible"
+            );
+          });
+
+          map.on("mouseleave", "shelterslayer", () => {
+            //check if the url query string "stopmouseleave" is true
+            //if it is, then don't do anything
+            //if it is not, then do the following
+            /*
+        map.getCanvas().style.cursor = '';
+        popup.remove();*/
+
+            if (urlParams.get("stopmouseleave") === null) {
+              map.getCanvas().style.cursor = "";
+              popup.remove();
+            }
+          });
+
+          map.on("mouseenter", "shelterslayer", (e: any) => {
+            // Change the cursor style as a UI indicator.
+            map.getCanvas().style.cursor = "pointer";
+
+            var arrayOfSheltersText: any = [];
+
+            console.log("properties", e.features[0].properties);
+
+            console.log(JSON.parse(e.features[0].properties.shelterarray));
+
+            JSON.parse(e.features[0].properties.shelterarray).forEach(
+              (eachShelter: any) => {
+                arrayOfSheltersText.push(`
+          <div class="rounded-sm bg-slate-700 bg-opacity-70 px-1 py-1">
+          <strong>${eachShelter.projectname}</strong><br/>
+          ${eachShelter.type ? `Type: ${eachShelter.type}<br/>` : ""}
+          ${
+            eachShelter.criteria ? `Criteria: ${eachShelter.criteria}<br/>` : ""
+          }
+          ${eachShelter.total_beds} beds<br/>
+          ${eachShelter.beds_available} beds available<br/>
+          ${
+            eachShelter.male_available
+              ? `  ${eachShelter.male_available} male beds available<br/>`
+              : ""
+          }
+          
+          ${
+            eachShelter.female_available
+              ? `  ${eachShelter.female_available} female beds available<br/>`
+              : ""
+          }
+        
+          </div>
+            `);
+              }
+            );
+
+            var collateshelters = arrayOfSheltersText.join("");
+
+            // Copy coordinates array.
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            const description = `
+          ${e.features[0].properties.organization_name}<br/>
+          ${e.features[0].properties.address}<br/>
+          <div className='flexcollate'
+          style="
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.3rem;
+"
+          >${collateshelters}</div>
+          <p>Click dot for more info</p>
+          <style>
+          .mapboxgl-popup-content {
+            background: #212121ee;
+            color: #fdfdfd;
+          }
+
+          .flexcollate {
+            row-gap: 0.5rem;
+            display: flex;
+            flex-direction: column;
+          }
+          </style>
+          `;
+
+            // Ensure that if the map is zoomed out such that multiple
+            // copies of the feature are visible, the popup appears
+            // over the copy being pointed to.
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+              coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            // Populate the popup and set its coordinates
+            // based on the feature found.
+            popup.setLngLat(coordinates).setHTML(description).addTo(map);
+          });
+        });
 
       var colormarker = new mapboxgl.Marker({
         color: "#41ffca",
@@ -682,7 +760,7 @@ const Home: NextPage = () => {
         closeOnClick: false,
       });
 
-      map.addSource("selected-park-point", {
+      map.addSource("selected-shelter-point", {
         type: "geojson",
         data: {
           type: "FeatureCollection",
@@ -727,13 +805,13 @@ const Home: NextPage = () => {
         // Add the image to the map style.
         map.addImage("map-marker", image);
 
-        if (false) {
+        if (true) {
           map.addLayer({
-            id: "points-park",
+            id: "points-selected-shelter-layer",
             type: "symbol",
-            source: "selected-park-point",
+            source: "selected-shelter-point",
             paint: {
-              "icon-color": "#f0abfc",
+              "icon-color": "#41ffca",
               "icon-translate": [0, -13],
             },
             layout: {
@@ -803,7 +881,6 @@ const Home: NextPage = () => {
       var mapname = "beds";
 
       map.on("dragstart", (e) => {
-       
         uploadMapboxTrack({
           mapname,
           eventtype: "dragstart",
@@ -851,11 +928,7 @@ const Home: NextPage = () => {
     if (getmapboxlogo) {
       getmapboxlogo.remove();
     }
-
- 
   }, []);
-
-
 
   return (
     <div className="flex flex-col h-full w-screen absolute">
@@ -907,7 +980,7 @@ const Home: NextPage = () => {
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://311homeless.lacontroller.io/homeless-311-thumbnail-min.png"
+            content="https://shelterbeds.lacontroller.io/shelter-thumbnail-min.png"
           ></meta>
           <meta
             name="description"
@@ -916,12 +989,12 @@ const Home: NextPage = () => {
 
           <meta
             property="og:url"
-            content="https://311homeless.lacontroller.io/"
+            content="https://shelterbeds.lacontroller.io/"
           />
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
-            content="311 Homeless Encampment Requests | Map"
+            content="Shelter Beds Occupancy | Map"
           />
           <meta
             property="og:description"
@@ -929,7 +1002,7 @@ const Home: NextPage = () => {
           />
           <meta
             property="og:image"
-            content="https://311homeless.lacontroller.io/homeless-311-thumbnail-min.png"
+            content="https://shelterbeds.lacontroller.io/shelter-thumbnail-min.png"
           />
         </Head>
 
@@ -957,21 +1030,100 @@ const Home: NextPage = () => {
 
             <div
               className={`text-sm ${
-                housingaddyopen
-                  ? `px-3 pt-2 pb-3 fixed sm:relative 
+                shelterselected != null
+                  ? `px-3 pt-2 pb-3 fixed 
 
  top-auto bottom-0 left-0 right-0
-  w-full sm:static sm:mt-2 sm:w-auto 
+  w-full sm:w-64 sm:absolute sm:mt-[7em] md:mt-[4.5em] sm:ml-3 sm:w-auto 
   sm:top-auto sm:bottom-auto sm:left-auto 
   sm:right-auto bg-gray-900 sm:rounded-xl 
    bg-opacity-80 sm:bg-opacity-80 text-white 
    border-t-2  sm:border border-teal-500 sm:border-grey-500
-  
    
    `
                   : "hidden"
               }`}
-            ></div>
+            >
+              <CloseButton
+                onClose={() => {
+                  setshelterselected(null);
+
+                  if (mapref.current) {
+                    var affordablepoint: any = mapref.current.getSource(
+                      "selected-shelter-point"
+                    );
+                    if (affordablepoint) {
+                      affordablepoint.setData(null);
+
+                      mapref.current.setLayoutProperty(
+                        "points-selected-shelter-layer",
+                        "visibility",
+                        "none"
+                      );
+                    }
+                  } else {
+                    console.log("no ref current");
+                  }
+                }}
+              />
+              {shelterselected != null && (
+                <div className="text-xs">
+                  <p className="font-bold">
+                    {shelterselected.properties.organization_name}
+                  </p>
+                  <p>{shelterselected.properties.address}</p>
+                  <div className="flex flex-col gap-y-2 ">
+                    {JSON.parse(shelterselected.properties.shelterarray).map(
+                      (eachShelter: any) => (
+                        <div className="rounded-sm bg-slate-700 bg-opacity-90 px-1 py-1">
+                          <span className="font-bold">
+                            {eachShelter.projectname}
+                          </span>
+                          <br />
+                          {eachShelter.type ? (
+                            <>
+                              Type: {eachShelter.type}
+                              <br />
+                            </>
+                          ) : (
+                            ""
+                          )}
+                          {eachShelter.criteria ? (
+                            <>
+                              Criteria: {eachShelter.criteria}
+                              <br />
+                            </>
+                          ) : (
+                            ""
+                          )}
+                          {eachShelter.total_beds} beds
+                          <br />
+                          {eachShelter.beds_available} beds available
+                          <br />
+                          {eachShelter.male_available ? (
+                            <>
+                              {eachShelter.male_available}male beds available
+                              <br />
+                            </>
+                          ) : (
+                            ""
+                          )}
+                          {eachShelter.female_available ? (
+                            <>
+                              {eachShelter.female_available} female beds
+                              available
+                              <br />
+                            </>
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -997,7 +1149,6 @@ const Home: NextPage = () => {
           </>
         )}
       </MantineProvider>
-    
     </div>
   );
 };
