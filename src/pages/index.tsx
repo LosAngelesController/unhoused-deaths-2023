@@ -572,7 +572,12 @@ const Home: NextPage = () => {
             setshelterselected(e.features[0]);
 
             var affordablepoint: any = map.getSource("selected-shelter-point");
-            affordablepoint.setData(e.features[0].geometry);
+
+            var councildistpolygonfound = null;
+
+            var councildi
+
+            affordablepoint.setData(councildistpolygonfound);
 
             mapref.current.setLayoutProperty(
               "points-selected-shelter-layer",
@@ -594,6 +599,27 @@ const Home: NextPage = () => {
               popup.remove();
             }
           });
+
+          map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
+            var sourceofcouncildistselect:any = map.getSource('selected-council-dist');
+
+            var clickeddata = e.features[0].properties.district;
+
+        
+
+            var councildistpolygonfound = councildistricts.features.find((eachDist:any) => 
+            eachDist.properties.district === clickeddata); 
+
+
+
+            if (sourceofcouncildistselect) {
+
+              if (councildistpolygonfound) {
+                sourceofcouncildistselect.setData(councildistpolygonfound);
+              }
+             
+            }
+          })
 
           map.on("mouseenter", "shelterslayer", (e: any) => {
             // Change the cursor style as a UI indicator.
@@ -904,6 +930,39 @@ const Home: NextPage = () => {
           },
           "road-label"
         );
+
+        map.addLayer(
+          {
+            id: "councildistrictsselectlayer",
+            type: "fill",
+            source: "citycouncildist",
+            paint: {
+              "fill-color": "#000000",
+              "fill-opacity": 0,
+            },
+          },
+          "road-label"
+        );
+
+        map.addSource("selected-council-dist", {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [],
+          },
+        });
+
+        map.addLayer(
+          {
+            id: "selected-council-dist-layer",
+            type: "fill",
+            source: "selected-council-dist",
+            paint: {
+              "fill-color": "#bdbdeb",
+              "fill-opacity": 0.2,
+            }
+          }, "road-label"
+        )
       }
 
       if (hasStartedControls === false) {
