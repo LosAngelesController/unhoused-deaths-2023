@@ -883,6 +883,22 @@ const Home: NextPage = () => {
           },
           "road-label"
         );
+
+        map.addSource("citycouncildist", {
+          type: "geojson",
+          data: councildistricts,
+        })
+
+        map.addLayer({
+          id: "councildistrictslayer",
+          type: "line",
+          source: "citycouncildist",
+          paint: {
+            "line-color": "#bbbbbb",
+            "line-opacity": 1,
+            "line-width": 1,
+          }
+        }, 'road-label')
       }
 
       if (hasStartedControls === false) {
