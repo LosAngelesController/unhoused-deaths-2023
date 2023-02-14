@@ -1138,7 +1138,7 @@ const Home: NextPage = () => {
                   ? `px-3 pt-2 pb-3 fixed 
 
  top-auto bottom-0 left-0 right-0
-  w-full sm:max-w-sm sm:absolute sm:mt-[7em] md:mt-[4.5em] sm:ml-3 
+  w-full sm:max-w-sm max-h-96 sm:absolute sm:mt-[7em] md:mt-[4.5em] sm:ml-3 
   sm:top-auto sm:bottom-auto sm:left-auto 
   sm:right-auto bg-gray-900 sm:rounded-xl 
    bg-opacity-80 sm:bg-opacity-80 text-white 
