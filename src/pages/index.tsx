@@ -584,6 +584,8 @@ const Home: NextPage = () => {
               "visibility",
               "visible"
             );
+
+            map.moveLayer("points-selected-shelter-layer");
           });
 
           map.on('touchstart', 'shelterslayer', (e:any) => {
@@ -803,8 +805,7 @@ const Home: NextPage = () => {
               "circle-radius": 10,
               "circle-color": "#41ffca",
             },
-          },
-          "road-label"
+          }
         );
       }
 
