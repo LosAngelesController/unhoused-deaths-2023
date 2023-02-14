@@ -518,7 +518,7 @@ const Home: NextPage = () => {
 
                 const geojsonrefresh = convertDataFromBackend(data);
 
-                const sheltersource:any = map.getSource("sheltersv2");
+                const sheltersource: any = map.getSource("sheltersv2");
 
                 if (sheltersource) {
                   sheltersource.setData(geojsonrefresh);
@@ -897,7 +897,7 @@ const Home: NextPage = () => {
             paint: {
               "line-color": "#bbbbbb",
               "line-opacity": 1,
-              "line-width": 1,
+              "line-width": 2,
             },
           },
           "road-label"
@@ -1119,17 +1119,17 @@ const Home: NextPage = () => {
                     <a
                       target="_blank"
                       rel="noreferrer"
-                      className="rounded-full px-2 pb-1 pt-0.5 text-white bg-blue-500"
+                      className="rounded-full px-2 py-1 text-white bg-blue-500"
                       href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
                         `${shelterselected.properties["address"]} Los Angeles, CA`
                       )}`}
                     >
                       View on Google Maps
                     </a>
-                    <p className="bg-gray-800 px-1 py-2 rounded-sm">
+                    <p className="bg-gray-800 px-1 py-1 rounded-sm">
                       CD {shelterselected.properties.cd}
                     </p>
-                    <p className="bg-gray-800 px-1 py-2 rounded-sm">
+                    <p className="bg-gray-800 px-1 py-1 rounded-sm">
                       SPA {shelterselected.properties.spa}
                     </p>
                   </div>
