@@ -282,6 +282,98 @@ const Home: NextPage = () => {
 
   const divRef: any = React.useRef<HTMLDivElement>(null);
 
+  function convertDataFromBackend(data:any) {
+    
+          /*
+        var featuresarray = data.rows.map((eachRow:any) => {
+          return {
+            "type": "Feature",
+      "properties": {
+        ...eachRow
+      },
+      "geometry": {
+        "coordinates": [
+          eachRow.lng,
+         eachRow.lat
+        ],
+        "type": "Point"
+          }
+
+        }*/
+
+        var objectbylocation: any = {};
+
+        data.rows.forEach((eachRow: any) => {
+          const uniq = `${eachRow.lat}` + `${eachRow.lng}`;
+
+          if (objectbylocation[uniq] === undefined) {
+            objectbylocation[uniq] = {};
+          }
+
+          if (eachRow.total_beds === null) {
+            eachRow.total_beds = 0;
+          }
+
+          if (eachRow.beds_available === null) {
+            eachRow.beds_available = 0;
+          }
+
+          if (objectbylocation[uniq].total_beds === undefined) {
+            objectbylocation[uniq].total_beds = eachRow.total_beds;
+          } else {
+            objectbylocation[uniq].total_beds += eachRow.total_beds;
+          }
+
+          if (objectbylocation[uniq].beds_available === undefined) {
+            objectbylocation[uniq].beds_available = eachRow.beds_available;
+          } else {
+            objectbylocation[uniq].beds_available += eachRow.beds_available;
+          }
+
+          objectbylocation[uniq].occper =
+            1 -
+            objectbylocation[uniq].beds_available /
+              objectbylocation[uniq].total_beds;
+
+          objectbylocation[uniq].organization_name =
+            eachRow.organization_name;
+          objectbylocation[uniq].lat = eachRow.lat;
+          objectbylocation[uniq].lng = eachRow.lng;
+          objectbylocation[uniq].address = eachRow.address;
+
+          if (objectbylocation[uniq].shelterarray === undefined) {
+            objectbylocation[uniq].shelterarray = [];
+          }
+          objectbylocation[uniq].shelterarray.push(eachRow);
+        });
+
+        console.log(objectbylocation);
+
+        const featuresarray = Object.values(objectbylocation).map(
+          (eachLocation: any) => {
+            return {
+              type: "Feature",
+              properties: {
+                ...eachLocation,
+              },
+              geometry: {
+                coordinates: [eachLocation.lng, eachLocation.lat],
+                type: "Point",
+              },
+            };
+          }
+        );
+
+        console.log(featuresarray);
+
+        const geojsonsdflsf: any = {
+          type: "FeatureCollection",
+          features: featuresarray,
+        };
+
+        return geojsonsdflsf;
+  }
+
   useEffect(() => {
     console.log("map div", divRef);
 
@@ -411,97 +503,28 @@ const Home: NextPage = () => {
         .then((data) => {
           console.log(data);
 
-          /*
-        var featuresarray = data.rows.map((eachRow:any) => {
-          return {
-            "type": "Feature",
-      "properties": {
-        ...eachRow
-      },
-      "geometry": {
-        "coordinates": [
-          eachRow.lng,
-         eachRow.lat
-        ],
-        "type": "Point"
-          }
-
-        }*/
-
-          var objectbylocation: any = {};
-
-          data.rows.forEach((eachRow: any) => {
-            const uniq = `${eachRow.lat}` + `${eachRow.lng}`;
-
-            if (objectbylocation[uniq] === undefined) {
-              objectbylocation[uniq] = {};
-            }
-
-            if (eachRow.total_beds === null) {
-              eachRow.total_beds = 0;
-            }
-
-            if (eachRow.beds_available === null) {
-              eachRow.beds_available = 0;
-            }
-
-            if (objectbylocation[uniq].total_beds === undefined) {
-              objectbylocation[uniq].total_beds = eachRow.total_beds;
-            } else {
-              objectbylocation[uniq].total_beds += eachRow.total_beds;
-            }
-
-            if (objectbylocation[uniq].beds_available === undefined) {
-              objectbylocation[uniq].beds_available = eachRow.beds_available;
-            } else {
-              objectbylocation[uniq].beds_available += eachRow.beds_available;
-            }
-
-            objectbylocation[uniq].occper =
-              1 -
-              objectbylocation[uniq].beds_available /
-                objectbylocation[uniq].total_beds;
-
-            objectbylocation[uniq].organization_name =
-              eachRow.organization_name;
-            objectbylocation[uniq].lat = eachRow.lat;
-            objectbylocation[uniq].lng = eachRow.lng;
-            objectbylocation[uniq].address = eachRow.address;
-
-            if (objectbylocation[uniq].shelterarray === undefined) {
-              objectbylocation[uniq].shelterarray = [];
-            }
-            objectbylocation[uniq].shelterarray.push(eachRow);
-          });
-
-          console.log(objectbylocation);
-
-          const featuresarray = Object.values(objectbylocation).map(
-            (eachLocation: any) => {
-              return {
-                type: "Feature",
-                properties: {
-                  ...eachLocation,
-                },
-                geometry: {
-                  coordinates: [eachLocation.lng, eachLocation.lat],
-                  type: "Point",
-                },
-              };
-            }
-          );
-
-          console.log(featuresarray);
-
-          const geojsonsdflsf: any = {
-            type: "FeatureCollection",
-            features: featuresarray,
-          };
+          const geojsonsdflsf = convertDataFromBackend(data);
 
           map.addSource("sheltersv2", {
             type: "geojson",
             data: geojsonsdflsf,
           });
+
+          setInterval(() => {
+            fetch("https://backend-beds-tracker-q73wor3ixa-uw.a.run.app/shelters")
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+    
+              const geojsonrefresh = convertDataFromBackend(data);
+
+              const sheltersource = map.getSource("sheltersv2")
+              
+              if (sheltersource) {
+                sheltersource.setData(geojsonrefresh);
+              }
+            });    
+          }, 2000)
 
           map.addLayer({
             id: "shelterslayer",
@@ -528,7 +551,11 @@ const Home: NextPage = () => {
                 0.8,
                 "#facc15",
                 0.9,
-                "#b91c1c",
+                "#f59e0b",
+                0.99,
+                "#f97316",
+                1,
+                "#ff0000",
               ],
               "circle-stroke-opacity": 0.9,
               "circle-opacity": 0.9,
@@ -1034,7 +1061,7 @@ const Home: NextPage = () => {
                   ? `px-3 pt-2 pb-3 fixed 
 
  top-auto bottom-0 left-0 right-0
-  w-full sm:w-64 sm:absolute sm:mt-[7em] md:mt-[4.5em] sm:ml-3 sm:w-auto 
+  w-full sm:max-w-sm sm:absolute sm:mt-[7em] md:mt-[4.5em] sm:ml-3 
   sm:top-auto sm:bottom-auto sm:left-auto 
   sm:right-auto bg-gray-900 sm:rounded-xl 
    bg-opacity-80 sm:bg-opacity-80 text-white 
