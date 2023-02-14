@@ -1157,7 +1157,7 @@ const Home: NextPage = () => {
    `
                   : "hidden"
               
-              }  ${innerHeight < 1000 ? "max-h-96" : ""}`}
+              }  ${typeof window != "undefined" ? window.innerHeight < 1000 ? "max-h-96" : "" : ""}`}
             >
               <CloseButton
                 onClose={() => {
