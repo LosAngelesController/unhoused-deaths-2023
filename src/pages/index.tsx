@@ -1224,14 +1224,7 @@ const Home: NextPage = () => {
                           ) : (
                             ""
                           )}
-                          {eachShelter.criteria ? (
-                            <>
-                              Criteria: {eachShelter.criteria}
-                              <br />
-                            </>
-                          ) : (
-                            ""
-                          )}
+                         
                         <p className="md:hidden">
                         {eachShelter.total_beds} beds
                           {' | '}
@@ -1255,6 +1248,14 @@ const Home: NextPage = () => {
                             <>
                               {eachShelter.female_available} female beds
                               available
+                              <br />
+                            </>
+                          ) : (
+                            ""
+                          )}
+                           {eachShelter.criteria ? (
+                            <>
+                              Criteria: {eachShelter.criteria}
                               <br />
                             </>
                           ) : (
