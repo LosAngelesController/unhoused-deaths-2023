@@ -338,6 +338,8 @@ const Home: NextPage = () => {
       objectbylocation[uniq].lat = eachRow.lat;
       objectbylocation[uniq].lng = eachRow.lng;
       objectbylocation[uniq].address = eachRow.address;
+      objectbylocation[uniq].spa = eachRow.spa;
+      objectbylocation[uniq].cd = eachRow.cd;
 
       if (objectbylocation[uniq].shelterarray === undefined) {
         objectbylocation[uniq].shelterarray = [];
