@@ -518,7 +518,7 @@ const Home: NextPage = () => {
 
                 const geojsonrefresh = convertDataFromBackend(data);
 
-                const sheltersource = map.getSource("sheltersv2");
+                const sheltersource:any = map.getSource("sheltersv2");
 
                 if (sheltersource) {
                   sheltersource.setData(geojsonrefresh);
@@ -887,18 +887,21 @@ const Home: NextPage = () => {
         map.addSource("citycouncildist", {
           type: "geojson",
           data: councildistricts,
-        })
+        });
 
-        map.addLayer({
-          id: "councildistrictslayer",
-          type: "line",
-          source: "citycouncildist",
-          paint: {
-            "line-color": "#bbbbbb",
-            "line-opacity": 1,
-            "line-width": 1,
-          }
-        }, 'road-label')
+        map.addLayer(
+          {
+            id: "councildistrictslayer",
+            type: "line",
+            source: "citycouncildist",
+            paint: {
+              "line-color": "#bbbbbb",
+              "line-opacity": 1,
+              "line-width": 1,
+            },
+          },
+          "road-label"
+        );
       }
 
       if (hasStartedControls === false) {
