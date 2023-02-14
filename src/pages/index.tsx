@@ -1232,9 +1232,16 @@ const Home: NextPage = () => {
                           ) : (
                             ""
                           )}
-                          {eachShelter.total_beds} beds
-                          <br />
+                        <p className="md:hidden">
+                        {eachShelter.total_beds} beds
+                          {' | '}
                           {eachShelter.beds_available} beds available
+                        </p>
+                        < p className="hidden md:block">
+                        {eachShelter.total_beds} beds
+                          <br/>
+                          {eachShelter.beds_available} beds available
+                        </p>
                           <br />
                           {eachShelter.male_available ? (
                             <>
