@@ -1235,29 +1235,30 @@ const Home: NextPage = () => {
                           <br/>
                           {eachShelter.beds_available} beds available
                         </p>
-                          <br />
+                          
                           {eachShelter.male_available ? (
                             <>
+                              <p>
                               {eachShelter.male_available} male beds available
-                              <br />
+                              </p>
                             </>
                           ) : (
                             ""
                           )}
                           {eachShelter.female_available ? (
-                            <>
+                            <p>
                               {eachShelter.female_available} female beds
                               available
-                              <br />
-                            </>
+                              </p>
+                            
                           ) : (
                             ""
                           )}
                            {eachShelter.criteria ? (
-                            <>
+                            <p>
                               Criteria: {eachShelter.criteria}
-                              <br />
-                            </>
+                              
+                            </p>
                           ) : (
                             ""
                           )}
