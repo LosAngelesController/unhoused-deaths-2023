@@ -586,6 +586,15 @@ const Home: NextPage = () => {
             );
           });
 
+          map.on('touchstart', 'shelterslayer', (e:any) => {
+            popup.remove();
+            touchref.current = {
+              lngLat: e.lngLat,
+              time: Date.now()
+            }
+          })
+           
+
           map.on("mouseleave", "shelterslayer", () => {
             //check if the url query string "stopmouseleave" is true
             //if it is, then don't do anything
