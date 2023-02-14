@@ -282,9 +282,8 @@ const Home: NextPage = () => {
 
   const divRef: any = React.useRef<HTMLDivElement>(null);
 
-  function convertDataFromBackend(data:any) {
-    
-          /*
+  function convertDataFromBackend(data: any) {
+    /*
         var featuresarray = data.rows.map((eachRow:any) => {
           return {
             "type": "Feature",
@@ -301,77 +300,76 @@ const Home: NextPage = () => {
 
         }*/
 
-        var objectbylocation: any = {};
+    var objectbylocation: any = {};
 
-        data.rows.forEach((eachRow: any) => {
-          const uniq = `${eachRow.lat}` + `${eachRow.lng}`;
+    data.rows.forEach((eachRow: any) => {
+      const uniq = `${eachRow.lat}` + `${eachRow.lng}`;
 
-          if (objectbylocation[uniq] === undefined) {
-            objectbylocation[uniq] = {};
-          }
+      if (objectbylocation[uniq] === undefined) {
+        objectbylocation[uniq] = {};
+      }
 
-          if (eachRow.total_beds === null) {
-            eachRow.total_beds = 0;
-          }
+      if (eachRow.total_beds === null) {
+        eachRow.total_beds = 0;
+      }
 
-          if (eachRow.beds_available === null) {
-            eachRow.beds_available = 0;
-          }
+      if (eachRow.beds_available === null) {
+        eachRow.beds_available = 0;
+      }
 
-          if (objectbylocation[uniq].total_beds === undefined) {
-            objectbylocation[uniq].total_beds = eachRow.total_beds;
-          } else {
-            objectbylocation[uniq].total_beds += eachRow.total_beds;
-          }
+      if (objectbylocation[uniq].total_beds === undefined) {
+        objectbylocation[uniq].total_beds = eachRow.total_beds;
+      } else {
+        objectbylocation[uniq].total_beds += eachRow.total_beds;
+      }
 
-          if (objectbylocation[uniq].beds_available === undefined) {
-            objectbylocation[uniq].beds_available = eachRow.beds_available;
-          } else {
-            objectbylocation[uniq].beds_available += eachRow.beds_available;
-          }
+      if (objectbylocation[uniq].beds_available === undefined) {
+        objectbylocation[uniq].beds_available = eachRow.beds_available;
+      } else {
+        objectbylocation[uniq].beds_available += eachRow.beds_available;
+      }
 
-          objectbylocation[uniq].occper =
-            1 -
-            objectbylocation[uniq].beds_available /
-              objectbylocation[uniq].total_beds;
+      objectbylocation[uniq].occper =
+        1 -
+        objectbylocation[uniq].beds_available /
+          objectbylocation[uniq].total_beds;
 
-          objectbylocation[uniq].organization_name =
-            eachRow.organization_name;
-          objectbylocation[uniq].lat = eachRow.lat;
-          objectbylocation[uniq].lng = eachRow.lng;
-          objectbylocation[uniq].address = eachRow.address;
+      objectbylocation[uniq].organization_name = eachRow.organization_name;
+      objectbylocation[uniq].lat = eachRow.lat;
+      objectbylocation[uniq].lng = eachRow.lng;
+      objectbylocation[uniq].address = eachRow.address;
 
-          if (objectbylocation[uniq].shelterarray === undefined) {
-            objectbylocation[uniq].shelterarray = [];
-          }
-          objectbylocation[uniq].shelterarray.push(eachRow);
-        });
+      if (objectbylocation[uniq].shelterarray === undefined) {
+        objectbylocation[uniq].shelterarray = [];
+      }
+      objectbylocation[uniq].shelterarray.push(eachRow);
+    });
 
-        console.log(objectbylocation);
+    console.log(objectbylocation);
 
-        const featuresarray = Object.values(objectbylocation).map(
-          (eachLocation: any) => {
-            return {
-              type: "Feature",
-              properties: {
-                ...eachLocation,
-              },
-              geometry: {
-                coordinates: [eachLocation.lng, eachLocation.lat],
-                type: "Point",
-              },
-            };
-          }
-        );
-
-        console.log(featuresarray);
-
-        const geojsonsdflsf: any = {
-          type: "FeatureCollection",
-          features: featuresarray,
+    const featuresarray = Object.values(objectbylocation).map(
+      (eachLocation: any) => {
+        return {
+          type: "Feature",
+          properties: {
+            ...eachLocation,
+          },
+          geometry: {
+            coordinates: [eachLocation.lng, eachLocation.lat],
+            type: "Point",
+          },
         };
+      }
+    );
 
-        return geojsonsdflsf;
+    console.log(featuresarray);
+
+    const geojsonsdflsf: any = {
+      type: "FeatureCollection",
+      features: featuresarray,
+    };
+
+    return geojsonsdflsf;
   }
 
   useEffect(() => {
@@ -511,20 +509,22 @@ const Home: NextPage = () => {
           });
 
           setInterval(() => {
-            fetch("https://backend-beds-tracker-q73wor3ixa-uw.a.run.app/shelters")
-            .then((response) => response.json())
-            .then((data) => {
-              console.log(data);
-    
-              const geojsonrefresh = convertDataFromBackend(data);
+            fetch(
+              "https://backend-beds-tracker-q73wor3ixa-uw.a.run.app/shelters"
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                console.log(data);
 
-              const sheltersource = map.getSource("sheltersv2")
-              
-              if (sheltersource) {
-                sheltersource.setData(geojsonrefresh);
-              }
-            });    
-          }, 2000)
+                const geojsonrefresh = convertDataFromBackend(data);
+
+                const sheltersource = map.getSource("sheltersv2");
+
+                if (sheltersource) {
+                  sheltersource.setData(geojsonrefresh);
+                }
+              });
+          }, 2000);
 
           map.addLayer({
             id: "shelterslayer",
@@ -1019,10 +1019,7 @@ const Home: NextPage = () => {
             content="https://shelterbeds.lacontroller.io/"
           />
           <meta property="og:type" content="website" />
-          <meta
-            property="og:title"
-            content="Shelter Beds Occupancy | Map"
-          />
+          <meta property="og:title" content="Shelter Beds Occupancy | Map" />
           <meta
             property="og:description"
             content="Criteria, Capacity and Occupancy of Los Angeles Homeless Shelters."
@@ -1099,12 +1096,31 @@ const Home: NextPage = () => {
                     {shelterselected.properties.organization_name}
                   </p>
                   <p>{shelterselected.properties.address}</p>
+                  <div className="flex flex-row gap-x-2 my-1">
+                    <a
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-full px-2 pb-1 pt-0.5 text-white bg-blue-500"
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                        `${shelterselected.properties["address"]} Los Angeles, CA`
+                      )}`}
+                    >
+                      View on Google Maps
+                    </a>
+                    <p className="bg-gray-800 px-1 py-2 rounded-sm">
+                      CD {shelterselected.properties.cd}
+                    </p>
+                    <p className="bg-gray-800 px-1 py-2 rounded-sm">
+                      SPA {shelterselected.properties.spa}
+                    </p>
+                  </div>
                   <div className="flex flex-col gap-y-2 ">
                     {JSON.parse(shelterselected.properties.shelterarray).map(
                       (eachShelter: any, index: number) => (
                         <div
-                        key={index}
-                        className="rounded-sm bg-slate-700 bg-opacity-90 px-1 py-1">
+                          key={index}
+                          className="rounded-sm bg-slate-700 bg-opacity-90 px-1 py-1"
+                        >
                           <span className="font-bold">
                             {eachShelter.projectname}
                           </span>
@@ -1131,7 +1147,7 @@ const Home: NextPage = () => {
                           <br />
                           {eachShelter.male_available ? (
                             <>
-                              {eachShelter.male_available}male beds available
+                              {eachShelter.male_available} male beds available
                               <br />
                             </>
                           ) : (
