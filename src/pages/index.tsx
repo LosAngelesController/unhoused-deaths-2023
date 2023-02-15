@@ -570,14 +570,30 @@ const Home: NextPage = () => {
             setshelterselected(e.features[0]);
 
             var affordablepoint: any = map.getSource("selected-shelter-point");
-            affordablepoint.setData(e.features[0].geometry);
+
+            var councildistpolygonfound = null;
+
+            var councildi
+
+            affordablepoint.setData(councildistpolygonfound);
 
             mapref.current.setLayoutProperty(
               "points-selected-shelter-layer",
               "visibility",
               "visible"
             );
+
+            map.moveLayer("points-selected-shelter-layer");
           });
+
+          map.on('touchstart', 'shelterslayer', (e:any) => {
+            popup.remove();
+            touchref.current = {
+              lngLat: e.lngLat,
+              time: Date.now()
+            }
+          })
+           
 
           map.on("mouseleave", "shelterslayer", () => {
             //check if the url query string "stopmouseleave" is true
@@ -592,6 +608,27 @@ const Home: NextPage = () => {
               popup.remove();
             }
           });
+
+          map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
+            var sourceofcouncildistselect:any = map.getSource('selected-council-dist');
+
+            var clickeddata = e.features[0].properties.district;
+
+        
+
+            var councildistpolygonfound = councildistricts.features.find((eachDist:any) => 
+            eachDist.properties.district === clickeddata); 
+
+
+
+            if (sourceofcouncildistselect) {
+
+              if (councildistpolygonfound) {
+                sourceofcouncildistselect.setData(councildistpolygonfound);
+              }
+             
+            }
+          })
 
           map.on("mouseenter", "shelterslayer", (e: any) => {
             // Change the cursor style as a UI indicator.
@@ -766,8 +803,7 @@ const Home: NextPage = () => {
               "circle-radius": 10,
               "circle-color": "#41ffca",
             },
-          },
-          "road-label"
+          }
         );
       }
 
@@ -902,6 +938,39 @@ const Home: NextPage = () => {
           },
           "road-label"
         );
+
+        map.addLayer(
+          {
+            id: "councildistrictsselectlayer",
+            type: "fill",
+            source: "citycouncildist",
+            paint: {
+              "fill-color": "#000000",
+              "fill-opacity": 0,
+            },
+          },
+          "road-label"
+        );
+
+        map.addSource("selected-council-dist", {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [],
+          },
+        });
+
+        map.addLayer(
+          {
+            id: "selected-council-dist-layer",
+            type: "fill",
+            source: "selected-council-dist",
+            paint: {
+              "fill-color": "#bdbdeb",
+              "fill-opacity": 0.2,
+            }
+          }, "road-label"
+        )
       }
 
       if (hasStartedControls === false) {
@@ -1077,7 +1146,7 @@ const Home: NextPage = () => {
                   ? `px-3 pt-2 pb-3 fixed 
 
  top-auto bottom-0 left-0 right-0
-  w-full sm:max-w-sm sm:absolute sm:mt-[7em] md:mt-[4.5em] sm:ml-3 
+  w-full sm:max-w-sm  overflow-y-auto sm:absolute sm:mt-[7em] md:mt-[4.5em] sm:ml-3 
   sm:top-auto sm:bottom-auto sm:left-auto 
   sm:right-auto bg-gray-900 sm:rounded-xl 
    bg-opacity-80 sm:bg-opacity-80 text-white 
@@ -1085,7 +1154,8 @@ const Home: NextPage = () => {
    
    `
                   : "hidden"
-              }`}
+              
+              }  ${typeof window != "undefined" ? window.innerHeight < 1000 ? "max-h-96" : "" : ""}`}
             >
               <CloseButton
                 onClose={() => {
@@ -1152,32 +1222,41 @@ const Home: NextPage = () => {
                           ) : (
                             ""
                           )}
-                          {eachShelter.criteria ? (
-                            <>
-                              Criteria: {eachShelter.criteria}
-                              <br />
-                            </>
-                          ) : (
-                            ""
-                          )}
-                          {eachShelter.total_beds} beds
-                          <br />
+                         
+                        <p className="md:hidden">
+                        {eachShelter.total_beds} beds
+                          {' | '}
                           {eachShelter.beds_available} beds available
-                          <br />
+                        </p>
+                        < p className="hidden md:block">
+                        {eachShelter.total_beds} beds
+                          <br/>
+                          {eachShelter.beds_available} beds available
+                        </p>
+                          
                           {eachShelter.male_available ? (
                             <>
+                              <p>
                               {eachShelter.male_available} male beds available
-                              <br />
+                              </p>
                             </>
                           ) : (
                             ""
                           )}
                           {eachShelter.female_available ? (
-                            <>
+                            <p>
                               {eachShelter.female_available} female beds
                               available
-                              <br />
-                            </>
+                              </p>
+                            
+                          ) : (
+                            ""
+                          )}
+                           {eachShelter.criteria ? (
+                            <p>
+                              Criteria: {eachShelter.criteria}
+                              
+                            </p>
                           ) : (
                             ""
                           )}
