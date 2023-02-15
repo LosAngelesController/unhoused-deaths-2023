@@ -161,7 +161,6 @@ const Home: NextPage = () => {
 
   const shouldfilteropeninit =
     typeof window != "undefined" ? window.innerWidth >= 640 : false;
-
   const [showtotalarea, setshowtotalarea] = useState(false);
   let [disclaimerOpen, setDisclaimerOpen] = useState(false);
   const touchref = useRef<any>(null);
@@ -173,13 +172,22 @@ const Home: NextPage = () => {
   const [showInitInstructions, setshowInitInstructions] = useState(true);
   const [doneloadingmap, setdoneloadingmap] = useState(false);
   const [sliderMonth, setsliderMonthAct] = useState<any>([1, 12]);
-  const [selectedfilteropened, setselectedfilteropened] = useState("createdby");
+  const [selectedfilteropened, setselectedfilteropened] = useState("occupancy");
   const [datasetloaded, setdatasetloaded] = useState(false);
   const refismaploaded = useRef(false);
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
 
   const [mapboxloaded, setmapboxloaded] = useState(false);
+
+    const setfilteredcouncildistrictspre = (input: string[]) => {
+    console.log("inputvalidator", input);
+    if (input.length === 0) {
+      setfilteredcouncildistricts(["99999"]);
+    } else {
+      setfilteredcouncildistricts(input);
+    }
+  };
 
   const [shelterselected, setshelterselected] = useState<any>(null);
 
@@ -573,8 +581,6 @@ const Home: NextPage = () => {
 
             var councildistpolygonfound = null;
 
-            var councildi
-
             affordablepoint.setData(councildistpolygonfound);
 
             mapref.current.setLayoutProperty(
@@ -960,6 +966,7 @@ const Home: NextPage = () => {
           },
         });
 
+        
         map.addLayer(
           {
             id: "selected-council-dist-layer",
@@ -967,9 +974,21 @@ const Home: NextPage = () => {
             source: "selected-council-dist",
             paint: {
               "fill-color": "#bdbdeb",
-              "fill-opacity": 0.2,
+              "fill-opacity": 0.1
             }
           }, "road-label"
+        );
+
+        map.addLayer(
+          {
+            id: "selected-council-dist-layer",
+            type: "fill",
+            source: "selected-council-dist",
+            paint: {
+              "fill-color": "#bdbdeb",
+              "fill-opacity": 0.09
+            }
+          }, "aeroway-polygon"
         )
       }
 
@@ -1125,7 +1144,7 @@ const Home: NextPage = () => {
         <div className="flex-initial h-content flex-col flex z-50">
           <div className="   max-h-screen flex-col flex z-5">
             <div
-              className="absolute mt-[3.1em] md:mt-[3.8em] md:ml-3 top-0 z-5 titleBox  ml-2 text-base bold md:semi-bold break-words bg-[#212121]"
+              className="absolute mt-[3.5em] md:mt-[3.7em] md:ml-3 top-0 z-5 titleBox  ml-2 text-base bold md:semi-bold break-words bg-[#212121]"
               style={{
                 backgroundColor: "#212121",
                 color: "#ffffff",
@@ -1140,22 +1159,112 @@ const Home: NextPage = () => {
             ></div>
             <div className="w-content"></div>
 
-            <div
+
+              <div className="filterandinfobox  fixed
+ top-auto bottom-0 left-0 right-0
+  w-full sm:max-w-sm  overflow-y-auto sm:absolute sm:mt-[7em] md:mt-[3em] sm:ml-3 
+  sm:top-auto sm:bottom-auto sm:left-auto 
+  sm:right-auto flex flex-col gap-y-2">
+              <div className="bg-zinc-900 w-content bg-opacity-90 px-2 py-1 mt-1 sm:rounded-lg">
+                <div className="gap-x-0 flex flex-row w-full">
+                  <button
+                    onClick={() => {
+                      setselectedfilteropened("occupancy");
+                    }}
+                    className={`px-2 border-b-2 py-1  font-semibold ${
+                      selectedfilteropened === "occupancy"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                   Occupancy
+                  </button>
+
+               
+
+                  <button
+                    onClick={() => {
+                      setselectedfilteropened("cd");
+                    }}
+                    className={`px-2 border-b-2  py-1  font-semibold ${
+                      selectedfilteropened === "cd"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                    CD #
+                  </button>
+                 
+                </div>
+                <div className="flex flex-col">
+               
+                  {selectedfilteropened === "cd" && (
+                    <div className="mt-2">
+                      <div className="flex flex-row gap-x-1">
+                        <button
+                          className="align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base"
+                          onClick={() => {
+                            setfilteredcouncildistrictspre(listofcouncildists);
+                          }}
+                        >
+                          Select All
+                        </button>
+                        <button
+                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base border border-gray-400"
+                          onClick={() => {
+                            setfilteredcouncildistrictspre([]);
+                          }}
+                        >
+                          Unselect All
+                        </button>
+                        <button
+                          onClick={() => {
+                            setfilteredcouncildistrictspre(
+                              listofcouncildists.filter(
+                                (n) => !filteredcouncildistricts.includes(n)
+                              )
+                            );
+                          }}
+                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400"
+                        >
+                          Invert
+                        </button>
+                      </div>
+                      <Checkbox.Group
+                        value={filteredcouncildistricts}
+                        onChange={setfilteredcouncildistrictspre}
+                      >
+                        {" "}
+                        <div className="grid grid-cols-3 gap-x-4 ">
+                          {listofcouncildists.map((item, key) => (
+                            <Checkbox
+                              value={item}
+                              label={`${item}
+                             `}
+                              key={key}
+                            />
+                          ))}
+                        </div>
+                      </Checkbox.Group>
+                    </div>
+                  )}
+
+                
+                </div>
+              </div>
+
+                <div
               className={`text-sm ${
                 shelterselected != null
-                  ? `px-3 pt-2 pb-3 fixed 
-
- top-auto bottom-0 left-0 right-0
-  w-full sm:max-w-sm  overflow-y-auto sm:absolute sm:mt-[7em] md:mt-[4.5em] sm:ml-3 
-  sm:top-auto sm:bottom-auto sm:left-auto 
-  sm:right-auto bg-gray-900 sm:rounded-xl 
+                  ? `px-3 pt-2 pb-3 
+ bg-gray-900 sm:rounded-xl 
    bg-opacity-80 sm:bg-opacity-80 text-white 
    border-t-2  sm:border border-teal-500 sm:border-grey-500
    
    `
                   : "hidden"
               
-              }  ${typeof window != "undefined" ? window.innerHeight < 1000 ? "max-h-96" : "" : ""}`}
+              }  ${typeof window != "undefined" ? window.innerHeight < 1200 ? "max-h-96" : "max-h-[500px]" : ""}`}
             >
               <CloseButton
                 onClose={() => {
@@ -1179,6 +1288,9 @@ const Home: NextPage = () => {
                   }
                 }}
               />
+
+
+
               {shelterselected != null && (
                 <div className="text-xs">
                   <p className="font-bold">
@@ -1267,6 +1379,9 @@ const Home: NextPage = () => {
                 </div>
               )}
             </div>
+              </div>
+
+          
           </div>
         </div>
 
