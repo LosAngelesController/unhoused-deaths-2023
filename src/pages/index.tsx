@@ -173,6 +173,7 @@ const Home: NextPage = () => {
   const [doneloadingmap, setdoneloadingmap] = useState(false);
   const [sliderMonth, setsliderMonthAct] = useState<any>([1, 12]);
   const [selectedfilteropened, setselectedfilteropened] = useState("occupancy");
+  const [deletemaxoccu,setdeletemaxoccu] = useState(false);
   const [datasetloaded, setdatasetloaded] = useState(false);
   const refismaploaded = useRef(false);
   const [filterpanelopened, setfilterpanelopened] =
@@ -180,7 +181,7 @@ const Home: NextPage = () => {
 
   const [mapboxloaded, setmapboxloaded] = useState(false);
 
-    const setfilteredcouncildistrictspre = (input: string[]) => {
+  const setfilteredcouncildistrictspre = (input: string[]) => {
     console.log("inputvalidator", input);
     if (input.length === 0) {
       setfilteredcouncildistricts(["99999"]);
@@ -592,14 +593,13 @@ const Home: NextPage = () => {
             map.moveLayer("points-selected-shelter-layer");
           });
 
-          map.on('touchstart', 'shelterslayer', (e:any) => {
+          map.on("touchstart", "shelterslayer", (e: any) => {
             popup.remove();
             touchref.current = {
               lngLat: e.lngLat,
-              time: Date.now()
-            }
-          })
-           
+              time: Date.now(),
+            };
+          });
 
           map.on("mouseleave", "shelterslayer", () => {
             //check if the url query string "stopmouseleave" is true
@@ -616,25 +616,22 @@ const Home: NextPage = () => {
           });
 
           map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
-            var sourceofcouncildistselect:any = map.getSource('selected-council-dist');
+            var sourceofcouncildistselect: any = map.getSource(
+              "selected-council-dist"
+            );
 
             var clickeddata = e.features[0].properties.district;
 
-        
-
-            var councildistpolygonfound = councildistricts.features.find((eachDist:any) => 
-            eachDist.properties.district === clickeddata); 
-
-
+            var councildistpolygonfound = councildistricts.features.find(
+              (eachDist: any) => eachDist.properties.district === clickeddata
+            );
 
             if (sourceofcouncildistselect) {
-
               if (councildistpolygonfound) {
                 sourceofcouncildistselect.setData(councildistpolygonfound);
               }
-             
             }
-          })
+          });
 
           map.on("mouseenter", "shelterslayer", (e: any) => {
             // Change the cursor style as a UI indicator.
@@ -800,17 +797,15 @@ const Home: NextPage = () => {
       });
 
       if (true) {
-        map.addLayer(
-          {
-            id: "point",
-            source: "single-point",
-            type: "circle",
-            paint: {
-              "circle-radius": 10,
-              "circle-color": "#41ffca",
-            },
-          }
-        );
+        map.addLayer({
+          id: "point",
+          source: "single-point",
+          type: "circle",
+          paint: {
+            "circle-radius": 10,
+            "circle-color": "#41ffca",
+          },
+        });
       }
 
       if (debugParam) {
@@ -966,7 +961,6 @@ const Home: NextPage = () => {
           },
         });
 
-        
         map.addLayer(
           {
             id: "selected-council-dist-layer",
@@ -974,9 +968,10 @@ const Home: NextPage = () => {
             source: "selected-council-dist",
             paint: {
               "fill-color": "#bdbdeb",
-              "fill-opacity": 0.1
-            }
-          }, "road-label"
+              "fill-opacity": 0.1,
+            },
+          },
+          "road-label"
         );
 
         map.addLayer(
@@ -986,10 +981,11 @@ const Home: NextPage = () => {
             source: "selected-council-dist",
             paint: {
               "fill-color": "#bdbdeb",
-              "fill-opacity": 0.09
-            }
-          }, "aeroway-polygon"
-        )
+              "fill-opacity": 0.09,
+            },
+          },
+          "aeroway-polygon"
+        );
       }
 
       if (hasStartedControls === false) {
@@ -1057,12 +1053,61 @@ const Home: NextPage = () => {
       //end of load
     });
 
+
+
     var getmapboxlogo: any = document.querySelector(".mapboxgl-ctrl-logo");
 
     if (getmapboxlogo) {
       getmapboxlogo.remove();
     }
   }, []);
+
+  let arrayoffilterables: any = [];
+
+  arrayoffilterables.push(
+    [
+      "match",
+      ["get", "cd"],
+      filteredcouncildistricts.map((x) => parseInt(x)),
+      true,
+      false,
+    ]
+  )
+
+  if (deletemaxoccu === true) {
+    arrayoffilterables.push(
+      [
+        "match",
+        ["get", "occper"],
+        [1],
+        false,
+        true
+      ]
+    )
+  }
+
+  useEffect(() => {
+    if (doneloadingmap) {
+      const filterinput = JSON.parse(
+        JSON.stringify([
+          "all",
+         arrayoffilterables
+        ])
+      );
+
+      
+
+      console.log(filterinput);
+
+      if (mapref.current) {
+        if (doneloadingmap === true) {
+          mapref.current.setFilter("shelterslayer", filterinput);
+        }
+      }
+    }
+
+ 
+  }, [deletemaxoccu, filteredcouncildistricts]);
 
   return (
     <div className="flex flex-col h-full w-screen absolute">
@@ -1159,12 +1204,13 @@ const Home: NextPage = () => {
             ></div>
             <div className="w-content"></div>
 
-
-              <div className="filterandinfobox  fixed
+            <div
+              className="filterandinfobox  fixed
  top-auto bottom-0 left-0 right-0
-  w-full sm:max-w-sm  overflow-y-auto sm:absolute sm:mt-[7em] md:mt-[3em] sm:ml-3 
+   sm:max-w-sm sm:absolute sm:mt-[7em] md:mt-[3em] sm:ml-3 
   sm:top-auto sm:bottom-auto sm:left-auto 
-  sm:right-auto flex flex-col gap-y-2">
+  sm:right-auto flex flex-col gap-y-2"
+            >
               <div className="bg-zinc-900 w-content bg-opacity-90 px-2 py-1 mt-1 sm:rounded-lg">
                 <div className="gap-x-0 flex flex-row w-full">
                   <button
@@ -1177,10 +1223,8 @@ const Home: NextPage = () => {
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                   Occupancy
+                    Occupancy
                   </button>
-
-               
 
                   <button
                     onClick={() => {
@@ -1194,10 +1238,22 @@ const Home: NextPage = () => {
                   >
                     CD #
                   </button>
-                 
                 </div>
                 <div className="flex flex-col">
-               
+                  {selectedfilteropened === "occupancy" && (
+                    <div className="mt-2">
+                      <div className="flex flex-row gap-x-1">
+                      <div className="flex items-center">
+    <input  id="deleteMaxOccu" type="checkbox" checked={deletemaxoccu} onChange={(e) => {
+        setdeletemaxoccu(e.target.checked)
+    }} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+    <label htmlFor="deleteMaxOccu" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+      Hide Full</label>
+</div>
+                      </div>
+                      
+                    </div>
+                  )}
                   {selectedfilteropened === "cd" && (
                     <div className="mt-2">
                       <div className="flex flex-row gap-x-1">
@@ -1235,7 +1291,10 @@ const Home: NextPage = () => {
                         onChange={setfilteredcouncildistrictspre}
                       >
                         {" "}
-                        <div className="grid grid-cols-3 gap-x-4 ">
+                        <div className={`grid ${typeof window != "undefined" ? 
+                
+                        (window.innerWidth < 450 ? "grids-cols-5 text-xs" : "grid-cols-4")
+                        :''} gap-x-4 `}>
                           {listofcouncildists.map((item, key) => (
                             <Checkbox
                               value={item}
@@ -1248,140 +1307,144 @@ const Home: NextPage = () => {
                       </Checkbox.Group>
                     </div>
                   )}
-
-                
                 </div>
               </div>
 
-                <div
-              className={`text-sm ${
-                shelterselected != null
-                  ? `px-3 pt-2 pb-3 
+              <div
+                className={`text-sm ${
+                  shelterselected != null
+                    ? `px-3 pt-2 pb-3 
  bg-gray-900 sm:rounded-xl 
    bg-opacity-80 sm:bg-opacity-80 text-white 
    border-t-2  sm:border border-teal-500 sm:border-grey-500
-   
+   relative overflow-y-auto  scrollbar-thin scrollbar-thumb-gray-900 scrollbar-track-gray-100 scrollbar-thumb-rounded
    `
-                  : "hidden"
-              
-              }  ${typeof window != "undefined" ? window.innerHeight < 1200 ? "max-h-96" : "max-h-[500px]" : ""}`}
-            >
-              <CloseButton
-                onClose={() => {
-                  setshelterselected(null);
+                    : "hidden"
+                }  ${
+                  typeof window != "undefined"
+                    ?
+                    `${( window.innerHeight < 1200 && window.innerWidth >= 500
+                      ? "max-h-96"
+                      : "max-h-[500px]")}
+                      
+                      ${
+                        window.innerWidth < 500
+                          ? "max-h-48 text-xs"
+                          : ""
+                      }
+                      `
+                    : ""
+                }`}
+              >
+                <CloseButton
+                  onClose={() => {
+                    setshelterselected(null);
 
-                  if (mapref.current) {
-                    var affordablepoint: any = mapref.current.getSource(
-                      "selected-shelter-point"
-                    );
-                    if (affordablepoint) {
-                      affordablepoint.setData(null);
-
-                      mapref.current.setLayoutProperty(
-                        "points-selected-shelter-layer",
-                        "visibility",
-                        "none"
+                    if (mapref.current) {
+                      var affordablepoint: any = mapref.current.getSource(
+                        "selected-shelter-point"
                       );
+                      if (affordablepoint) {
+                        affordablepoint.setData(null);
+
+                        mapref.current.setLayoutProperty(
+                          "points-selected-shelter-layer",
+                          "visibility",
+                          "none"
+                        );
+                      }
+                    } else {
+                      console.log("no ref current");
                     }
-                  } else {
-                    console.log("no ref current");
-                  }
-                }}
-              />
+                  }}
+                />
 
-
-
-              {shelterselected != null && (
-                <div className="text-xs">
-                  <p className="font-bold">
-                    {shelterselected.properties.organization_name}
-                  </p>
-                  <p>{shelterselected.properties.address}</p>
-                  <div className="flex flex-row gap-x-2 my-1">
-                    <a
-                      target="_blank"
-                      rel="noreferrer"
-                      className="rounded-full px-2 py-1 text-white bg-blue-500"
-                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                        `${shelterselected.properties["address"]} Los Angeles, CA`
-                      )}`}
-                    >
-                      View on Google Maps
-                    </a>
-                    <p className="bg-gray-800 px-1 py-1 rounded-sm">
-                      CD {shelterselected.properties.cd}
+                {shelterselected != null && (
+                  <div className="text-xs">
+                    <p className="font-bold">
+                      {shelterselected.properties.organization_name}
                     </p>
-                    <p className="bg-gray-800 px-1 py-1 rounded-sm">
-                      SPA {shelterselected.properties.spa}
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-y-2 ">
-                    {JSON.parse(shelterselected.properties.shelterarray).map(
-                      (eachShelter: any, index: number) => (
-                        <div
-                          key={index}
-                          className="rounded-sm bg-slate-700 bg-opacity-90 px-1 py-1"
-                        >
-                          <span className="font-bold">
-                            {eachShelter.projectname}
-                          </span>
-                          <br />
-                          {eachShelter.type ? (
-                            <>
-                              Type: {eachShelter.type}
-                              <br />
-                            </>
-                          ) : (
-                            ""
-                          )}
-                         
-                        <p className="md:hidden">
-                        {eachShelter.total_beds} beds
-                          {' | '}
-                          {eachShelter.beds_available} beds available
-                        </p>
-                        < p className="hidden md:block">
-                        {eachShelter.total_beds} beds
-                          <br/>
-                          {eachShelter.beds_available} beds available
-                        </p>
-                          
-                          {eachShelter.male_available ? (
-                            <>
-                              <p>
-                              {eachShelter.male_available} male beds available
-                              </p>
-                            </>
-                          ) : (
-                            ""
-                          )}
-                          {eachShelter.female_available ? (
-                            <p>
-                              {eachShelter.female_available} female beds
-                              available
-                              </p>
-                            
-                          ) : (
-                            ""
-                          )}
-                           {eachShelter.criteria ? (
-                            <p>
-                              Criteria: {eachShelter.criteria}
-                              
+                    <p>{shelterselected.properties.address}</p>
+                    <div className="flex flex-row gap-x-2 my-1">
+                      <a
+                        target="_blank"
+                        rel="noreferrer"
+                        className="rounded-full px-2 py-1 text-white bg-blue-500"
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                          `${shelterselected.properties["address"]} Los Angeles, CA`
+                        )}`}
+                      >
+                        View on Google Maps
+                      </a>
+                      <p className="bg-gray-800 px-1 py-1 rounded-sm">
+                        CD {shelterselected.properties.cd}
+                      </p>
+                      <p className="bg-gray-800 px-1 py-1 rounded-sm">
+                        SPA {shelterselected.properties.spa}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-y-2 ">
+                      {JSON.parse(shelterselected.properties.shelterarray).map(
+                        (eachShelter: any, index: number) => (
+                          <div
+                            key={index}
+                            className="rounded-sm bg-slate-700 bg-opacity-90 px-1 py-1"
+                          >
+                            <span className="font-bold">
+                              {eachShelter.projectname}
+                            </span>
+                            <br />
+                            {eachShelter.type ? (
+                              <>
+                                Type: {eachShelter.type}
+                                <br />
+                              </>
+                            ) : (
+                              ""
+                            )}
+
+                            <p className="md:hidden">
+                              {eachShelter.total_beds} beds
+                              {" | "}
+                              {eachShelter.beds_available} beds available
                             </p>
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-              </div>
+                            <p className="hidden md:block">
+                              {eachShelter.total_beds} beds
+                              <br />
+                              {eachShelter.beds_available} beds available
+                            </p>
 
-          
+                            {eachShelter.male_available ? (
+                              <>
+                                <p>
+                                  {eachShelter.male_available} male beds
+                                  available
+                                </p>
+                              </>
+                            ) : (
+                              ""
+                            )}
+                            {eachShelter.female_available ? (
+                              <p>
+                                {eachShelter.female_available} female beds
+                                available
+                              </p>
+                            ) : (
+                              ""
+                            )}
+                            {eachShelter.criteria ? (
+                              <p>Criteria: {eachShelter.criteria}</p>
+                            ) : (
+                              ""
+                            )}
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
