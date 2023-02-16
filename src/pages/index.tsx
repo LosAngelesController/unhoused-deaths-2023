@@ -1205,13 +1205,13 @@ const Home: NextPage = () => {
             ></div>
             <div className="w-content"></div>
 
-            <div className="mt-[7em] sm:hidden flex flex-row">
+            <div className="fixed mt-[7em] sm:hidden flex flex-row">
               {filterpanelopened === false && (
                 <button
                   onClick={() => {
                     setfilterpanelopened(true);
                   }}
-                  className={`fixed md:hidden mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base 
+                  className={` md:hidden mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base 
                   bg-gray-800 bg-opacity-80 text-white border-white border-2`}
                 >
                   <svg
