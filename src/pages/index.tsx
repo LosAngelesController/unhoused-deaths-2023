@@ -173,9 +173,10 @@ const Home: NextPage = () => {
   const [doneloadingmap, setdoneloadingmap] = useState(false);
   const [sliderMonth, setsliderMonthAct] = useState<any>([1, 12]);
   const [selectedfilteropened, setselectedfilteropened] = useState("occupancy");
-  const [deletemaxoccu,setdeletemaxoccu] = useState(false);
+  const [deletemaxoccu, setdeletemaxoccu] = useState(false);
   const [datasetloaded, setdatasetloaded] = useState(false);
   const refismaploaded = useRef(false);
+  const [sheltersperdist, setsheltersperdist] = useState<any>({});
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
 
@@ -189,6 +190,21 @@ const Home: NextPage = () => {
       setfilteredcouncildistricts(input);
     }
   };
+
+  const sheltersperdistcompute = (data: any) => {
+    const result = data.reduce((acc: any, obj: any) => {
+      const key = String(obj.properties.cd);
+
+      if (!acc[key]) {
+        acc[key] = 0;
+      }
+      acc[key]++;
+
+      return acc;
+    }, {});
+
+    setsheltersperdist(result);
+  }
 
   const [shelterselected, setshelterselected] = useState<any>(null);
 
@@ -512,6 +528,8 @@ const Home: NextPage = () => {
         .then((data) => {
           console.log(data);
 
+          sheltersperdistcompute(data);
+
           const geojsonsdflsf = convertDataFromBackend(data);
 
           map.addSource("sheltersv2", {
@@ -526,6 +544,8 @@ const Home: NextPage = () => {
               .then((response) => response.json())
               .then((data) => {
                 console.log(data);
+
+                sheltersperdistcompute(data);
 
                 const geojsonrefresh = convertDataFromBackend(data);
 
@@ -1053,8 +1073,6 @@ const Home: NextPage = () => {
       //end of load
     });
 
-
-
     var getmapboxlogo: any = document.querySelector(".mapboxgl-ctrl-logo");
 
     if (getmapboxlogo) {
@@ -1064,38 +1082,23 @@ const Home: NextPage = () => {
 
   let arrayoffilterables: any = [];
 
-  arrayoffilterables.push(
-    [
-      "match",
-      ["get", "cd"],
-      filteredcouncildistricts.map((x) => parseInt(x)),
-      true,
-      false,
-    ]
-  )
+  arrayoffilterables.push([
+    "match",
+    ["get", "cd"],
+    filteredcouncildistricts.map((x) => parseInt(x)),
+    true,
+    false,
+  ]);
 
   if (deletemaxoccu === true) {
-    arrayoffilterables.push(
-      [
-        "match",
-        ["get", "occper"],
-        [1],
-        false,
-        true
-      ]
-    )
+    arrayoffilterables.push(["match", ["get", "occper"], [1], false, true]);
   }
 
   useEffect(() => {
     if (doneloadingmap) {
       const filterinput = JSON.parse(
-        JSON.stringify([
-          "all",
-         arrayoffilterables
-        ])
+        JSON.stringify(["all", arrayoffilterables])
       );
-
-      
 
       console.log(filterinput);
 
@@ -1105,8 +1108,6 @@ const Home: NextPage = () => {
         }
       }
     }
-
- 
   }, [deletemaxoccu, filteredcouncildistricts]);
 
   return (
@@ -1243,15 +1244,24 @@ const Home: NextPage = () => {
                   {selectedfilteropened === "occupancy" && (
                     <div className="mt-2">
                       <div className="flex flex-row gap-x-1">
-                      <div className="flex items-center">
-    <input  id="deleteMaxOccu" type="checkbox" checked={deletemaxoccu} onChange={(e) => {
-        setdeletemaxoccu(e.target.checked)
-    }} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-    <label htmlFor="deleteMaxOccu" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-      Hide Full</label>
-</div>
+                        <div className="flex items-center">
+                          <input
+                            id="deleteMaxOccu"
+                            type="checkbox"
+                            checked={deletemaxoccu}
+                            onChange={(e) => {
+                              setdeletemaxoccu(e.target.checked);
+                            }}
+                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          />
+                          <label
+                            htmlFor="deleteMaxOccu"
+                            className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                          >
+                            Hide Full
+                          </label>
+                        </div>
                       </div>
-                      
                     </div>
                   )}
                   {selectedfilteropened === "cd" && (
@@ -1291,14 +1301,19 @@ const Home: NextPage = () => {
                         onChange={setfilteredcouncildistrictspre}
                       >
                         {" "}
-                        <div className={`grid ${typeof window != "undefined" ? 
-                
-                        (window.innerWidth < 450 ? "grids-cols-5 text-xs" : "grid-cols-4")
-                        :''} gap-x-4 `}>
+                        <div
+                          className={`grid ${
+                            typeof window != "undefined"
+                              ? window.innerWidth < 450
+                                ? "grids-cols-5 text-xs"
+                                : "grid-cols-4"
+                              : ""
+                          } gap-x-4 `}
+                        >
                           {listofcouncildists.map((item, key) => (
                             <Checkbox
                               value={item}
-                              label={`${item}
+                              label={`${item} (${sheltersperdist[String(item)] ? parseInt(sheltersperdist[String(item)]).toLocaleString('en-US') : 0})
                              `}
                               key={key}
                             />
@@ -1322,16 +1337,13 @@ const Home: NextPage = () => {
                     : "hidden"
                 }  ${
                   typeof window != "undefined"
-                    ?
-                    `${( window.innerHeight < 1200 && window.innerWidth >= 500
-                      ? "max-h-96"
-                      : "max-h-[500px]")}
-                      
-                      ${
-                        window.innerWidth < 500
-                          ? "max-h-48 text-xs"
-                          : ""
+                    ? `${
+                        window.innerHeight < 1200 && window.innerWidth >= 500
+                          ? "max-h-96"
+                          : "max-h-[500px]"
                       }
+                      
+                      ${window.innerWidth < 500 ? "max-h-48 text-xs" : ""}
                       `
                     : ""
                 }`}
