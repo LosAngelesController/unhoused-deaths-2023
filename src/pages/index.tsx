@@ -1422,7 +1422,7 @@ const Home: NextPage = () => {
                             />
                           ))}
                         </div>
-                        <p className="italic text-xs text-white">CD <span  className="text-blue-300">available beds/</span><span className="text-blue-400">total beds shelters</span>  <span className="text-green-400">shelters</span></p>
+                        <p className="italic text-xs text-white">CD <span  className="text-blue-300">available beds/</span><span className="text-blue-400">total beds</span> <span className="text-green-400">shelters</span></p>
                       </Checkbox.Group>
                     </div>
                   )}
@@ -1532,14 +1532,9 @@ const Home: NextPage = () => {
                               ""
                             )}
 
-                            <p className="md:hidden">
+                            <p className="font-semibold">
                               {eachShelter.total_beds} beds
                               {" | "}
-                              {eachShelter.beds_available} beds available
-                            </p>
-                            <p className="hidden md:block">
-                              {eachShelter.total_beds} beds
-                              <br />
                               {eachShelter.beds_available} beds available
                             </p>
 
@@ -1567,7 +1562,7 @@ const Home: NextPage = () => {
                               ""
                             )}
                              {shelterselected.properties.last_updated && (
-                        <p className="italic">
+                        <p className="italic font-semibold">
                         Last Updated {shelterselected.properties.last_updated}
                       </p>
                       )}
