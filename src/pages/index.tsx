@@ -177,6 +177,8 @@ const Home: NextPage = () => {
   const [datasetloaded, setdatasetloaded] = useState(false);
   const refismaploaded = useRef(false);
   const [sheltersperdist, setsheltersperdist] = useState<any>({});
+  const [totalbedsperdist, settotalbedsperdist] = useState<any>({});
+  const [bedsavailableperdist, setbedsavailableperdist] = useState<any>({});
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
 
@@ -204,6 +206,32 @@ const Home: NextPage = () => {
     }, {});
 
     setsheltersperdist(result);
+
+    const shelterbedstotal = data.rows.reduce((acc: any, obj: any) => {
+      const key = String(obj.cd);
+
+      if (!acc[key]) {
+        acc[key] = obj.total_beds;
+      }
+      acc[key] = acc[key] + obj.total_beds;
+
+      return acc;
+    }, {});
+
+    settotalbedsperdist(shelterbedstotal);
+
+    const shelterbedsavaliable = data.rows.reduce((acc: any, obj: any) => {
+      const key = String(obj.cd);
+
+      if (!acc[key]) {
+        acc[key] = obj.beds_avaliable;
+      }
+      acc[key] = acc[key] + obj.beds_avaliable;
+
+      return acc;
+    }, {});
+
+    setbedsavailableperdist(shelterbedsavaliable);
   };
 
   const [shelterselected, setshelterselected] = useState<any>(null);
@@ -1379,7 +1407,15 @@ const Home: NextPage = () => {
                           {listofcouncildists.map((item, key) => (
                             <Checkbox
                               value={item}
-                              label={`${item} (${
+                              label={`${item} [${bedsavailableperdist[String(item)]
+                                ? parseInt(
+                                  bedsavailableperdist[String(item)]
+                                  ).toLocaleString("en-US")
+                                : 0}/${totalbedsperdist[String(item)]
+                                  ? parseInt(
+                                    totalbedsperdist[String(item)]
+                                    ).toLocaleString("en-US")
+                                  : 0}] (${
                                 sheltersperdist[String(item)]
                                   ? parseInt(
                                       sheltersperdist[String(item)]
@@ -1391,6 +1427,7 @@ const Home: NextPage = () => {
                             />
                           ))}
                         </div>
+                        <p className="italic text-xs text-gray-700">Key: {'['}available beds/total beds{']'} shelters</p>
                       </Checkbox.Group>
                     </div>
                   )}
@@ -1535,7 +1572,7 @@ const Home: NextPage = () => {
                               ""
                             )}
                              {shelterselected.properties.last_updated && (
-                        <p>
+                        <p className="italic">
                         Last Updated {shelterselected.properties.last_updated}
                       </p>
                       )}
