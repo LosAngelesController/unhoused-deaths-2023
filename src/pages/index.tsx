@@ -1190,7 +1190,7 @@ const Home: NextPage = () => {
         <div className="flex-initial h-content flex-col flex z-50">
           <div className="   max-h-screen flex-col flex z-5">
             <div
-              className="absolute mt-[3.5em] md:mt-[3.7em] md:ml-3 top-0 z-5 titleBox  ml-2 text-base bold md:semi-bold break-words bg-[#212121]"
+              className="absolute mt-[3.2em] md:mt-[3.7em] md:ml-3 top-0 z-5 titleBox  ml-2 text-base bold md:semi-bold break-words bg-[#212121]"
               style={{
                 backgroundColor: "#212121",
                 color: "#ffffff",
@@ -1205,7 +1205,7 @@ const Home: NextPage = () => {
             ></div>
             <div className="w-content"></div>
 
-            <div className="fixed mt-[7em] sm:hidden flex flex-row">
+            <div className="fixed mt-[7em] ml-3 sm:hidden flex flex-row">
               {filterpanelopened === false && (
                 <button
                   onClick={() => {
