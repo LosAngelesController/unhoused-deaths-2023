@@ -1206,7 +1206,7 @@ const Home: NextPage = () => {
             <div className="w-content"></div>
 
             <div className="mt-[7em] sm:hidden flex flex-row">
-            {filterpanelopened === false && (
+              {filterpanelopened === false && (
                 <button
                   onClick={() => {
                     setfilterpanelopened(true);
@@ -1240,6 +1240,7 @@ const Home: NextPage = () => {
   sm:right-auto flex flex-col gap-y-2"
             >
               {filterpanelopened === false && (
+                <div className=" flex flex-row">
                 <button
                   onClick={() => {
                     setfilterpanelopened(true);
@@ -1262,6 +1263,7 @@ const Home: NextPage = () => {
                   </svg>
                   <span>Filter</span>
                 </button>
+                </div>
               )}
               <div
                 className={`
