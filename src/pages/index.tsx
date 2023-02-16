@@ -1082,22 +1082,26 @@ const Home: NextPage = () => {
 
   let arrayoffilterables: any = [];
 
+  
   arrayoffilterables.push([
     "match",
     ["get", "cd"],
-    filteredcouncildistricts.map((x) => parseInt(x)),
+    filteredcouncildistricts.map((x) => String(x)),
     true,
     false,
   ]);
 
   if (deletemaxoccu === true) {
-    arrayoffilterables.push(["match", ["get", "occper"], [1], false, true]);
+    arrayoffilterables.push(["match", 
+    ["get", "occper"], 
+    [1],
+     false, true]);
   }
 
   useEffect(() => {
     if (doneloadingmap) {
       const filterinput = JSON.parse(
-        JSON.stringify(["all", arrayoffilterables])
+        JSON.stringify(["all", ...arrayoffilterables])
       );
 
       console.log(filterinput);
@@ -1190,7 +1194,7 @@ const Home: NextPage = () => {
         <div className="flex-initial h-content flex-col flex z-50">
           <div className="   max-h-screen flex-col flex z-5">
             <div
-              className="absolute mt-[3.5em] md:mt-[3.7em] md:ml-3 top-0 z-5 titleBox  ml-2 text-base bold md:semi-bold break-words bg-[#212121]"
+              className="absolute mt-[3em] md:mt-[3.7em] md:ml-3 top-0 z-5 titleBox  ml-2 text-base bold md:semi-bold break-words bg-[#212121]"
               style={{
                 backgroundColor: "#212121",
                 color: "#ffffff",
@@ -1205,7 +1209,7 @@ const Home: NextPage = () => {
             ></div>
             <div className="w-content"></div>
 
-            <div className="mt-[7em] sm:hidden flex flex-row">
+            <div className="fixed mt-[6em] ml-2 sm:hidden flex flex-row">
               {filterpanelopened === false && (
                 <button
                   onClick={() => {
@@ -1241,28 +1245,28 @@ const Home: NextPage = () => {
             >
               {filterpanelopened === false && (
                 <div className=" flex flex-row">
-                <button
-                  onClick={() => {
-                    setfilterpanelopened(true);
-                  }}
-                  className={`hidden md:block mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base 
-                  bg-gray-800 bg-opacity-80 text-white border-white border-2`}
-                >
-                  <svg
-                    style={{
-                      width: "20px",
-                      height: "20px",
+                  <button
+                    onClick={() => {
+                      setfilterpanelopened(true);
                     }}
-                    viewBox="0 0 24 24"
-                    className="inline align-middle mt-0.5"
+                    className={`hidden md:block mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base 
+                  bg-gray-800 bg-opacity-80 text-white border-white border-2`}
                   >
-                    <path
-                      fill="currentColor"
-                      d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
-                    />
-                  </svg>
-                  <span>Filter</span>
-                </button>
+                    <svg
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                      }}
+                      viewBox="0 0 24 24"
+                      className="inline align-middle mt-0.5"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
+                      />
+                    </svg>
+                    <span>Filter</span>
+                  </button>
                 </div>
               )}
               <div
@@ -1279,7 +1283,7 @@ const Home: NextPage = () => {
                     setfilterpanelopened(false);
                   }}
                 />
-                <div className="gap-x-0 flex flex-row w-full">
+                <div className="gap-x-0 flex flex-row w-full pr-8">
                   <button
                     onClick={() => {
                       setselectedfilteropened("occupancy");
@@ -1305,6 +1309,8 @@ const Home: NextPage = () => {
                   >
                     CD #
                   </button>
+
+                  
                 </div>
                 <div className="flex flex-col">
                   {selectedfilteropened === "occupancy" && (
@@ -1371,9 +1377,9 @@ const Home: NextPage = () => {
                           className={`grid ${
                             typeof window != "undefined"
                               ? window.innerWidth < 450
-                                ? "grids-cols-5 text-xs"
-                                : "grid-cols-4"
-                              : ""
+                                ? " grids-cols-5 text-xs "
+                                : " grid-cols-4 "
+                              : "grid-cols-4"
                           } gap-x-4 `}
                         >
                           {listofcouncildists.map((item, key) => (
