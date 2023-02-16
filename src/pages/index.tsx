@@ -1082,7 +1082,6 @@ const Home: NextPage = () => {
 
   let arrayoffilterables: any = [];
 
-  
   arrayoffilterables.push([
     "match",
     ["get", "cd"],
@@ -1092,10 +1091,7 @@ const Home: NextPage = () => {
   ]);
 
   if (deletemaxoccu === true) {
-    arrayoffilterables.push(["match", 
-    ["get", "occper"], 
-    [1],
-     false, true]);
+    arrayoffilterables.push(["match", ["get", "occper"], [1], false, true]);
   }
 
   useEffect(() => {
@@ -1309,8 +1305,6 @@ const Home: NextPage = () => {
                   >
                     CD #
                   </button>
-
-                  
                 </div>
                 <div className="flex flex-col">
                   {selectedfilteropened === "occupancy" && (
