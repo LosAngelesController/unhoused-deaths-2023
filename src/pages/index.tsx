@@ -1561,9 +1561,9 @@ const Home: NextPage = () => {
                             ) : (
                               ""
                             )}
-                             {shelterselected.properties.last_updated && (
+                             {eachShelter.last_updated && (
                         <p className="italic font-semibold">
-                        Last Updated {shelterselected.properties.last_updated}
+                        Last Updated {eachShelter.last_updated}
                       </p>
                       )}
                           </div>
