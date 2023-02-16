@@ -1467,7 +1467,20 @@ const Home: NextPage = () => {
                         SPA {shelterselected.properties.spa}
                       </p>
                     </div>
+                 
                     <div className="flex flex-col gap-y-2 ">
+                      {shelterselected.properties.contact_info && (
+                        <p>
+                        Contact: {shelterselected.properties.contact_info}
+                      </p>
+                      )}
+                        {shelterselected.properties.website && (
+                        <p>
+                        <a className="underline text-mejito" href={shelterselected.properties.website}>{shelterselected.properties.website}</a>
+                      </p>
+                      )}
+                      
+                      
                       {JSON.parse(shelterselected.properties.shelterarray).map(
                         (eachShelter: any, index: number) => (
                           <div
@@ -1521,6 +1534,11 @@ const Home: NextPage = () => {
                             ) : (
                               ""
                             )}
+                             {shelterselected.properties.last_updated && (
+                        <p>
+                        Last Updated {shelterselected.properties.last_updated}
+                      </p>
+                      )}
                           </div>
                         )
                       )}
