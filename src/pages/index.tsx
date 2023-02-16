@@ -1322,7 +1322,7 @@ const Home: NextPage = () => {
                           />
                           <label
                             htmlFor="deleteMaxOccu"
-                            className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                            className="ml-2 text-sm font-medium text-gray-300"
                           >
                             Hide Full
                           </label>
