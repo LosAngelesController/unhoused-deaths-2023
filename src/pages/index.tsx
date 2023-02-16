@@ -1563,7 +1563,9 @@ const Home: NextPage = () => {
                             )}
                              {eachShelter.last_updated && (
                         <p className="italic font-semibold">
-                        Last Updated {eachShelter.last_updated}
+                        Last Updated {new Date(eachShelter.last_updated)
+                        .toLocaleDateString('default', { weekday:"short", year:"numeric", month:"short", day:"numeric"})
+                        }
                       </p>
                       )}
                           </div>
