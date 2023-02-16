@@ -224,9 +224,9 @@ const Home: NextPage = () => {
       const key = String(obj.cd);
 
       if (!acc[key]) {
-        acc[key] = obj.beds_avaliable;
+        acc[key] = obj.beds_available;
       }
-      acc[key] = acc[key] + obj.beds_avaliable;
+      acc[key] = acc[key] + obj.beds_available;
 
       return acc;
     }, {});
@@ -1263,7 +1263,7 @@ const Home: NextPage = () => {
             <div
               className="filterandinfobox  fixed
  top-auto bottom-0 left-0 right-0
-   sm:max-w-sm sm:absolute sm:mt-[7em] md:mt-[3em] sm:ml-3 
+   sm:max-w-sm sm:absolute sm:mt-[6em] md:mt-[3em] sm:ml-3 
   sm:top-auto sm:bottom-auto sm:left-auto 
   sm:right-auto flex flex-col gap-y-2"
             >
@@ -1396,38 +1396,33 @@ const Home: NextPage = () => {
                       >
                         {" "}
                         <div
-                          className={`grid ${
-                            typeof window != "undefined"
-                              ? window.innerWidth < 450
-                                ? " grids-cols-5 text-xs "
-                                : " grid-cols-4 "
-                              : "grid-cols-4"
+                          className={`grid grid-cols-3
                           } gap-x-4 `}
                         >
                           {listofcouncildists.map((item, key) => (
                             <Checkbox
                               value={item}
-                              label={`${item} [${bedsavailableperdist[String(item)]
-                                ? parseInt(
-                                  bedsavailableperdist[String(item)]
-                                  ).toLocaleString("en-US")
-                                : 0}/${totalbedsperdist[String(item)]
-                                  ? parseInt(
+                              label={<span className="text-nowrap text-xs">
+                                <span className="text-white">{item}</span>
+                                {' '}
+                                <span className="text-blue-300">{parseInt(
+                                    bedsavailableperdist[String(item)]
+                                    ).toLocaleString("en-US")}</span>
+                                    <span className="text-blue-300">{'/'}</span>
+                                      <span className="text-blue-400">{parseInt(
                                     totalbedsperdist[String(item)]
-                                    ).toLocaleString("en-US")
-                                  : 0}] (${
-                                sheltersperdist[String(item)]
-                                  ? parseInt(
-                                      sheltersperdist[String(item)]
-                                    ).toLocaleString("en-US")
-                                  : 0
-                              })
-                             `}
+                                    ).toLocaleString("en-US")}</span>
+                                   {' '}
+                                      <span className="text-green-400">{parseInt(
+                                    sheltersperdist[String(item)]
+                                    ).toLocaleString("en-US")}</span>
+                                   
+                              </span>}
                               key={key}
                             />
                           ))}
                         </div>
-                        <p className="italic text-xs text-gray-700">Key: {'['}available beds/total beds{']'} shelters</p>
+                        <p className="italic text-xs text-white">CD <span  className="text-blue-300">available beds/</span><span className="text-blue-400">total beds shelters</span>  <span className="text-green-400">shelters</span></p>
                       </Checkbox.Group>
                     </div>
                   )}
