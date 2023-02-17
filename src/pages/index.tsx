@@ -194,18 +194,28 @@ const Home: NextPage = () => {
   };
 
   const sheltersperdistcompute = (data: any) => {
-    const result = data.rows.reduce((acc: any, obj: any) => {
-      const key = String(obj.cd);
 
-      if (!acc[key]) {
-        acc[key] = 0;
-      }
-      acc[key]++;
+   
 
-      return acc;
-    }, {});
+    const sheltersperdist:any = {
 
-    setsheltersperdist(result);
+    };
+
+    const locationcountperdist:any = {}
+
+data.rows.forEach((eachrow: any) => {
+  if (typeof sheltersperdist[eachrow.cd] === "undefined") {
+    sheltersperdist[eachrow.cd] = new Set();
+  }
+
+  sheltersperdist[eachrow.cd].add(String(eachrow.address));
+})
+
+    Object.entries(sheltersperdist).forEach(([cdnumber, shelterset]) => {
+      locationcountperdist[cdnumber] = shelterset.size;
+    })
+
+    setsheltersperdist(locationcountperdist);
 
     const shelterbedstotal = data.rows.reduce((acc: any, obj: any) => {
       const key = String(obj.cd);
@@ -715,14 +725,20 @@ const Home: NextPage = () => {
           ${
             eachShelter.criteria ? `Criteria: ${eachShelter.criteria}<br/>` : ""
           }
-          ${eachShelter.last_updated && (
-          `
-            <span class='italic font-semibold'>Last Updated ${new Date(eachShelter.last_updated)
-            .toLocaleDateString('default', { weekday:"short", year:"numeric", month:"short", day:"numeric"})
-            }
+          ${
+            eachShelter.last_updated &&
+            `
+            <span class='italic font-semibold'>Last Updated ${new Date(
+              eachShelter.last_updated
+            ).toLocaleDateString("default", {
+              weekday: "short",
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
             </span>
           `
-          )}
+          }
 
         
           </div>
@@ -1413,27 +1429,37 @@ const Home: NextPage = () => {
                           {listofcouncildists.map((item, key) => (
                             <Checkbox
                               value={item}
-                              label={<span className="text-nowrap text-xs">
-                                <span className="text-white">{item}</span>
-                                {' '}
-                                <span className="text-blue-300">{parseInt(
-                                    bedsavailableperdist[String(item)]
-                                    ).toLocaleString("en-US")}</span>
-                                    <span className="text-blue-300">{'/'}</span>
-                                      <span className="text-blue-400">{parseInt(
-                                    totalbedsperdist[String(item)]
-                                    ).toLocaleString("en-US")}</span>
-                                   {' '}
-                                      <span className="text-green-400">{parseInt(
-                                    sheltersperdist[String(item)]
-                                    ).toLocaleString("en-US")}</span>
-                                   
-                              </span>}
+                              label={
+                                <span className="text-nowrap text-xs">
+                                  <span className="text-white">{item}</span>{" "}
+                                  <span className="text-blue-300">
+                                    {parseInt(
+                                      bedsavailableperdist[String(item)]
+                                    ).toLocaleString("en-US")}
+                                  </span>
+                                  <span className="text-blue-300">{"/"}</span>
+                                  <span className="text-blue-400">
+                                    {parseInt(
+                                      totalbedsperdist[String(item)]
+                                    ).toLocaleString("en-US")}
+                                  </span>{" "}
+                                  <span className="text-green-400">
+                                    {parseInt(
+                                      sheltersperdist[String(item)]
+                                    ).toLocaleString("en-US")}
+                                  </span>
+                                </span>
+                              }
                               key={key}
                             />
                           ))}
                         </div>
-                        <p className="italic text-xs text-white">CD <span  className="text-blue-300">available beds/</span><span className="text-blue-400">total beds</span> <span className="text-green-400">shelters</span></p>
+                        <p className="italic text-xs text-white">
+                          CD{" "}
+                          <span className="text-blue-300">available beds/</span>
+                          <span className="text-blue-400">total beds</span>{" "}
+                          <span className="text-green-400">locations</span>
+                        </p>
                       </Checkbox.Group>
                     </div>
                   )}
@@ -1510,20 +1536,24 @@ const Home: NextPage = () => {
                         SPA {shelterselected.properties.spa}
                       </p>
                     </div>
-                 
+
                     <div className="flex flex-col gap-y-2 ">
                       {shelterselected.properties.contact_info && (
                         <p>
-                        Contact: {shelterselected.properties.contact_info}
-                      </p>
+                          Contact: {shelterselected.properties.contact_info}
+                        </p>
                       )}
-                        {shelterselected.properties.website && (
+                      {shelterselected.properties.website && (
                         <p>
-                        <a className="underline text-mejito" href={shelterselected.properties.website}>{shelterselected.properties.website}</a>
-                      </p>
+                          <a
+                            className="underline text-mejito"
+                            href={shelterselected.properties.website}
+                          >
+                            {shelterselected.properties.website}
+                          </a>
+                        </p>
                       )}
-                      
-                      
+
                       {JSON.parse(shelterselected.properties.shelterarray).map(
                         (eachShelter: any, index: number) => (
                           <div
@@ -1572,13 +1602,19 @@ const Home: NextPage = () => {
                             ) : (
                               ""
                             )}
-                             {eachShelter.last_updated && (
-                        <p className="italic font-semibold">
-                        Last Updated {new Date(eachShelter.last_updated)
-                        .toLocaleDateString('default', { weekday:"short", year:"numeric", month:"short", day:"numeric"})
-                        }
-                      </p>
-                      )}
+                            {eachShelter.last_updated && (
+                              <p className="italic font-semibold">
+                                Last Updated{" "}
+                                {new Date(
+                                  eachShelter.last_updated
+                                ).toLocaleDateString("default", {
+                                  weekday: "short",
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                })}
+                              </p>
+                            )}
                           </div>
                         )
                       )}
