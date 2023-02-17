@@ -697,9 +697,7 @@ const Home: NextPage = () => {
           <div class="rounded-sm bg-slate-700 bg-opacity-70 px-1 py-1">
           <strong>${eachShelter.projectname}</strong><br/>
           ${eachShelter.type ? `Type: ${eachShelter.type}<br/>` : ""}
-          ${
-            eachShelter.criteria ? `Criteria: ${eachShelter.criteria}<br/>` : ""
-          }
+         
           ${eachShelter.total_beds} beds<br/>
           ${eachShelter.beds_available} beds available<br/>
           ${
@@ -713,6 +711,19 @@ const Home: NextPage = () => {
               ? `  ${eachShelter.female_available} female beds available<br/>`
               : ""
           }
+
+          ${
+            eachShelter.criteria ? `Criteria: ${eachShelter.criteria}<br/>` : ""
+          }
+          ${eachShelter.last_updated && (
+          `
+            <span class='italic font-semibold'>Last Updated ${new Date(eachShelter.last_updated)
+            .toLocaleDateString('default', { weekday:"short", year:"numeric", month:"short", day:"numeric"})
+            }
+            </span>
+          `
+          )}
+
         
           </div>
             `);
