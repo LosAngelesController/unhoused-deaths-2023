@@ -85,34 +85,7 @@ var councilpopulations: any = {
   "15": 258310,
 };
 
-const councilcount: any = {
-  "13": 6380,
-  "11": 5350,
-  "5": 5102,
-  "2": 5063,
-  "3": 4338,
-  "6": 4050,
-  "10": 3961,
-  "14": 3920,
-  "1": 3905,
-  "9": 3892,
-  "12": 3243,
-  "4": 2942,
-  "7": 2689,
-  "8": 2332,
-  "15": 1681,
-};
 
-const createdbycount: any = {
-  BOE: 1,
-  BSS: 73,
-  "Council's Office": 2142,
-  ITA: 2978,
-  LASAN: 5518,
-  "Proactive Insert": 3,
-  "Self Service": 46007,
-  "Self Service_SAN": 1509,
-};
 
 const Home: NextPage = () => {
   var councilBounds: any = {
@@ -120,52 +93,18 @@ const Home: NextPage = () => {
     type: "FeatureCollection",
   };
 
-  const calculateifboxisvisible = () => {
-    if (typeof window != "undefined") {
-      return window.innerWidth > 640;
-    } else {
-      return true;
-    }
-  };
-
-  const calculateIntensityCoefficient = () => {
-    const monthdomain = sliderMonth[1] - sliderMonth[0];
-
-    if (monthdomain === 0) {
-      return 12;
-    } else {
-      const coefficient = 12 / monthdomain;
-
-      return coefficient;
-    }
-  };
-
-  const listofcreatedbyoptions = [
-    "Self Service",
-    "LASAN",
-    "Council's Office",
-    "Self Service_SAN",
-    "ITA",
-    "BSS",
-    "Proactive Insert",
-    "BOE",
-  ];
-
   const listofcouncildists = Array.from({ length: 15 }, (_, i) => i + 1).map(
     (eachItem) => String(eachItem)
   );
 
-  const [createdby, setcreatedby] = useState<string[]>(listofcreatedbyoptions);
   const [filteredcouncildistricts, setfilteredcouncildistricts] =
     useState<string[]>(listofcouncildists);
 
   const shouldfilteropeninit =
     typeof window != "undefined" ? window.innerWidth >= 640 : false;
   const [showtotalarea, setshowtotalarea] = useState(false);
-  let [disclaimerOpen, setDisclaimerOpen] = useState(false);
   const touchref = useRef<any>(null);
   const isLoggedInRef = useRef(false);
-  let [housingaddyopen, sethousingaddyopen] = useState(false);
   var mapref: any = useRef(null);
   const okaydeletepoints: any = useRef(null);
   var [metric, setmetric] = useState(false);
@@ -174,13 +113,12 @@ const Home: NextPage = () => {
   const [sliderMonth, setsliderMonthAct] = useState<any>([1, 12]);
   const [selectedfilteropened, setselectedfilteropened] = useState("occupancy");
   const [deletemaxoccu, setdeletemaxoccu] = useState(false);
-  const [datasetloaded, setdatasetloaded] = useState(false);
   const refismaploaded = useRef(false);
-  const [sheltersperdist, setsheltersperdist] = useState<any>({});
-  const [totalbedsperdist, settotalbedsperdist] = useState<any>({});
-  const [bedsavailableperdist, setbedsavailableperdist] = useState<any>({});
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
+
+    //template name, this is used to submit to the map analytics software what the current state of the map is.
+    var mapname = "templatemapname";
 
   const [mapboxloaded, setmapboxloaded] = useState(false);
 
@@ -192,61 +130,6 @@ const Home: NextPage = () => {
       setfilteredcouncildistricts(input);
     }
   };
-
-  const sheltersperdistcompute = (data: any) => {
-
-   
-
-    const sheltersperdist:any = {
-
-    };
-
-    const locationcountperdist:any = {}
-
-data.rows.forEach((eachrow: any) => {
-  if (typeof sheltersperdist[eachrow.cd] === "undefined") {
-    sheltersperdist[eachrow.cd] = new Set();
-  }
-
-  sheltersperdist[eachrow.cd].add(String(eachrow.address));
-})
-
-    Object.entries(sheltersperdist).forEach(([cdnumber, shelterset]) => {
-      locationcountperdist[cdnumber] = shelterset.size;
-    })
-
-    setsheltersperdist(locationcountperdist);
-
-    const shelterbedstotal = data.rows.reduce((acc: any, obj: any) => {
-      const key = String(obj.cd);
-
-      if (!acc[key]) {
-        acc[key] = obj.total_beds;
-      }
-      acc[key] = acc[key] + obj.total_beds;
-
-      return acc;
-    }, {});
-
-    settotalbedsperdist(shelterbedstotal);
-
-    const shelterbedsavaliable = data.rows.reduce((acc: any, obj: any) => {
-      const key = String(obj.cd);
-
-      if (!acc[key]) {
-        acc[key] = obj.beds_available;
-      }
-      acc[key] = acc[key] + obj.beds_available;
-
-      return acc;
-    }, {});
-
-    setbedsavailableperdist(shelterbedsavaliable);
-  };
-
-  const [shelterselected, setshelterselected] = useState<any>(null);
-
-  const [user, loading, error] = useAuthState(auth);
 
   const datadogconfig: any = {
     applicationId: "54ed9846-68b0-4811-a47a-7330cf1828a0",
@@ -344,98 +227,6 @@ data.rows.forEach((eachrow: any) => {
   };
 
   const divRef: any = React.useRef<HTMLDivElement>(null);
-
-  function convertDataFromBackend(data: any) {
-    /*
-        var featuresarray = data.rows.map((eachRow:any) => {
-          return {
-            "type": "Feature",
-      "properties": {
-        ...eachRow
-      },
-      "geometry": {
-        "coordinates": [
-          eachRow.lng,
-         eachRow.lat
-        ],
-        "type": "Point"
-          }
-
-        }*/
-
-    var objectbylocation: any = {};
-
-    data.rows.forEach((eachRow: any) => {
-      const uniq = `${eachRow.lat}` + `${eachRow.lng}`;
-
-      if (objectbylocation[uniq] === undefined) {
-        objectbylocation[uniq] = {};
-      }
-
-      if (eachRow.total_beds === null) {
-        eachRow.total_beds = 0;
-      }
-
-      if (eachRow.beds_available === null) {
-        eachRow.beds_available = 0;
-      }
-
-      if (objectbylocation[uniq].total_beds === undefined) {
-        objectbylocation[uniq].total_beds = eachRow.total_beds;
-      } else {
-        objectbylocation[uniq].total_beds += eachRow.total_beds;
-      }
-
-      if (objectbylocation[uniq].beds_available === undefined) {
-        objectbylocation[uniq].beds_available = eachRow.beds_available;
-      } else {
-        objectbylocation[uniq].beds_available += eachRow.beds_available;
-      }
-
-      objectbylocation[uniq].occper =
-        1 -
-        objectbylocation[uniq].beds_available /
-          objectbylocation[uniq].total_beds;
-
-      objectbylocation[uniq].organization_name = eachRow.organization_name;
-      objectbylocation[uniq].lat = eachRow.lat;
-      objectbylocation[uniq].lng = eachRow.lng;
-      objectbylocation[uniq].address = eachRow.address;
-      objectbylocation[uniq].spa = eachRow.spa;
-      objectbylocation[uniq].cd = eachRow.cd;
-
-      if (objectbylocation[uniq].shelterarray === undefined) {
-        objectbylocation[uniq].shelterarray = [];
-      }
-      objectbylocation[uniq].shelterarray.push(eachRow);
-    });
-
-    console.log(objectbylocation);
-
-    const featuresarray = Object.values(objectbylocation).map(
-      (eachLocation: any) => {
-        return {
-          type: "Feature",
-          properties: {
-            ...eachLocation,
-          },
-          geometry: {
-            coordinates: [eachLocation.lng, eachLocation.lat],
-            type: "Point",
-          },
-        };
-      }
-    );
-
-    console.log(featuresarray);
-
-    const geojsonsdflsf: any = {
-      type: "FeatureCollection",
-      features: featuresarray,
-    };
-
-    return geojsonsdflsf;
-  }
 
   useEffect(() => {
     console.log("map div", divRef);
@@ -561,233 +352,6 @@ data.rows.forEach((eachrow: any) => {
         marker: true,
       });
 
-      fetch("https://backend-beds-tracker-q73wor3ixa-uw.a.run.app/shelters")
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-
-          sheltersperdistcompute(data);
-
-          const geojsonsdflsf = convertDataFromBackend(data);
-
-          map.addSource("sheltersv2", {
-            type: "geojson",
-            data: geojsonsdflsf,
-          });
-
-          setInterval(() => {
-            fetch(
-              "https://backend-beds-tracker-q73wor3ixa-uw.a.run.app/shelters"
-            )
-              .then((response) => response.json())
-              .then((data) => {
-                console.log(data);
-
-                sheltersperdistcompute(data);
-
-                const geojsonrefresh = convertDataFromBackend(data);
-
-                const sheltersource: any = map.getSource("sheltersv2");
-
-                if (sheltersource) {
-                  sheltersource.setData(geojsonrefresh);
-                }
-              });
-          }, 2000);
-
-          map.addLayer({
-            id: "shelterslayer",
-            type: "circle",
-            source: "sheltersv2",
-            paint: {
-              "circle-radius": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                10,
-                ["*", 1.2, ["ln", ["get", "total_beds"]]],
-                22,
-                ["*", 5, ["ln", ["get", "total_beds"]]],
-              ],
-              "circle-color": [
-                "interpolate",
-                ["linear"],
-                ["get", "occper"],
-                0,
-                "#76FF03",
-                0.8,
-                "#76FF03",
-                0.801,
-                "#FFFF00",
-                0.999,
-                "#FFFF00",
-                1,
-                "#ff0000",
-              ],
-              "circle-stroke-opacity": 0.9,
-              "circle-opacity": 0.9,
-              "circle-stroke-width": 2,
-              "circle-stroke-color": "hsl(0, 12%, 13%)",
-            },
-          });
-
-          setdatasetloaded(true);
-
-          map.on("mousedown", "shelterslayer", (e: any) => {
-            setshelterselected(e.features[0]);
-
-            var affordablepoint: any = map.getSource("selected-shelter-point");
-
-            var councildistpolygonfound = null;
-
-            affordablepoint.setData(councildistpolygonfound);
-
-            mapref.current.setLayoutProperty(
-              "points-selected-shelter-layer",
-              "visibility",
-              "visible"
-            );
-
-            map.moveLayer("points-selected-shelter-layer");
-          });
-
-          map.on("touchstart", "shelterslayer", (e: any) => {
-            popup.remove();
-            touchref.current = {
-              lngLat: e.lngLat,
-              time: Date.now(),
-            };
-          });
-
-          map.on("mouseleave", "shelterslayer", () => {
-            //check if the url query string "stopmouseleave" is true
-            //if it is, then don't do anything
-            //if it is not, then do the following
-            /*
-        map.getCanvas().style.cursor = '';
-        popup.remove();*/
-
-            if (urlParams.get("stopmouseleave") === null) {
-              map.getCanvas().style.cursor = "";
-              popup.remove();
-            }
-          });
-
-          map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
-            var sourceofcouncildistselect: any = map.getSource(
-              "selected-council-dist"
-            );
-
-            var clickeddata = e.features[0].properties.district;
-
-            var councildistpolygonfound = councildistricts.features.find(
-              (eachDist: any) => eachDist.properties.district === clickeddata
-            );
-
-            if (sourceofcouncildistselect) {
-              if (councildistpolygonfound) {
-                sourceofcouncildistselect.setData(councildistpolygonfound);
-              }
-            }
-          });
-
-          map.on("mouseenter", "shelterslayer", (e: any) => {
-            // Change the cursor style as a UI indicator.
-            map.getCanvas().style.cursor = "pointer";
-
-            var arrayOfSheltersText: any = [];
-
-            console.log("properties", e.features[0].properties);
-
-            console.log(JSON.parse(e.features[0].properties.shelterarray));
-
-            JSON.parse(e.features[0].properties.shelterarray).forEach(
-              (eachShelter: any) => {
-                arrayOfSheltersText.push(`
-          <div class="rounded-sm bg-slate-700 bg-opacity-70 px-1 py-1">
-          <strong>${eachShelter.projectname}</strong><br/>
-          ${eachShelter.type ? `Type: ${eachShelter.type}<br/>` : ""}
-         
-          ${eachShelter.total_beds} beds<br/>
-          ${eachShelter.beds_available} beds available<br/>
-          ${
-            eachShelter.male_available
-              ? `  ${eachShelter.male_available} male beds available<br/>`
-              : ""
-          }
-          
-          ${
-            eachShelter.female_available
-              ? `  ${eachShelter.female_available} female beds available<br/>`
-              : ""
-          }
-
-          ${
-            eachShelter.criteria ? `Criteria: ${eachShelter.criteria}<br/>` : ""
-          }
-          ${
-            eachShelter.last_updated &&
-            `
-            <span class='italic font-semibold'>Last Updated ${new Date(
-              eachShelter.last_updated
-            ).toLocaleDateString("default", {
-              weekday: "short",
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })}
-            </span>
-          `
-          }
-
-        
-          </div>
-            `);
-              }
-            );
-
-            var collateshelters = arrayOfSheltersText.join("");
-
-            // Copy coordinates array.
-            const coordinates = e.features[0].geometry.coordinates.slice();
-            const description = `
-          ${e.features[0].properties.organization_name}<br/>
-          ${e.features[0].properties.address}<br/>
-          <div className='flexcollate'
-          style="
-    display: flex;
-    flex-direction: column;
-    row-gap: 0.3rem;
-"
-          >${collateshelters}</div>
-          <p>Click dot for more info</p>
-          <style>
-          .mapboxgl-popup-content {
-            background: #212121ee;
-            color: #fdfdfd;
-          }
-
-          .flexcollate {
-            row-gap: 0.5rem;
-            display: flex;
-            flex-direction: column;
-          }
-          </style>
-          `;
-
-            // Ensure that if the map is zoomed out such that multiple
-            // copies of the feature are visible, the popup appears
-            // over the copy being pointed to.
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-              coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            }
-
-            // Populate the popup and set its coordinates
-            // based on the feature found.
-            popup.setLngLat(coordinates).setHTML(description).addTo(map);
-          });
-        });
-
       var colormarker = new mapboxgl.Marker({
         color: "#41ffca",
       });
@@ -899,45 +463,6 @@ data.rows.forEach((eachrow: any) => {
         closeOnClick: false,
       });
 
-      map.addSource("selected-shelter-point", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [],
-        },
-      });
-
-      map.addSource("selected-park-area", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [],
-        },
-      });
-
-      if (false) {
-        map.addLayer({
-          id: "selected-park-areas",
-          source: "selected-park-area",
-          type: "line",
-          paint: {
-            "line-color": "#7dd3fc",
-            "line-width": 5,
-            "line-blur": 0,
-          },
-        });
-
-        map.addLayer({
-          id: "selected-park-areasfill",
-          source: "selected-park-area",
-          type: "fill",
-          paint: {
-            "fill-color": "#7dd3fc",
-            "fill-opacity": 0.2,
-          },
-        });
-      }
-
       map.loadImage("/map-marker.png", (error, image: any) => {
         if (error) throw error;
 
@@ -945,6 +470,7 @@ data.rows.forEach((eachrow: any) => {
         map.addImage("map-marker", image);
 
         if (true) {
+          // example of how to add a pointer to what is currently selected
           map.addLayer({
             id: "points-selected-shelter-layer",
             type: "symbol",
@@ -1083,7 +609,6 @@ data.rows.forEach((eachrow: any) => {
 
       checkHideOrShowTopRightGeocoder();
 
-      var mapname = "beds";
 
       map.on("dragstart", (e) => {
         uploadMapboxTrack({
@@ -1197,7 +722,7 @@ data.rows.forEach((eachrow: any) => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>Shelter Beds Occupancy | Map</title>
+          <title>Template Map | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -1205,36 +730,36 @@ data.rows.forEach((eachrow: any) => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="Shelter Beds Occupancy | Map"
+            content="Twitter Template Map | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="Criteria, Capacity and Occupancy of Los Angeles Homeless Shelters."
+            content="This is a template name"
           ></meta>
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://shelterbeds.lacontroller.io/shelter-thumbnail-min.png"
+            content="https://templatemap.lacontroller.io/thumbnail.png"
           ></meta>
           <meta
             name="description"
-            content="Criteria, Capacity and Occupancy of Los Angeles Homeless Shelters."
+            content="Search Engine Template name."
           />
 
           <meta
             property="og:url"
-            content="https://shelterbeds.lacontroller.io/"
+            content="https://templatemap.lacontroller.io"
           />
           <meta property="og:type" content="website" />
           <meta property="og:title" content="Shelter Beds Occupancy | Map" />
           <meta
             property="og:description"
-            content="Criteria, Capacity and Occupancy of Los Angeles Homeless Shelters."
+            content="Search engine template name + facebook/instagram template name."
           />
           <meta
             property="og:image"
-            content="https://shelterbeds.lacontroller.io/shelter-thumbnail-min.png"
+            content="https://templatemap.lacontroller.io"
           />
         </Head>
 
@@ -1251,7 +776,7 @@ data.rows.forEach((eachrow: any) => {
                 color: "#ffffff",
               }}
             >
-              <strong className="">Shelter Beds Occupancy</strong>
+              <strong className="">Title On Page</strong>
             </div>
 
             <div
@@ -1337,291 +862,36 @@ data.rows.forEach((eachrow: any) => {
                 <div className="gap-x-0 flex flex-row w-full pr-8">
                   <button
                     onClick={() => {
-                      setselectedfilteropened("occupancy");
+                      setselectedfilteropened("tab1");
                     }}
                     className={`px-2 border-b-2 py-1  font-semibold ${
-                      selectedfilteropened === "occupancy"
+                      selectedfilteropened === "tab1"
                         ? "border-[#41ffca] text-[#41ffca]"
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                    Occupancy
+                    Tab 1
                   </button>
 
                   <button
                     onClick={() => {
-                      setselectedfilteropened("cd");
+                      setselectedfilteropened("tab2");
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "cd"
+                      selectedfilteropened === "tab2"
                         ? "border-[#41ffca] text-[#41ffca]"
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                    CD #
+                   Tab 2
                   </button>
                 </div>
                 <div className="flex flex-col">
-                  {selectedfilteropened === "occupancy" && (
-                    <div className="mt-2">
-                      <div className="flex flex-row gap-x-1">
-                        <div className="flex items-center">
-                          <input
-                            id="deleteMaxOccu"
-                            type="checkbox"
-                            checked={deletemaxoccu}
-                            onChange={(e) => {
-                              setdeletemaxoccu(e.target.checked);
-                            }}
-                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                          />
-                          <label
-                            htmlFor="deleteMaxOccu"
-                            className="ml-2 text-sm font-medium text-gray-300"
-                          >
-                            Hide Full
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {selectedfilteropened === "cd" && (
-                    <div className="mt-2">
-                      <div className="flex flex-row gap-x-1">
-                        <button
-                          className="align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base"
-                          onClick={() => {
-                            setfilteredcouncildistrictspre(listofcouncildists);
-                          }}
-                        >
-                          Select All
-                        </button>
-                        <button
-                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base border border-gray-400"
-                          onClick={() => {
-                            setfilteredcouncildistrictspre([]);
-                          }}
-                        >
-                          Unselect All
-                        </button>
-                        <button
-                          onClick={() => {
-                            setfilteredcouncildistrictspre(
-                              listofcouncildists.filter(
-                                (n) => !filteredcouncildistricts.includes(n)
-                              )
-                            );
-                          }}
-                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400"
-                        >
-                          Invert
-                        </button>
-                      </div>
-                      <Checkbox.Group
-                        value={filteredcouncildistricts}
-                        onChange={setfilteredcouncildistrictspre}
-                      >
-                        {" "}
-                        <div
-                          className={`grid grid-cols-3
-                          } gap-x-4 `}
-                        >
-                          {listofcouncildists.map((item, key) => (
-                            <Checkbox
-                              value={item}
-                              label={
-                                <span className="text-nowrap text-xs">
-                                  <span className="text-white">{item}</span>{" "}
-                                  <span className="text-blue-300">
-                                    {parseInt(
-                                      bedsavailableperdist[String(item)]
-                                    ).toLocaleString("en-US")}
-                                  </span>
-                                  <span className="text-blue-300">{"/"}</span>
-                                  <span className="text-blue-400">
-                                    {parseInt(
-                                      totalbedsperdist[String(item)]
-                                    ).toLocaleString("en-US")}
-                                  </span>{" "}
-                                  <span className="text-green-400">
-                                    {parseInt(
-                                      sheltersperdist[String(item)]
-                                    ).toLocaleString("en-US")}
-                                  </span>
-                                </span>
-                              }
-                              key={key}
-                            />
-                          ))}
-                        </div>
-                        <p className="italic text-xs text-white">
-                          CD{" "}
-                          <span className="text-blue-300">available beds/</span>
-                          <span className="text-blue-400">total beds</span>{" "}
-                          <span className="text-green-400">locations</span>
-                        </p>
-                      </Checkbox.Group>
-                    </div>
-                  )}
+                
                 </div>
               </div>
 
-              <div
-                className={`text-sm ${
-                  shelterselected != null
-                    ? `px-3 pt-2 pb-3 
- bg-gray-900 sm:rounded-xl 
-   bg-opacity-80 sm:bg-opacity-80 text-white 
-   border-t-2  sm:border border-teal-500 sm:border-grey-500
-   relative overflow-y-auto  scrollbar-thin scrollbar-thumb-gray-900 scrollbar-track-gray-100 scrollbar-thumb-rounded
-   `
-                    : "hidden"
-                }  ${
-                  typeof window != "undefined"
-                    ? `${
-                        window.innerHeight < 1200 && window.innerWidth >= 500
-                          ? "max-h-96"
-                          : "max-h-[500px]"
-                      }
-                      
-                      ${window.innerWidth < 500 ? "max-h-48 text-xs" : ""}
-                      `
-                    : ""
-                }`}
-              >
-                <CloseButton
-                  onClose={() => {
-                    setshelterselected(null);
-
-                    if (mapref.current) {
-                      var affordablepoint: any = mapref.current.getSource(
-                        "selected-shelter-point"
-                      );
-                      if (affordablepoint) {
-                        affordablepoint.setData(null);
-
-                        mapref.current.setLayoutProperty(
-                          "points-selected-shelter-layer",
-                          "visibility",
-                          "none"
-                        );
-                      }
-                    } else {
-                      console.log("no ref current");
-                    }
-                  }}
-                />
-
-                {shelterselected != null && (
-                  <div className="text-xs">
-                    <p className="font-bold">
-                      {shelterselected.properties.organization_name}
-                    </p>
-                    <p>{shelterselected.properties.address}</p>
-                    <div className="flex flex-row gap-x-2 my-1">
-                      <a
-                        target="_blank"
-                        rel="noreferrer"
-                        className="rounded-full px-2 py-1 text-white bg-blue-500"
-                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                          `${shelterselected.properties["address"]} Los Angeles, CA`
-                        )}`}
-                      >
-                        View on Google Maps
-                      </a>
-                      <p className="bg-gray-800 px-1 py-1 rounded-sm">
-                        CD {shelterselected.properties.cd}
-                      </p>
-                      <p className="bg-gray-800 px-1 py-1 rounded-sm">
-                        SPA {shelterselected.properties.spa}
-                      </p>
-                    </div>
-
-                    <div className="flex flex-col gap-y-2 ">
-                      {shelterselected.properties.contact_info && (
-                        <p>
-                          Contact: {shelterselected.properties.contact_info}
-                        </p>
-                      )}
-                      {shelterselected.properties.website && (
-                        <p>
-                          <a
-                            className="underline text-mejito"
-                            href={shelterselected.properties.website}
-                          >
-                            {shelterselected.properties.website}
-                          </a>
-                        </p>
-                      )}
-
-                      {JSON.parse(shelterselected.properties.shelterarray).map(
-                        (eachShelter: any, index: number) => (
-                          <div
-                            key={index}
-                            className="rounded-sm bg-slate-700 bg-opacity-90 px-1 py-1"
-                          >
-                            <span className="font-bold">
-                              {eachShelter.projectname}
-                            </span>
-                            <br />
-                            {eachShelter.type ? (
-                              <>
-                                Type: {eachShelter.type}
-                                <br />
-                              </>
-                            ) : (
-                              ""
-                            )}
-
-                            <p className="font-semibold">
-                              {eachShelter.total_beds} beds
-                              {" | "}
-                              {eachShelter.beds_available} beds available
-                            </p>
-
-                            {eachShelter.male_available ? (
-                              <>
-                                <p>
-                                  {eachShelter.male_available} male beds
-                                  available
-                                </p>
-                              </>
-                            ) : (
-                              ""
-                            )}
-                            {eachShelter.female_available ? (
-                              <p>
-                                {eachShelter.female_available} female beds
-                                available
-                              </p>
-                            ) : (
-                              ""
-                            )}
-                            {eachShelter.criteria ? (
-                              <p>Criteria: {eachShelter.criteria}</p>
-                            ) : (
-                              ""
-                            )}
-                            {eachShelter.last_updated && (
-                              <p className="italic font-semibold">
-                                Last Updated{" "}
-                                {new Date(
-                                  eachShelter.last_updated
-                                ).toLocaleDateString("default", {
-                                  weekday: "short",
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                })}
-                              </p>
-                            )}
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
+              
             </div>
           </div>
         </div>
