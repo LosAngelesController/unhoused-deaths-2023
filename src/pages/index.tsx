@@ -85,8 +85,6 @@ var councilpopulations: any = {
   "15": 258310,
 };
 
-
-
 const Home: NextPage = () => {
   var councilBounds: any = {
     features: CouncilDist.features,
@@ -117,8 +115,8 @@ const Home: NextPage = () => {
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
 
-    //template name, this is used to submit to the map analytics software what the current state of the map is.
-    var mapname = "templatemapname";
+  //template name, this is used to submit to the map analytics software what the current state of the map is.
+  var mapname = "templatemapname";
 
   const [mapboxloaded, setmapboxloaded] = useState(false);
 
@@ -609,7 +607,6 @@ const Home: NextPage = () => {
 
       checkHideOrShowTopRightGeocoder();
 
-
       map.on("dragstart", (e) => {
         uploadMapboxTrack({
           mapname,
@@ -742,10 +739,7 @@ const Home: NextPage = () => {
             key="twitterimg"
             content="https://templatemap.lacontroller.io/thumbnail.png"
           ></meta>
-          <meta
-            name="description"
-            content="Search Engine Template name."
-          />
+          <meta name="description" content="Search Engine Template name." />
 
           <meta
             property="og:url"
@@ -883,15 +877,11 @@ const Home: NextPage = () => {
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                   Tab 2
+                    Tab 2
                   </button>
                 </div>
-                <div className="flex flex-col">
-                
-                </div>
+                <div className="flex flex-col"></div>
               </div>
-
-              
             </div>
           </div>
         </div>
