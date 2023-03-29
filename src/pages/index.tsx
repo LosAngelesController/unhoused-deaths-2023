@@ -237,7 +237,7 @@ const Home: NextPage = () => {
     //import locations from './features.geojson'
 
     mapboxgl.accessToken =
-      "pk.eyJ1IjoiY29tcmFkZWt5bGVyIiwiYSI6ImNrdjBkOXNyeDdscnoycHE2cDk4aWJraTIifQ.77Gid9mgpEdLpFszO5n4oQ";
+      "pk.eyJ1Ijoia2VubmV0aG1lamlhIiwiYSI6ImNsZG1oYnpxNDA2aTQzb2tkYXU2ZWc1b3UifQ.PxO_XgMo13klJ3mQw1QxlQ";
 
     const formulaForZoom = () => {
       if (typeof window != "undefined") {
@@ -260,7 +260,7 @@ const Home: NextPage = () => {
     var mapparams: any = {
       container: divRef.current, // container ID
       //affordablehousing2022-dev-copy
-      style: "mapbox://styles/comradekyler/cld95p0s6004001qibmrpbjgd", // style URL (THIS IS STREET VIEW)
+      style: "mapbox://styles/kennethmejia/clfn2cidj001501o2uv4h7yag", // style URL (THIS IS STREET VIEW)
       //mapbox://styles/comradekyler/cl5c3eukn00al15qxpq4iugtn
       //affordablehousing2022-dev-copy-copy
       //  style: 'mapbox://styles/comradekyler/cl5c3eukn00al15qxpq4iugtn?optimize=true', // style URL
@@ -719,7 +719,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>Template Map | Map</title>
+          <title>Street Vending Citations</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
