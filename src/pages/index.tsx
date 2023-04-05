@@ -1,29 +1,30 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, createRef } from "react";
-import Slider from "rc-slider";
-
+import { titleCase } from "title-case";
+// import Image from "next/image";
+// import { Dialog, Transition } from "@headlessui/react";
+// import { Fragment, createRef } from "react";
+// import Slider from "rc-slider";
+import { computeclosestcoordsfromevent } from "../components/getclosestcoordsfromevent";
 import { CloseButton } from "../components/CloseButton";
 import { signintrack, uploadMapboxTrack } from "../components/mapboxtrack";
-import TooltipSlider, { handleRender } from "../components/TooltipSlider";
-import { getAuth, signInWithCustomToken } from "firebase/auth";
+// import TooltipSlider, { handleRender } from "../components/TooltipSlider";
+// import { getAuth, signInWithCustomToken } from "firebase/auth";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import MapboxLanguage from "@mapbox/mapbox-gl-language";
 import Nav from "../components/nav";
 //import { CloseButton } from "@/components/CloseButton";
 import { MantineProvider, Checkbox } from "@mantine/core";
 import React, { useEffect, useState, useRef } from "react";
-import { initializeApp } from "firebase/app";
+// import { initializeApp } from "firebase/app";
 
-import Icon from "@mdi/react";
-import { mdiPlay } from "@mdi/js";
-import { mdiPause, mdiSkipNext, mdiSkipPrevious } from "@mdi/js";
+// import Icon from "@mdi/react";
+// import { mdiPlay } from "@mdi/js";
+// import { mdiPause, mdiSkipNext, mdiSkipPrevious } from "@mdi/js";
 
 import CouncilDist from "./CouncilDistricts.json";
-import { auth, signInWithGoogle, signOutOfApp } from "./../components/firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
+// import { auth, signInWithGoogle, signOutOfApp } from "./../components/firebase";
+// import { useAuthState } from "react-firebase-hooks/auth";
 
 const councildistricts = require("./CouncilDistricts.json");
 const citybounds = require("./citybounds.json");
@@ -34,9 +35,9 @@ import { datadogRum } from "@datadog/browser-rum";
 // added the following 6 lines.
 import mapboxgl from "mapbox-gl";
 
-import { assertDeclareExportAllDeclaration } from "@babel/types";
+// import { assertDeclareExportAllDeclaration } from "@babel/types";
 
-import { GeoJsonProperties, MultiPolygon, Polygon } from "geojson";
+// import { GeoJsonProperties, MultiPolygon, Polygon } from "geojson";
 
 function isTouchScreen() {
   return window.matchMedia("(hover: none)").matches;
@@ -85,6 +86,35 @@ var councilpopulations: any = {
   "15": 258310,
 };
 
+const councilcount: any = {
+  "1": 152,
+  "2": 49,
+  "3": 35,
+  "4": 41,
+  "5": 57,
+  "6": 84,
+  "7": 44,
+  "8": 55,
+  "9": 60,
+  "10": 45,
+  "11": 48,
+  "12": 28,
+  "13": 84,
+  "14": 323,
+  "15": 62,
+};
+
+const filterableYears: any = {
+  2018: 39845,
+  2019: 49590,
+  2020: 12207,
+  2021: 41847,
+  2022: 31711,
+  2023: 2088,
+};
+
+const filterableYearsKeys = Object.keys(filterableYears);
+
 const Home: NextPage = () => {
   var councilBounds: any = {
     features: CouncilDist.features,
@@ -101,33 +131,47 @@ const Home: NextPage = () => {
   const shouldfilteropeninit =
     typeof window != "undefined" ? window.innerWidth >= 640 : false;
   const [showtotalarea, setshowtotalarea] = useState(false);
-  const touchref = useRef<any>(null);
-  const isLoggedInRef = useRef(false);
+  // const touchref = useRef<any>(null);
+  // const isLoggedInRef = useRef(false);
   var mapref: any = useRef(null);
   const okaydeletepoints: any = useRef(null);
-  var [metric, setmetric] = useState(false);
-  const [showInitInstructions, setshowInitInstructions] = useState(true);
+  // var [metric, setmetric] = useState(false);
+  // const [showInitInstructions, setshowInitInstructions] = useState(true);
   const [doneloadingmap, setdoneloadingmap] = useState(false);
-  const [sliderMonth, setsliderMonthAct] = useState<any>([1, 12]);
-  const [selectedfilteropened, setselectedfilteropened] = useState("occupancy");
-  const [deletemaxoccu, setdeletemaxoccu] = useState(false);
-  const refismaploaded = useRef(false);
+  // const lastYear = 8;
+  // const [sliderYear, setSliderYearAct] = useState<any>([1, lastYear]);
+  const [selectedfilteropened, setselectedfilteropened] = useState("year");
+
+  const [filteredYears, setFilteredYears] = useState<number[]>(
+    filterableYearsKeys.map((key) => Number(key))
+  );
+  // const [deletemaxoccu, setdeletemaxoccu] = useState(false);
+  // const refismaploaded = useRef(false);
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "templatemapname";
+  var mapname = "building-safety";
 
-  const [mapboxloaded, setmapboxloaded] = useState(false);
+  // const [mapboxloaded, setmapboxloaded] = useState(false);
 
-  const setfilteredcouncildistrictspre = (input: string[]) => {
+  const setFilteredYearPre = (input: string[]) => {
     console.log("inputvalidator", input);
     if (input.length === 0) {
-      setfilteredcouncildistricts(["99999"]);
+      setFilteredYears([99999]);
     } else {
-      setfilteredcouncildistricts(input);
+      setFilteredYears(input.map((x)=>Number(x)));
     }
   };
+
+  // const setfilteredcouncildistrictspre = (input: string[]) => {
+  //   console.log("inputvalidator", input);
+  //   if (input.length === 0) {
+  //     setfilteredcouncildistricts(["99999"]);
+  //   } else {
+  //     setfilteredcouncildistricts(input);
+  //   }
+  // };
 
   const datadogconfig: any = {
     applicationId: "54ed9846-68b0-4811-a47a-7330cf1828a0",
@@ -149,15 +193,6 @@ const Home: NextPage = () => {
   datadogRum.init(datadogconfig);
 
   datadogRum.startSessionReplayRecording();
-
-  const setsliderMonth = (event: Event, newValue: number | number[]) => {
-    setsliderMonthAct(newValue as number[]);
-  };
-
-  const setsliderMonthVerTwo = (input: any) => {
-    console.log(input);
-    setsliderMonthAct(input);
-  };
 
   function turfify(polygon: any) {
     var turffedpolygon;
@@ -260,7 +295,7 @@ const Home: NextPage = () => {
     var mapparams: any = {
       container: divRef.current, // container ID
       //affordablehousing2022-dev-copy
-      style: "mapbox://styles/kennethmejia/clfn2cidj001501o2uv4h7yag", // style URL (THIS IS STREET VIEW)
+      style: "mapbox://styles/kennethmejia/clg3x9ahb000001mzegwualfn", // style URL (THIS IS STREET VIEW)
       //mapbox://styles/comradekyler/cl5c3eukn00al15qxpq4iugtn
       //affordablehousing2022-dev-copy-copy
       //  style: 'mapbox://styles/comradekyler/cl5c3eukn00al15qxpq4iugtn?optimize=true', // style URL
@@ -455,10 +490,41 @@ const Home: NextPage = () => {
         map.showTerrainWireframe = true;
       }
 
+      //create mousedown trigger
+      map.on("mousedown", "building-safety-cases", (e) => {
+        console.log("mousedown", e, e.features);
+        if (e.features) {
+          const closestcoords = computeclosestcoordsfromevent(e);
+
+          const filteredfeatures = e.features.filter((feature: any) => {
+            return (
+              feature.geometry.coordinates[0] === closestcoords[0] &&
+              feature.geometry.coordinates[1] === closestcoords[1]
+            );
+          });
+
+          if (filteredfeatures.length > 0) {
+            console.log("filtered features", filteredfeatures);
+          }
+        }
+      });
+
       // Create a popup, but don't add it to the map yet.
       const popup = new mapboxgl.Popup({
         closeButton: false,
         closeOnClick: false,
+      });
+
+      map.on("mouseenter", "building-safety", (e: any) => {
+        console.log("mouseenter", e.features);
+      });
+
+      map.addSource("building-safety-point", {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: [],
+        },
       });
 
       map.loadImage("/map-marker.png", (error, image: any) => {
@@ -472,7 +538,7 @@ const Home: NextPage = () => {
           map.addLayer({
             id: "points-selected-shelter-layer",
             type: "symbol",
-            source: "selected-shelter-point",
+            source: "building-safety-point",
             paint: {
               "icon-color": "#41ffca",
               "icon-translate": [0, -13],
@@ -517,7 +583,7 @@ const Home: NextPage = () => {
               "line-width": 3,
             },
           },
-          "road-label"
+          "road-label-navigation"
         );
 
         map.addSource("citycouncildist", {
@@ -531,12 +597,12 @@ const Home: NextPage = () => {
             type: "line",
             source: "citycouncildist",
             paint: {
-              "line-color": "#bbbbbb",
+              "line-color": "#7FE5D4",
               "line-opacity": 1,
               "line-width": 2,
             },
           },
-          "road-label"
+          "road-label-navigation"
         );
 
         map.addLayer(
@@ -549,8 +615,26 @@ const Home: NextPage = () => {
               "fill-opacity": 0,
             },
           },
-          "road-label"
+          "road-label-navigation"
         );
+
+        map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
+          var sourceofcouncildistselect: any = map.getSource(
+            "selected-council-dist"
+          );
+
+          var clickeddata = e.features[0].properties.district;
+
+          var councildistpolygonfound = councildistricts.features.find(
+            (eachDist: any) => eachDist.properties.district === clickeddata
+          );
+
+          if (sourceofcouncildistselect) {
+            if (councildistpolygonfound) {
+              sourceofcouncildistselect.setData(councildistpolygonfound);
+            }
+          }
+        });
 
         map.addSource("selected-council-dist", {
           type: "geojson",
@@ -566,24 +650,11 @@ const Home: NextPage = () => {
             type: "fill",
             source: "selected-council-dist",
             paint: {
-              "fill-color": "#bdbdeb",
-              "fill-opacity": 0.1,
+              "fill-color": "#002D25",
+              "fill-opacity": 0.25,
             },
           },
-          "road-label"
-        );
-
-        map.addLayer(
-          {
-            id: "selected-council-dist-layer",
-            type: "fill",
-            source: "selected-council-dist",
-            paint: {
-              "fill-color": "#bdbdeb",
-              "fill-opacity": 0.09,
-            },
-          },
-          "aeroway-polygon"
+          "road-label-navigation"
         );
       }
 
@@ -657,35 +728,41 @@ const Home: NextPage = () => {
     }
   }, []);
 
-  let arrayoffilterables: any = [];
-
-  arrayoffilterables.push([
-    "match",
-    ["get", "cd"],
-    filteredcouncildistricts.map((x) => String(x)),
-    true,
-    false,
-  ]);
-
-  if (deletemaxoccu === true) {
-    arrayoffilterables.push(["match", ["get", "occper"], [1], false, true]);
-  }
 
   useEffect(() => {
-    if (doneloadingmap) {
-      const filterinput = JSON.parse(
-        JSON.stringify(["all", ...arrayoffilterables])
-      );
+    let arrayoffilterables: any = [];
 
-      console.log(filterinput);
+    // arrayoffilterables.push([
+    //   "match",
+    //   ["get", "CD#"],
+    //   filteredcouncildistricts.map((x) => String(x)),
+    //   true,
+    //   false,
+    // ]);
 
-      if (mapref.current) {
+    arrayoffilterables.push([
+      "match",
+      ["get", "Year Case Created"],
+      filteredYears,
+      true,
+      false,
+    ]);
+
+    if (mapref.current) {
+      if (doneloadingmap) {
+        const filterinput = JSON.parse(
+          JSON.stringify(["all", ...arrayoffilterables])
+        );
+
+        console.log(filterinput);
+
         if (doneloadingmap === true) {
-          mapref.current.setFilter("shelterslayer", filterinput);
+          mapref.current.setFilter("building-safety", filterinput);
+          // mapref.current.setFilter("deathsdots", filterinput);
         }
       }
     }
-  }, [deletemaxoccu, filteredcouncildistricts]);
+  }, [filteredYears]);
 
   return (
     <div className="flex flex-col h-full w-screen absolute">
@@ -719,7 +796,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>Street Vending Citations</title>
+          <title>Building and Safety Code Enforcement Cases</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -770,7 +847,9 @@ const Home: NextPage = () => {
                 color: "#ffffff",
               }}
             >
-              <strong className="">Title On Page</strong>
+              <strong className="">
+                Building and Safety Code Enforcement Cases
+              </strong>
             </div>
 
             <div
@@ -856,31 +935,173 @@ const Home: NextPage = () => {
                 <div className="gap-x-0 flex flex-row w-full pr-8">
                   <button
                     onClick={() => {
-                      setselectedfilteropened("tab1");
+                      setselectedfilteropened("year");
                     }}
                     className={`px-2 border-b-2 py-1  font-semibold ${
-                      selectedfilteropened === "tab1"
+                      selectedfilteropened === "year"
                         ? "border-[#41ffca] text-[#41ffca]"
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                    Tab 1
+                    Year
                   </button>
 
                   <button
                     onClick={() => {
-                      setselectedfilteropened("tab2");
+                      setselectedfilteropened("area");
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "tab2"
+                      selectedfilteropened === "area"
                         ? "border-[#41ffca] text-[#41ffca]"
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                    Tab 2
+                    Area
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setselectedfilteropened("case");
+                    }}
+                    className={`px-2 border-b-2  py-1  font-semibold ${
+                      selectedfilteropened === "case"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                    Case
                   </button>
                 </div>
-                <div className="flex flex-col"></div>
+                <div className="flex flex-col">
+                  {selectedfilteropened === "year" && (
+                    <div className="mt-2">
+                      <div className="flex flex-row gap-x-1">
+                        <button
+                          className="align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base"
+                          onClick={() => {
+                            setFilteredYearPre(filterableYearsKeys);
+                          }}
+                        >
+                          Select All
+                        </button>
+                        <button
+                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base border border-gray-400"
+                          onClick={() => {
+                            setFilteredYearPre([]);
+                          }}
+                        >
+                          Unselect All
+                        </button>
+                        <button
+                          onClick={() => {
+                            setFilteredYearPre(
+                              filterableYearsKeys.filter(
+                                (n) => !filteredYears.includes(Number(n))
+                              )
+                            );
+                          }}
+                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400"
+                        >
+                          Invert
+                        </button>
+                      </div>
+                      <div className="flex flex-row gap-x-1">
+                        <div className="flex items-center">
+                          <Checkbox.Group
+                            value={filteredYears.map((x)=>String(x))}
+                            onChange={setFilteredYearPre}
+                          >
+                            {" "}
+                            <div
+                              className={`grid grid-cols-3
+                          } gap-x-4 `}
+                            >
+                              {Object.entries(filterableYears).map(
+                                (eachEntry) => (
+                                  <Checkbox
+                                    value={eachEntry[0]}
+                                    label={
+                                      <span className="text-nowrap text-xs">
+                                        <span className="text-white">
+                                          {titleCase(
+                                            eachEntry[0].toLowerCase()
+                                          )}
+                                        </span>{" "}
+                                        <span>{eachEntry[1]}</span>
+                                      </span>
+                                    }
+                                    key={eachEntry[0]}
+                                  />
+                                )
+                              )}
+                            </div>
+                          </Checkbox.Group>
+                        </div>{" "}
+                      </div>{" "}
+                      {/* <p className="text-gray-200 text-xs">
+                        Data including categories for race set by L.A. County
+                        Medical-Examiner Coroner
+                      </p> */}
+                    </div>
+                  )}
+                  {selectedfilteropened === "cd" && (
+                    <div className="mt-2">
+                      <div className="flex flex-row gap-x-1">
+                        <button
+                          className="align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base"
+                          onClick={() => {
+                            setfilteredcouncildistrictspre(listofcouncildists);
+                          }}
+                        >
+                          Select All
+                        </button>
+                        <button
+                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base border border-gray-400"
+                          onClick={() => {
+                            setfilteredcouncildistrictspre([]);
+                          }}
+                        >
+                          Unselect All
+                        </button>
+                        <button
+                          onClick={() => {
+                            setfilteredcouncildistrictspre(
+                              listofcouncildists.filter(
+                                (n) => !filteredcouncildistricts.includes(n)
+                              )
+                            );
+                          }}
+                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400"
+                        >
+                          Invert
+                        </button>
+                      </div>
+                      <Checkbox.Group
+                        value={filteredcouncildistricts}
+                        onChange={setfilteredcouncildistrictspre}
+                      >
+                        {" "}
+                        <div
+                          className={`grid grid-cols-3
+                          } gap-x-4 `}
+                        >
+                          {listofcouncildists.map((item, key) => (
+                            <Checkbox
+                              value={item}
+                              label={
+                                <span className="text-nowrap text-xs">
+                                  <span className="text-white">{item}</span>{" "}
+                                  <span>{councilcount[String(item)]}</span>
+                                </span>
+                              }
+                              key={key}
+                            />
+                          ))}
+                        </div>
+                      </Checkbox.Group>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
