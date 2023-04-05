@@ -1,13 +1,5 @@
-# Mapbox Template
+# Building and Safety Code Enforcement Cases - Mapped
 
-## The general process of making a map
+## What are Building and Safety Enforcement Cases?
 
-- Geocoding if needed
-- importing data into MapboxGL.js
-- Making your layers pretty, use mapbox studio map maker to make styles you can import
-- Filter boxes
-- SEO, like thumbnail and text title
-
-## What i've done wrong before and could be improved on
-
-- Putting everything into modules so it's not all messy
+LADBS Code Enforcement is the enforcement of applicable ordinances and land use regulations. LADBS is responsible for investigating code violations for properties containing only one dwelling unit, in addition to commercial, industrial, and vacant buildings.
