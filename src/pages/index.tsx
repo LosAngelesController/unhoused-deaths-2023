@@ -4,11 +4,9 @@ import { titleCase } from "title-case";
 // import Image from "next/image";
 // import { Dialog, Transition } from "@headlessui/react";
 // import { Fragment, createRef } from "react";
-// import Slider from "rc-slider";
 import { computeclosestcoordsfromevent } from "../components/getclosestcoordsfromevent";
 import { CloseButton } from "../components/CloseButton";
 import { signintrack, uploadMapboxTrack } from "../components/mapboxtrack";
-// import TooltipSlider, { handleRender } from "../components/TooltipSlider";
 // import { getAuth, signInWithCustomToken } from "firebase/auth";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import MapboxLanguage from "@mapbox/mapbox-gl-language";
@@ -16,6 +14,7 @@ import Nav from "../components/nav";
 //import { CloseButton } from "@/components/CloseButton";
 import { MantineProvider, Checkbox } from "@mantine/core";
 import React, { useEffect, useState, useRef } from "react";
+import { SelectButtons } from "@/components/SelectButtons";
 // import { initializeApp } from "firebase/app";
 
 // import Icon from "@mdi/react";
@@ -50,59 +49,23 @@ function getLang() {
   return navigator.language;
 }
 
-var councilareasdistrict: any = {
-  "1": 39172374.513557486,
-  "2": 56028687.75752604,
-  "3": 91323827.86998883,
-  "4": 127051659.05853269,
-  "5": 85492955.75895034,
-  "6": 70583244.58359845,
-  "7": 140330608.52718654,
-  "8": 41642747.81303825,
-  "9": 33854278.76005373,
-  "10": 38455731.29742687,
-  "11": 165241605.83628467,
-  "12": 149947134.17462063,
-  "13": 42095086.21254906,
-  "14": 63974277.0096737,
-  "15": 83429528.39743595,
-};
-
-var councilpopulations: any = {
-  "1": 248124,
-  "2": 250535,
-  "3": 257098,
-  "4": 269290,
-  "5": 269182,
-  "6": 261114,
-  "7": 266276,
-  "8": 257597,
-  "9": 255988,
-  "10": 270703,
-  "11": 270691,
-  "12": 259564,
-  "13": 252909,
-  "14": 264741,
-  "15": 258310,
-};
-
-const councilcount: any = {
-  "1": 152,
-  "2": 49,
-  "3": 35,
-  "4": 41,
-  "5": 57,
-  "6": 84,
-  "7": 44,
-  "8": 55,
-  "9": 60,
-  "10": 45,
-  "11": 48,
-  "12": 28,
-  "13": 84,
-  "14": 323,
-  "15": 62,
-};
+// var councilareasdistrict: any = {
+//   "1": 39172374.513557486,
+//   "2": 56028687.75752604,
+//   "3": 91323827.86998883,
+//   "4": 127051659.05853269,
+//   "5": 85492955.75895034,
+//   "6": 70583244.58359845,
+//   "7": 140330608.52718654,
+//   "8": 41642747.81303825,
+//   "9": 33854278.76005373,
+//   "10": 38455731.29742687,
+//   "11": 165241605.83628467,
+//   "12": 149947134.17462063,
+//   "13": 42095086.21254906,
+//   "14": 63974277.0096737,
+//   "15": 83429528.39743595,
+// };
 
 const filterableYears: any = {
   2018: 39845,
@@ -115,38 +78,59 @@ const filterableYears: any = {
 
 const filterableYearsKeys = Object.keys(filterableYears);
 
+const filterableAreas: any = {
+  Harbor: 29805,
+  "West Los Angeles": 3543,
+  Central: 6488,
+  "South Valley": 58835,
+  "North Valley": 41744,
+  "South Los Angeles": 22981,
+  "East Los Angeles": 13588,
+};
+
+const filterableAreasKeys = Object.keys(filterableAreas);
+
+const filterableCases: any = {
+  FRP: 489,
+  GENERAL: 30767,
+  CITATIONS: 2276,
+  PACE: 140179,
+  BILLBOARDS: 27,
+  VEIP: 788,
+  SIGNS: 822,
+  XXX: 1,
+  CNAP: 932,
+  NAR: 1007,
+};
+
+const filterableCasesKeys = Object.keys(filterableCases);
+
 const Home: NextPage = () => {
-  var councilBounds: any = {
-    features: CouncilDist.features,
-    type: "FeatureCollection",
-  };
+  // var councilBounds: any = {
+  //   features: CouncilDist.features,
+  //   type: "FeatureCollection",
+  // };
 
-  const listofcouncildists = Array.from({ length: 15 }, (_, i) => i + 1).map(
-    (eachItem) => String(eachItem)
-  );
-
-  const [filteredcouncildistricts, setfilteredcouncildistricts] =
-    useState<string[]>(listofcouncildists);
+  // const listofcouncildists = Array.from({ length: 15 }, (_, i) => i + 1).map(
+  //   (eachItem) => String(eachItem)
+  // );
 
   const shouldfilteropeninit =
     typeof window != "undefined" ? window.innerWidth >= 640 : false;
   const [showtotalarea, setshowtotalarea] = useState(false);
-  // const touchref = useRef<any>(null);
-  // const isLoggedInRef = useRef(false);
   var mapref: any = useRef(null);
   const okaydeletepoints: any = useRef(null);
-  // var [metric, setmetric] = useState(false);
-  // const [showInitInstructions, setshowInitInstructions] = useState(true);
   const [doneloadingmap, setdoneloadingmap] = useState(false);
-  // const lastYear = 8;
-  // const [sliderYear, setSliderYearAct] = useState<any>([1, lastYear]);
   const [selectedfilteropened, setselectedfilteropened] = useState("year");
-
   const [filteredYears, setFilteredYears] = useState<number[]>(
     filterableYearsKeys.map((key) => Number(key))
   );
-  // const [deletemaxoccu, setdeletemaxoccu] = useState(false);
-  // const refismaploaded = useRef(false);
+  const [filteredAreas, setFilteredAreas] =
+    useState<string[]>(filterableAreasKeys);
+
+  const [filteredCases, setFilteredCases] =
+    useState<string[]>(filterableCasesKeys);
+
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
 
@@ -160,18 +144,27 @@ const Home: NextPage = () => {
     if (input.length === 0) {
       setFilteredYears([99999]);
     } else {
-      setFilteredYears(input.map((x)=>Number(x)));
+      setFilteredYears(input.map((x) => Number(x)));
     }
   };
 
-  // const setfilteredcouncildistrictspre = (input: string[]) => {
-  //   console.log("inputvalidator", input);
-  //   if (input.length === 0) {
-  //     setfilteredcouncildistricts(["99999"]);
-  //   } else {
-  //     setfilteredcouncildistricts(input);
-  //   }
-  // };
+  const setFilteredAreaPre = (input: string[]) => {
+    console.log("inputvalidator", input);
+    if (input.length === 0) {
+      setFilteredAreas(["99999"]);
+    } else {
+      setFilteredAreas(input);
+    }
+  };
+
+  const setFilteredCasesPre = (input: string[]) => {
+    console.log("inputvalidator", input);
+    if (input.length === 0) {
+      setFilteredCases(["99999"]);
+    } else {
+      setFilteredCases(input);
+    }
+  };
 
   const datadogconfig: any = {
     applicationId: "54ed9846-68b0-4811-a47a-7330cf1828a0",
@@ -196,15 +189,11 @@ const Home: NextPage = () => {
 
   function turfify(polygon: any) {
     var turffedpolygon;
-
-    console.log("polygon on line 100", polygon);
-
     if (polygon.geometry.type == "Polygon") {
       turffedpolygon = turf.polygon(polygon.geometry.coordinates);
     } else {
       turffedpolygon = turf.multiPolygon(polygon.geometry.coordinates);
     }
-
     return turffedpolygon;
   }
 
@@ -294,11 +283,7 @@ const Home: NextPage = () => {
 
     var mapparams: any = {
       container: divRef.current, // container ID
-      //affordablehousing2022-dev-copy
       style: "mapbox://styles/kennethmejia/clg3x9ahb000001mzegwualfn", // style URL (THIS IS STREET VIEW)
-      //mapbox://styles/comradekyler/cl5c3eukn00al15qxpq4iugtn
-      //affordablehousing2022-dev-copy-copy
-      //  style: 'mapbox://styles/comradekyler/cl5c3eukn00al15qxpq4iugtn?optimize=true', // style URL
       center: [-118.41, 34], // starting position [lng, lat]
       zoom: formulaForZoom(), // starting zoom
     };
@@ -728,22 +713,29 @@ const Home: NextPage = () => {
     }
   }, []);
 
-
   useEffect(() => {
     let arrayoffilterables: any = [];
-
-    // arrayoffilterables.push([
-    //   "match",
-    //   ["get", "CD#"],
-    //   filteredcouncildistricts.map((x) => String(x)),
-    //   true,
-    //   false,
-    // ]);
 
     arrayoffilterables.push([
       "match",
       ["get", "Year Case Created"],
       filteredYears,
+      true,
+      false,
+    ]);
+
+    arrayoffilterables.push([
+      "match",
+      ["get", "Area Planning Commission"],
+      filteredAreas.map((area) => String(area)),
+      true,
+      false,
+    ]);
+
+    arrayoffilterables.push([
+      "match",
+      ["get", "Case Type"],
+      filteredCases.map((caseType) => String(caseType)),
       true,
       false,
     ]);
@@ -758,11 +750,47 @@ const Home: NextPage = () => {
 
         if (doneloadingmap === true) {
           mapref.current.setFilter("building-safety", filterinput);
-          // mapref.current.setFilter("deathsdots", filterinput);
         }
       }
     }
-  }, [filteredYears]);
+  }, [filteredYears, filteredAreas, filteredCases]);
+
+  const onSelect = () => {
+    console.log("onSelect", selectedfilteropened);
+    if (selectedfilteropened === "year") {
+      setFilteredYearPre(filterableYearsKeys);
+    } else if (selectedfilteropened === "area") {
+      setFilteredAreaPre(filterableAreasKeys);
+    } else if (selectedfilteropened === "case") {
+      setFilteredCasesPre(filterableCasesKeys);
+    }
+  };
+
+  const onUnselect = () => {
+    if (selectedfilteropened === "year") {
+      setFilteredYearPre([]);
+    } else if (selectedfilteropened === "area") {
+      setFilteredAreaPre([]);
+    } else if (selectedfilteropened === "case") {
+      setFilteredCasesPre([]);
+    }
+  };
+
+  const onInvert = () => {
+    if (selectedfilteropened === "year") {
+      setFilteredYearPre(
+        filterableYearsKeys.filter((n) => !filteredYears.includes(Number(n)))
+      );
+    } else if (selectedfilteropened === "area") {
+      setFilteredAreaPre(
+        filterableAreasKeys.filter((n) => !filteredAreas.includes(n))
+      );
+    } else if (selectedfilteropened === "case") {
+      setFilteredCasesPre(
+        filterableCasesKeys.filter((n) => !filteredCases.includes(n))
+      );
+    }
+  };
 
   return (
     <div className="flex flex-col h-full w-screen absolute">
@@ -945,7 +973,6 @@ const Home: NextPage = () => {
                   >
                     Year
                   </button>
-
                   <button
                     onClick={() => {
                       setselectedfilteropened("area");
@@ -958,7 +985,6 @@ const Home: NextPage = () => {
                   >
                     Area
                   </button>
-
                   <button
                     onClick={() => {
                       setselectedfilteropened("case");
@@ -975,43 +1001,17 @@ const Home: NextPage = () => {
                 <div className="flex flex-col">
                   {selectedfilteropened === "year" && (
                     <div className="mt-2">
-                      <div className="flex flex-row gap-x-1">
-                        <button
-                          className="align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base"
-                          onClick={() => {
-                            setFilteredYearPre(filterableYearsKeys);
-                          }}
-                        >
-                          Select All
-                        </button>
-                        <button
-                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base border border-gray-400"
-                          onClick={() => {
-                            setFilteredYearPre([]);
-                          }}
-                        >
-                          Unselect All
-                        </button>
-                        <button
-                          onClick={() => {
-                            setFilteredYearPre(
-                              filterableYearsKeys.filter(
-                                (n) => !filteredYears.includes(Number(n))
-                              )
-                            );
-                          }}
-                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400"
-                        >
-                          Invert
-                        </button>
-                      </div>
+                      <SelectButtons
+                        onSelect={onSelect}
+                        onUnselect={onUnselect}
+                        onInvert={onInvert}
+                      />
                       <div className="flex flex-row gap-x-1">
                         <div className="flex items-center">
                           <Checkbox.Group
-                            value={filteredYears.map((x)=>String(x))}
+                            value={filteredYears.map((year) => String(year))}
                             onChange={setFilteredYearPre}
                           >
-                            {" "}
                             <div
                               className={`grid grid-cols-3
                           } gap-x-4 `}
@@ -1036,69 +1036,95 @@ const Home: NextPage = () => {
                               )}
                             </div>
                           </Checkbox.Group>
-                        </div>{" "}
-                      </div>{" "}
-                      {/* <p className="text-gray-200 text-xs">
-                        Data including categories for race set by L.A. County
-                        Medical-Examiner Coroner
-                      </p> */}
+                        </div>
+                      </div>
+                      <p className="text-gray-200 text-xs mt-2">
+                        Code Enforcement Cases by Year
+                      </p>
                     </div>
                   )}
-                  {selectedfilteropened === "cd" && (
+                  {selectedfilteropened === "area" && (
                     <div className="mt-2">
+                      <SelectButtons
+                        onSelect={onSelect}
+                        onUnselect={onUnselect}
+                        onInvert={onInvert}
+                      />
                       <div className="flex flex-row gap-x-1">
-                        <button
-                          className="align-middle bg-gray-800 rounded-lg px-1  border border-gray-400 text-sm md:text-base"
-                          onClick={() => {
-                            setfilteredcouncildistrictspre(listofcouncildists);
-                          }}
-                        >
-                          Select All
-                        </button>
-                        <button
-                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base border border-gray-400"
-                          onClick={() => {
-                            setfilteredcouncildistrictspre([]);
-                          }}
-                        >
-                          Unselect All
-                        </button>
-                        <button
-                          onClick={() => {
-                            setfilteredcouncildistrictspre(
-                              listofcouncildists.filter(
-                                (n) => !filteredcouncildistricts.includes(n)
-                              )
-                            );
-                          }}
-                          className="align-middle bg-gray-800 rounded-lg px-1 text-sm md:text-base  border border-gray-400"
-                        >
-                          Invert
-                        </button>
-                      </div>
-                      <Checkbox.Group
-                        value={filteredcouncildistricts}
-                        onChange={setfilteredcouncildistrictspre}
-                      >
-                        {" "}
-                        <div
-                          className={`grid grid-cols-3
+                        <div className="flex items-center">
+                          <Checkbox.Group
+                            value={filteredAreas}
+                            onChange={setFilteredAreaPre}
+                          >
+                            <div
+                              className={`grid grid-cols-3
                           } gap-x-4 `}
-                        >
-                          {listofcouncildists.map((item, key) => (
-                            <Checkbox
-                              value={item}
-                              label={
-                                <span className="text-nowrap text-xs">
-                                  <span className="text-white">{item}</span>{" "}
-                                  <span>{councilcount[String(item)]}</span>
-                                </span>
-                              }
-                              key={key}
-                            />
-                          ))}
+                            >
+                              {Object.entries(filterableAreas).map(
+                                (eachEntry) => (
+                                  <Checkbox
+                                    value={eachEntry[0]}
+                                    label={
+                                      <span className="text-nowrap text-xs">
+                                        <span className="text-white">
+                                          {titleCase(eachEntry[0])}
+                                        </span>{" "}
+                                        <span>{eachEntry[1]}</span>
+                                      </span>
+                                    }
+                                    key={eachEntry[0]}
+                                  />
+                                )
+                              )}
+                            </div>
+                          </Checkbox.Group>
                         </div>
-                      </Checkbox.Group>
+                      </div>
+                      <p className="text-gray-200 text-xs mt-2">
+                        Code Enforcement Cases by Area Planning Commission
+                      </p>
+                    </div>
+                  )}
+                  {selectedfilteropened === "case" && (
+                    <div className="mt-2">
+                      <SelectButtons
+                        onSelect={onSelect}
+                        onUnselect={onUnselect}
+                        onInvert={onInvert}
+                      />
+                      <div className="flex flex-row gap-x-1">
+                        <div className="flex items-center">
+                          <Checkbox.Group
+                            value={filteredCases}
+                            onChange={setFilteredCasesPre}
+                          >
+                            <div
+                              className={`grid grid-cols-3
+                          } gap-x-4 `}
+                            >
+                              {Object.entries(filterableCases).map(
+                                (eachEntry) => (
+                                  <Checkbox
+                                    value={eachEntry[0]}
+                                    label={
+                                      <span className="text-nowrap text-xs">
+                                        <span className="text-white">
+                                          {titleCase(eachEntry[0])}
+                                        </span>{" "}
+                                        <span>{eachEntry[1]}</span>
+                                      </span>
+                                    }
+                                    key={eachEntry[0]}
+                                  />
+                                )
+                              )}
+                            </div>
+                          </Checkbox.Group>
+                        </div>
+                      </div>
+                      <p className="text-gray-200 text-xs mt-2">
+                        Code Enforcement Cases by Case Type
+                      </p>
                     </div>
                   )}
                 </div>
