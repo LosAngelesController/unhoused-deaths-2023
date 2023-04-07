@@ -3,13 +3,15 @@ import Head from "next/head";
 import { titleCase } from "title-case";
 import { computeclosestcoordsfromevent } from "../components/getclosestcoordsfromevent";
 import { CloseButton } from "../components/CloseButton";
+import { SelectButtons } from "@/components/SelectButtons";
+import { MapTitle } from "@/components/MapTitle";
+import { FilterButton } from "@/components/FilterButton";
 import { signintrack, uploadMapboxTrack } from "../components/mapboxtrack";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import MapboxLanguage from "@mapbox/mapbox-gl-language";
 import Nav from "../components/nav";
 import { MantineProvider, Checkbox } from "@mantine/core";
 import React, { useEffect, useState, useRef } from "react";
-import { SelectButtons } from "@/components/SelectButtons";
 import CouncilDist from "./CouncilDistricts.json";
 const councildistricts = require("./CouncilDistricts.json");
 const citybounds = require("./citybounds.json");
@@ -968,84 +970,18 @@ const Home: NextPage = () => {
 
         <div className="flex-initial h-content flex-col flex z-50">
           <div className="   max-h-screen flex-col flex z-5">
-            <div
-              className="absolute mt-[3em] md:mt-[3.7em] md:ml-3 top-0 z-5 titleBox  ml-2 text-base bold md:semi-bold break-words bg-[#212121]"
-              style={{
-                backgroundColor: "#212121",
-                color: "#ffffff",
-              }}
-            >
-              <strong className="">
-                Building and Safety Code Enforcement Cases
-              </strong>
-            </div>
-
+            <MapTitle />
             <div
               className={`geocoder absolute mt-[2.7em] md:mt-[4.1em] ml-1 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
               id="geocoder"
             ></div>
             <div className="w-content"></div>
 
-            <div className="fixed mt-[6em] ml-2 sm:hidden flex flex-row">
-              {filterpanelopened === false && (
-                <button
-                  onClick={() => {
-                    setfilterpanelopened(true);
-                  }}
-                  className={` md:hidden mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base 
-                  bg-gray-800 bg-opacity-80 text-white border-white border-2`}
-                >
-                  <svg
-                    style={{
-                      width: "20px",
-                      height: "20px",
-                    }}
-                    viewBox="0 0 24 24"
-                    className="inline align-middle mt-0.5"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
-                    />
-                  </svg>
-                  <span>Filter</span>
-                </button>
-              )}
-            </div>
-
             <div
-              className="filterandinfobox  fixed
- top-auto bottom-0 left-0 right-0
-   sm:max-w-sm sm:absolute sm:mt-[6em] md:mt-[3em] sm:ml-3 
-  sm:top-auto sm:bottom-auto sm:left-auto 
-  sm:right-auto flex flex-col gap-y-2"
+              className="filterandinfobox fixed top-auto bottom-0 left-0 right-0 
+              sm:max-w-sm sm:absolute sm:mt-[6em] md:mt-[3em] sm:ml-3 sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto flex flex-col gap-y-2"
             >
-              {filterpanelopened === false && (
-                <div className=" flex flex-row">
-                  <button
-                    onClick={() => {
-                      setfilterpanelopened(true);
-                    }}
-                    className={`hidden md:block mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base 
-                  bg-gray-800 bg-opacity-80 text-white border-white border-2`}
-                  >
-                    <svg
-                      style={{
-                        width: "20px",
-                        height: "20px",
-                      }}
-                      viewBox="0 0 24 24"
-                      className="inline align-middle mt-0.5"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
-                      />
-                    </svg>
-                    <span>Filter</span>
-                  </button>
-                </div>
-              )}
+              {filterpanelopened === false && (<FilterButton setfilterpanelopened={setfilterpanelopened}/>)}
               <div
                 className={`
               ${
