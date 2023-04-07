@@ -1,48 +1,28 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { titleCase } from "title-case";
-// import Image from "next/image";
-// import { Dialog, Transition } from "@headlessui/react";
-// import { Fragment, createRef } from "react";
 import { computeclosestcoordsfromevent } from "../components/getclosestcoordsfromevent";
 import { CloseButton } from "../components/CloseButton";
 import { signintrack, uploadMapboxTrack } from "../components/mapboxtrack";
-// import { getAuth, signInWithCustomToken } from "firebase/auth";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import MapboxLanguage from "@mapbox/mapbox-gl-language";
 import Nav from "../components/nav";
-//import { CloseButton } from "@/components/CloseButton";
 import { MantineProvider, Checkbox } from "@mantine/core";
 import React, { useEffect, useState, useRef } from "react";
 import { SelectButtons } from "@/components/SelectButtons";
-// import { initializeApp } from "firebase/app";
-
-// import Icon from "@mdi/react";
-// import { mdiPlay } from "@mdi/js";
-// import { mdiPause, mdiSkipNext, mdiSkipPrevious } from "@mdi/js";
-
 import CouncilDist from "./CouncilDistricts.json";
-// import { auth, signInWithGoogle, signOutOfApp } from "./../components/firebase";
-// import { useAuthState } from "react-firebase-hooks/auth";
-
 const councildistricts = require("./CouncilDistricts.json");
 const citybounds = require("./citybounds.json");
 // @ts-ignore: Unreachable code error
 import * as turf from "@turf/turf";
 import { datadogRum } from "@datadog/browser-rum";
-
-// added the following 6 lines.
 import mapboxgl from "mapbox-gl";
 
-// import { assertDeclareExportAllDeclaration } from "@babel/types";
+// function isTouchScreen() {
+//   return window.matchMedia("(hover: none)").matches;
+// }
 
-// import { GeoJsonProperties, MultiPolygon, Polygon } from "geojson";
-
-function isTouchScreen() {
-  return window.matchMedia("(hover: none)").matches;
-}
-
-var cacheofcdsfromnames: any = {};
+// var cacheofcdsfromnames: any = {};
 
 function getLang() {
   if (navigator.languages != undefined) return navigator.languages[0];
@@ -137,8 +117,6 @@ const Home: NextPage = () => {
   //template name, this is used to submit to the map analytics software what the current state of the map is.
   var mapname = "building-safety";
 
-  // const [mapboxloaded, setmapboxloaded] = useState(false);
-
   const setFilteredYearPre = (input: string[]) => {
     console.log("inputvalidator", input);
     if (input.length === 0) {
@@ -187,38 +165,38 @@ const Home: NextPage = () => {
 
   datadogRum.startSessionReplayRecording();
 
-  function turfify(polygon: any) {
-    var turffedpolygon;
-    if (polygon.geometry.type == "Polygon") {
-      turffedpolygon = turf.polygon(polygon.geometry.coordinates);
-    } else {
-      turffedpolygon = turf.multiPolygon(polygon.geometry.coordinates);
-    }
-    return turffedpolygon;
-  }
+  // function turfify(polygon: any) {
+  //   var turffedpolygon;
+  //   if (polygon.geometry.type == "Polygon") {
+  //     turffedpolygon = turf.polygon(polygon.geometry.coordinates);
+  //   } else {
+  //     turffedpolygon = turf.multiPolygon(polygon.geometry.coordinates);
+  //   }
+  //   return turffedpolygon;
+  // }
 
-  function polygonInWhichCd(polygon: any) {
-    if (typeof polygon.properties.name === "string") {
-      if (cacheofcdsfromnames[polygon.properties.name]) {
-        return cacheofcdsfromnames[polygon.properties.name];
-      } else {
-        var turffedpolygon = turfify(polygon);
+  // function polygonInWhichCd(polygon: any) {
+  //   if (typeof polygon.properties.name === "string") {
+  //     if (cacheofcdsfromnames[polygon.properties.name]) {
+  //       return cacheofcdsfromnames[polygon.properties.name];
+  //     } else {
+  //       var turffedpolygon = turfify(polygon);
 
-        const answerToReturn = councildistricts.features.find(
-          (eachItem: any) => {
-            //turf sucks for not having type checking, bypasses compile error Property 'booleanIntersects' does not exist on type 'TurfStatic'.
-            //yes it works!!!! it's just missing types
-            // @ts-ignore: Unreachable code error
-            return turf.booleanIntersects(turfify(eachItem), turffedpolygon);
-          }
-        );
+  //       const answerToReturn = councildistricts.features.find(
+  //         (eachItem: any) => {
+  //           //turf sucks for not having type checking, bypasses compile error Property 'booleanIntersects' does not exist on type 'TurfStatic'.
+  //           //yes it works!!!! it's just missing types
+  //           // @ts-ignore: Unreachable code error
+  //           return turf.booleanIntersects(turfify(eachItem), turffedpolygon);
+  //         }
+  //       );
 
-        cacheofcdsfromnames[polygon.properties.name] = answerToReturn;
+  //       cacheofcdsfromnames[polygon.properties.name] = answerToReturn;
 
-        return answerToReturn;
-      }
-    }
-  }
+  //       return answerToReturn;
+  //     }
+  //   }
+  // }
 
   var [hasStartedControls, setHasStartedControls] = useState(false);
 
@@ -256,9 +234,6 @@ const Home: NextPage = () => {
     if (divRef.current) {
       console.log("app render");
     }
-
-    // mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
-    //import locations from './features.geojson'
 
     mapboxgl.accessToken =
       "pk.eyJ1Ijoia2VubmV0aG1lamlhIiwiYSI6ImNsZG1oYnpxNDA2aTQzb2tkYXU2ZWc1b3UifQ.PxO_XgMo13klJ3mQw1QxlQ";
@@ -476,7 +451,7 @@ const Home: NextPage = () => {
       }
 
       //create mousedown trigger
-      map.on("mousedown", "building-safety-cases", (e) => {
+      map.on("mousedown", "building-safety", (e) => {
         console.log("mousedown", e, e.features);
         if (e.features) {
           const closestcoords = computeclosestcoordsfromevent(e);
@@ -500,8 +475,133 @@ const Home: NextPage = () => {
         closeOnClick: false,
       });
 
-      map.on("mouseenter", "building-safety", (e: any) => {
-        console.log("mouseenter", e.features);
+      map.on("mouseover", "building-safety", (e: any) => {
+        console.log("mouseover", e.features);
+
+        if (e.features) {
+          map.getCanvas().style.cursor = "pointer";
+          const closestcoords: any = computeclosestcoordsfromevent(e);
+
+          const filteredfeatures = e.features.filter((feature: any) => {
+            return (
+              feature.geometry.coordinates[0] === closestcoords[0] &&
+              feature.geometry.coordinates[1] === closestcoords[1]
+            );
+          });
+
+          // Copy coordinates array.
+          const coordinates = closestcoords.slice();
+
+          /*Ensure that if the map is zoomed out such that multiple
+          copies of the feature are visible, the popup appears
+          over the copy being pointed to.*/
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
+
+          if (filteredfeatures.length > 0) {
+            if (filteredfeatures[0]) {
+              if (filteredfeatures[0].properties) {
+                if (
+                  filteredfeatures[0].properties["Area Planning Commission"]
+                ) {
+                  const areaPC =
+                    filteredfeatures[0].properties["Area Planning Commission"];
+                  console.log("filteredfeatures", filteredfeatures);
+
+                  const allthelineitems = filteredfeatures.map(
+                    (eachCase: any) => {
+                      if (eachCase.properties?.["Case #"]) {
+                        return `<li class="leading-none  my-1">Case #${
+                          eachCase.properties["Case #"]
+                        }
+                  ${
+                    eachCase.properties?.["Case Type"] &&
+                    eachCase.properties["Case Type"] != "UNKNOWN"
+                      ? `<span class="text-teal-200">Type: ${eachCase.properties["Case Type"]}</span>`
+                      : ""
+                  }
+                  <br/>
+                  ${
+                    eachCase.properties?.["Date Case Created"] &&
+                    eachCase.properties["Date Case Created"] != "UNKNOWN"
+                      ? `<span class="text-sky-400">Created: ${eachCase.properties["Date Case Created"]}</span>`
+                      : ""
+                  }${" "}
+                  ${
+                    eachCase.properties?.["Date Case Closed"] &&
+                    eachCase.properties["Date Case Closed"] != "UNKNOWN"
+                      ? `<span class="text-blue-200">Closed: ${eachCase.properties["Date Case Closed"]}</span>`
+                      : ""
+                  }${" "}
+                  ${
+                    eachCase.properties["CSR #"]
+                      ? `<br/><span class="text-pink-200">CSR #${eachCase.properties["CSR #"]}</span>`
+                      : ""
+                  }${" "}${
+                          eachCase.properties["CSR Problem Description"]
+                            ? `<span class="text-pink-400">${eachCase.properties[
+                                "CSR Problem Description"
+                              ].toLowerCase()}</span>`
+                            : ""
+                        }
+                  </li>`;
+                      }
+                    }
+                  );
+
+                  popup
+                    .setLngLat(coordinates)
+                    .setHTML(
+                      ` <div>
+                <p class="font-semibold">${titleCase(areaPC.toLowerCase())}</p>
+                <p>${filteredfeatures.length} Case${
+                        filteredfeatures.length > 1 ? "s" : ""
+                      }</p>
+
+                <ul class='list-disc leading-none'>${
+                  allthelineitems.length <= 7
+                    ? allthelineitems.join("")
+                    : allthelineitems.splice(0, 7).join("")
+                }</ul>
+                
+                ${
+                  allthelineitems.length >= 7
+                    ? `<p class="text-xs text-gray-300">Showing 10 of ${allthelineitems.length} cases</p>`
+                    : ""
+                }
+              </div><style>
+              .mapboxgl-popup-content {
+                background: #212121e0;
+                color: #fdfdfd;
+              }
+    
+              .flexcollate {
+                row-gap: 0.5rem;
+                display: flex;
+                flex-direction: column;
+              }
+              </style>`
+                    )
+                    .addTo(map);
+                }
+              }
+            }
+          }
+        }
+      });
+
+      map.on("mouseleave", "building-safety", () => {
+        //check if the url query string "stopmouseleave" is true
+        //if it is, then don't do anything
+        //if it is not, then do the following
+        /* map.getCanvas().style.cursor = '';
+          popup.remove();*/
+
+        if (urlParams.get("stopmouseleave") === null) {
+          map.getCanvas().style.cursor = "";
+          popup.remove();
+        }
       });
 
       map.addSource("building-safety-point", {
