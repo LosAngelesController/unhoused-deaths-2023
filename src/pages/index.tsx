@@ -981,7 +981,9 @@ const Home: NextPage = () => {
               className="filterandinfobox fixed top-auto bottom-0 left-0 right-0 
               sm:max-w-sm sm:absolute sm:mt-[6em] md:mt-[3em] sm:ml-3 sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto flex flex-col gap-y-2"
             >
-              {filterpanelopened === false && (<FilterButton setfilterpanelopened={setfilterpanelopened}/>)}
+              {filterpanelopened === false && (
+                <FilterButton setfilterpanelopened={setfilterpanelopened} />
+              )}
               <div
                 className={`
               ${
