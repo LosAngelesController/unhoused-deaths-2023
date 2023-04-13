@@ -15,14 +15,8 @@ import React, { useEffect, useState, useRef } from "react";
 import CouncilDist from "./CouncilDistricts.json";
 const councildistricts = require("./CouncilDistricts.json");
 const citybounds = require("./citybounds.json");
-// @ts-ignore: Unreachable code error
 import * as turf from "@turf/turf";
-import { datadogRum } from "@datadog/browser-rum";
 import mapboxgl from "mapbox-gl";
-
-// function isTouchScreen() {
-//   return window.matchMedia("(hover: none)").matches;
-// }
 
 // var cacheofcdsfromnames: any = {};
 
@@ -146,26 +140,26 @@ const Home: NextPage = () => {
     }
   };
 
-  const datadogconfig: any = {
-    applicationId: "54ed9846-68b0-4811-a47a-7330cf1828a0",
-    clientToken: "pub428d48e3143310cf6a9dd00003773f12",
-    site: "datadoghq.com",
-    service: "beds",
-    env: "prod",
-    // Specify a version number to identify the deployed version of your application in Datadog
-    // version: '1.0.0',
+  // const datadogconfig: any = {
+  //   applicationId: "54ed9846-68b0-4811-a47a-7330cf1828a0",
+  //   clientToken: "pub428d48e3143310cf6a9dd00003773f12",
+  //   site: "datadoghq.com",
+  //   service: "beds",
+  //   env: "prod",
+  //   // Specify a version number to identify the deployed version of your application in Datadog
+  //   // version: '1.0.0',
 
-    sessionSampleRate: 100,
-    sessionReplaySampleRate: 100,
-    trackUserInteractions: true,
-    trackResources: true,
-    trackLongTasks: true,
-    defaultPrivacyLevel: "allow",
-  };
+  //   sessionSampleRate: 100,
+  //   sessionReplaySampleRate: 100,
+  //   trackUserInteractions: true,
+  //   trackResources: true,
+  //   trackLongTasks: true,
+  //   defaultPrivacyLevel: "allow",
+  // };
 
-  datadogRum.init(datadogconfig);
+  // datadogRum.init(datadogconfig);
 
-  datadogRum.startSessionReplayRecording();
+  // datadogRum.startSessionReplayRecording();
 
   // function turfify(polygon: any) {
   //   var turffedpolygon;
@@ -796,14 +790,31 @@ const Home: NextPage = () => {
       });
 
       map.on("zoomend", (e) => {
-        uploadMapboxTrack({
-          mapname,
-          eventtype: "zoomend",
-          globallng: map.getCenter().lng,
-          globallat: map.getCenter().lat,
-          globalzoom: map.getZoom(),
-        });
+        const zoom = map.getZoom();
+        if (zoom < 10) {
+          map.setZoom(10);
+        } else if (zoom > 16) {
+          map.setZoom(16);
+        } else {
+          uploadMapboxTrack({
+            mapname,
+            eventtype: "zoomend",
+            globallng: map.getCenter().lng,
+            globallat: map.getCenter().lat,
+            globalzoom: zoom,
+          });
+        }
       });
+
+      // map.on("zoomend", (e) => {
+      //   uploadMapboxTrack({
+      //     mapname,
+      //     eventtype: "zoomend",
+      //     globallng: map.getCenter().lng,
+      //     globallat: map.getCenter().lat,
+      //     globalzoom: map.getZoom(),
+      //   });
+      // });
 
       //end of load
     });
