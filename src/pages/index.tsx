@@ -12,36 +12,14 @@ import MapboxLanguage from "@mapbox/mapbox-gl-language";
 import Nav from "../components/nav";
 import { MantineProvider, Checkbox } from "@mantine/core";
 import React, { useEffect, useState, useRef } from "react";
-import CouncilDist from "./CouncilDistricts.json";
 const councildistricts = require("./CouncilDistricts.json");
 const citybounds = require("./citybounds.json");
-import * as turf from "@turf/turf";
 import mapboxgl from "mapbox-gl";
-
-// var cacheofcdsfromnames: any = {};
 
 function getLang() {
   if (navigator.languages != undefined) return navigator.languages[0];
   return navigator.language;
 }
-
-// var councilareasdistrict: any = {
-//   "1": 39172374.513557486,
-//   "2": 56028687.75752604,
-//   "3": 91323827.86998883,
-//   "4": 127051659.05853269,
-//   "5": 85492955.75895034,
-//   "6": 70583244.58359845,
-//   "7": 140330608.52718654,
-//   "8": 41642747.81303825,
-//   "9": 33854278.76005373,
-//   "10": 38455731.29742687,
-//   "11": 165241605.83628467,
-//   "12": 149947134.17462063,
-//   "13": 42095086.21254906,
-//   "14": 63974277.0096737,
-//   "15": 83429528.39743595,
-// };
 
 const filterableYears: any = {
   2018: 39845,
@@ -82,15 +60,6 @@ const filterableCases: any = {
 const filterableCasesKeys = Object.keys(filterableCases);
 
 const Home: NextPage = () => {
-  // var councilBounds: any = {
-  //   features: CouncilDist.features,
-  //   type: "FeatureCollection",
-  // };
-
-  // const listofcouncildists = Array.from({ length: 15 }, (_, i) => i + 1).map(
-  //   (eachItem) => String(eachItem)
-  // );
-
   const shouldfilteropeninit =
     typeof window != "undefined" ? window.innerWidth >= 640 : false;
   const [showtotalarea, setshowtotalarea] = useState(false);
@@ -139,60 +108,6 @@ const Home: NextPage = () => {
       setFilteredCases(input);
     }
   };
-
-  // const datadogconfig: any = {
-  //   applicationId: "54ed9846-68b0-4811-a47a-7330cf1828a0",
-  //   clientToken: "pub428d48e3143310cf6a9dd00003773f12",
-  //   site: "datadoghq.com",
-  //   service: "beds",
-  //   env: "prod",
-  //   // Specify a version number to identify the deployed version of your application in Datadog
-  //   // version: '1.0.0',
-
-  //   sessionSampleRate: 100,
-  //   sessionReplaySampleRate: 100,
-  //   trackUserInteractions: true,
-  //   trackResources: true,
-  //   trackLongTasks: true,
-  //   defaultPrivacyLevel: "allow",
-  // };
-
-  // datadogRum.init(datadogconfig);
-
-  // datadogRum.startSessionReplayRecording();
-
-  // function turfify(polygon: any) {
-  //   var turffedpolygon;
-  //   if (polygon.geometry.type == "Polygon") {
-  //     turffedpolygon = turf.polygon(polygon.geometry.coordinates);
-  //   } else {
-  //     turffedpolygon = turf.multiPolygon(polygon.geometry.coordinates);
-  //   }
-  //   return turffedpolygon;
-  // }
-
-  // function polygonInWhichCd(polygon: any) {
-  //   if (typeof polygon.properties.name === "string") {
-  //     if (cacheofcdsfromnames[polygon.properties.name]) {
-  //       return cacheofcdsfromnames[polygon.properties.name];
-  //     } else {
-  //       var turffedpolygon = turfify(polygon);
-
-  //       const answerToReturn = councildistricts.features.find(
-  //         (eachItem: any) => {
-  //           //turf sucks for not having type checking, bypasses compile error Property 'booleanIntersects' does not exist on type 'TurfStatic'.
-  //           //yes it works!!!! it's just missing types
-  //           // @ts-ignore: Unreachable code error
-  //           return turf.booleanIntersects(turfify(eachItem), turffedpolygon);
-  //         }
-  //       );
-
-  //       cacheofcdsfromnames[polygon.properties.name] = answerToReturn;
-
-  //       return answerToReturn;
-  //     }
-  //   }
-  // }
 
   var [hasStartedControls, setHasStartedControls] = useState(false);
 
@@ -446,6 +361,16 @@ const Home: NextPage = () => {
         map.showTerrainWireframe = true;
       }
 
+      if (
+        !document.querySelector(
+          ".mapboxgl-ctrl-top-right > .mapboxgl-ctrl-geocoder"
+        )
+      ) {
+        map.addControl(geocoder2);
+      }
+
+      checkHideOrShowTopRightGeocoder();
+
       //create mousedown trigger
       map.on("mousedown", "building-safety", (e) => {
         console.log("mousedown", e, e.features);
@@ -591,8 +516,6 @@ const Home: NextPage = () => {
         //check if the url query string "stopmouseleave" is true
         //if it is, then don't do anything
         //if it is not, then do the following
-        /* map.getCanvas().style.cursor = '';
-          popup.remove();*/
 
         if (urlParams.get("stopmouseleave") === null) {
           map.getCanvas().style.cursor = "";
@@ -631,23 +554,12 @@ const Home: NextPage = () => {
               "icon-allow-overlap": true,
               "icon-ignore-placement": true,
               "text-ignore-placement": true,
-
               "icon-size": 0.4,
               "icon-text-fit": "both",
             },
           });
         }
       });
-
-      if (
-        !document.querySelector(
-          ".mapboxgl-ctrl-top-right > .mapboxgl-ctrl-geocoder"
-        )
-      ) {
-        map.addControl(geocoder2);
-      }
-
-      checkHideOrShowTopRightGeocoder();
 
       if (true) {
         map.addLayer(
@@ -793,8 +705,6 @@ const Home: NextPage = () => {
         const zoom = map.getZoom();
         if (zoom < 10) {
           map.setZoom(10);
-        } else if (zoom > 16) {
-          map.setZoom(16);
         } else {
           uploadMapboxTrack({
             mapname,
@@ -805,18 +715,6 @@ const Home: NextPage = () => {
           });
         }
       });
-
-      // map.on("zoomend", (e) => {
-      //   uploadMapboxTrack({
-      //     mapname,
-      //     eventtype: "zoomend",
-      //     globallng: map.getCenter().lng,
-      //     globallat: map.getCenter().lat,
-      //     globalzoom: map.getZoom(),
-      //   });
-      // });
-
-      //end of load
     });
 
     var getmapboxlogo: any = document.querySelector(".mapboxgl-ctrl-logo");
@@ -982,11 +880,11 @@ const Home: NextPage = () => {
         <div className="flex-initial h-content flex-col flex z-50">
           <div className="   max-h-screen flex-col flex z-5">
             <MapTitle />
-            <div
+            {/* <div
               className={`geocoder absolute mt-[2.7em] md:mt-[4.1em] ml-1 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
               id="geocoder"
-            ></div>
-            <div className="w-content"></div>
+            ></div> */}
+            {/* <div className="w-content"></div> */}
 
             <div
               className="filterandinfobox fixed top-auto bottom-0 left-0 right-0 
