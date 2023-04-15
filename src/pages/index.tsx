@@ -835,7 +835,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>Building and Safety Code Enforcement Cases</title>
+          <title>Building and Safety Code Enforcement Cases | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -843,33 +843,33 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="Twitter Template Map | Map"
+            content="Building and Safety Code Enforcement Cases | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="This is a template name"
+            content="Building and Safety Code Enforcement Cases"
           ></meta>
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://templatemap.lacontroller.io/thumbnail.png"
+            content="https://buildingandsafety.lacontroller.io/building-map.png"
           ></meta>
-          <meta name="description" content="Search Engine Template name." />
+          <meta name="description" content="Building and Safety Code Enforcement Cases." />
 
           <meta
             property="og:url"
-            content="https://templatemap.lacontroller.io"
+            content="https://buildingandsafety.lacontroller.io"
           />
           <meta property="og:type" content="website" />
-          <meta property="og:title" content="Shelter Beds Occupancy | Map" />
+          <meta property="og:title" content="Building and Safety Code Enforcement Cases | Map" />
           <meta
             property="og:description"
-            content="Search engine template name + facebook/instagram template name."
+            content="Building and Safety Code Enforcement Cases."
           />
           <meta
             property="og:image"
-            content="https://templatemap.lacontroller.io"
+            content="https://buildingandsafety.lacontroller.io/building-map.png"
           />
         </Head>
 
@@ -880,12 +880,6 @@ const Home: NextPage = () => {
         <div className="flex-initial h-content flex-col flex z-50">
           <div className="   max-h-screen flex-col flex z-5">
             <MapTitle />
-            {/* <div
-              className={`geocoder absolute mt-[2.7em] md:mt-[4.1em] ml-1 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
-              id="geocoder"
-            ></div> */}
-            {/* <div className="w-content"></div> */}
-
             <div
               className="filterandinfobox fixed top-auto bottom-0 left-0 right-0 
               sm:max-w-sm sm:absolute sm:mt-[6em] md:mt-[3em] sm:ml-3 sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto flex flex-col gap-y-2"
@@ -1088,7 +1082,7 @@ const Home: NextPage = () => {
               className={`absolute md:mx-auto z-9 bottom-2 left-1 md:left-1/2 md:transform md:-translate-x-1/2`}
             >
               <a
-                href="https://controller.lacontroller.gov/"
+                href="https://controller.lacity.gov/"
                 target="_blank"
                 rel="noreferrer"
               >
