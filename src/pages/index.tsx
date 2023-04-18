@@ -1001,8 +1001,8 @@ const Home: NextPage = () => {
                           </Checkbox.Group>
                         </div>
                       </div>
-                      <p className="text-gray-200 text-xs mt-2">
-                        Code Enforcement Cases by Year
+                      <p className="text-blue-400 text-xs mt-2">
+                        <strong>Code Enforcement Cases by Year</strong>
                       </p>
                     </div>
                   )}
@@ -1043,8 +1043,8 @@ const Home: NextPage = () => {
                           </Checkbox.Group>
                         </div>
                       </div>
-                      <p className="text-gray-200 text-xs mt-2">
-                        Code Enforcement Cases by Area Planning Commission
+                      <p className="text-blue-400 text-xs mt-2">
+                        <strong>Code Enforcement Cases by Area Planning Commission</strong>
                       </p>
                     </div>
                   )}
@@ -1085,8 +1085,8 @@ const Home: NextPage = () => {
                           </Checkbox.Group>
                         </div>
                       </div>
-                      <p className="text-gray-200 text-xs mt-2">
-                        Code Enforcement Cases by Case Type
+                      <p className="text-blue-400 text-xs mt-2">
+                        <strong>Code Enforcement Cases by Case Type</strong>
                       </p>
                       <CaseTypes onCaseClicked={onCaseClicked} />
                     </div>
