@@ -897,6 +897,13 @@ const Home: NextPage = () => {
         <div className="flex-initial h-content flex-col flex z-50">
           <div className="max-h-screen flex-col flex z-5">
             <MapTitle />
+
+            <div
+              className={`geocoder absolute mt-[2.7em] md:mt-[4.1em] ml-1 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
+              id="geocoder"
+            ></div>
+            <div className="w-content"></div>
+            
             <CaseTypeModal
               showModal={showModal}
               setShowModal={setShowModal}
@@ -1087,10 +1094,12 @@ const Home: NextPage = () => {
                           </Checkbox.Group>
                         </div>
                       </div>
+                      <div>
                       <p className="text-blue-400 text-xs mt-2">
                         <strong>Code Enforcement Cases by Case Type</strong>
                       </p>
                       <CaseTypes onCaseClicked={onCaseClicked} />
+                      </div>
                     </div>
                   )}
                 </div>

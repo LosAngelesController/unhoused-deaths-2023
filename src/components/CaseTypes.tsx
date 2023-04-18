@@ -1,6 +1,7 @@
 import React from "react";
 
 export function CaseTypes(props: any) {
+
   return (
     <>
       <div className="my-2">
