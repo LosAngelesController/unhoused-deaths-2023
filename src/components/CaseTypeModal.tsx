@@ -68,7 +68,7 @@ export function CaseTypeModal(props: setModal) {
                   <h3 className="text-xl font-semibold">{caseName}</h3>
                 </div>
                 <div className="relative p-5 flex-auto">
-                  <p className="my-1 text-slate-500 text-base leading-relaxed">
+                  <p className="my-1 text-slate-500 text-sm leading-relaxed">
                     {cases.map((item: any) => {
                       if (item.name === caseName) {
                         return item.description;
@@ -79,7 +79,7 @@ export function CaseTypeModal(props: setModal) {
                 </div>
                 <div className="flex items-center justify-end p-3 border-t border-solid border-slate-200 rounded-b">
                   <button
-                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    className="text-red-500 background-transparent font-bold uppercase px-6 py-1 text-sm outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
                     type="button"
                     onClick={() => props.setShowModal(false)}
                   >
