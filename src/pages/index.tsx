@@ -1044,7 +1044,9 @@ const Home: NextPage = () => {
                         </div>
                       </div>
                       <p className="text-blue-400 text-xs mt-2">
-                        <strong>Code Enforcement Cases by Area Planning Commission</strong>
+                        <strong>
+                          Code Enforcement Cases by Area Planning Commission
+                        </strong>
                       </p>
                     </div>
                   )}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 interface setModal {
   showModal: boolean;
@@ -9,7 +9,7 @@ interface setModal {
 export function CaseTypeModal(props: setModal) {
   const caseName = props.caseClicked;
 
-  const [cases] = useState([
+  const cases: any = [
     {
       name: "FRP",
       description:
@@ -55,21 +55,21 @@ export function CaseTypeModal(props: setModal) {
       description:
         "PCUP unit on pro-actively inspecting facilities with entitlements approved by City Planning; inspects and verifies that the sites maintain or meet the conditions of approval",
     },
-  ]);
+  ];
 
   return (
     <div>
       {props.showModal ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative w-auto my-6 mx-auto max-w-3xl">
+            <div className="relative w-auto my-1 mx-auto max-w-3xl">
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-zinc-900 w-content bg-opacity-90 outline-none focus:outline-none">
-                <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                  <h3 className="text-3xl font-semibold">{caseName}</h3>
+                <div className="flex items-start justify-between p-3 border-b border-solid border-slate-200 rounded-t">
+                  <h3 className="text-xl font-semibold">{caseName}</h3>
                 </div>
-                <div className="relative p-6 flex-auto">
-                  <p className="my-4 text-slate-500 text-lg leading-relaxed">
-                    {cases.map((item) => {
+                <div className="relative p-5 flex-auto">
+                  <p className="my-1 text-slate-500 text-base leading-relaxed">
+                    {cases.map((item: any) => {
                       if (item.name === caseName) {
                         return item.description;
                       }
@@ -77,7 +77,7 @@ export function CaseTypeModal(props: setModal) {
                     })}
                   </p>
                 </div>
-                <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                <div className="flex items-center justify-end p-3 border-t border-solid border-slate-200 rounded-b">
                   <button
                     className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
