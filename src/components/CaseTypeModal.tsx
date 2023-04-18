@@ -65,9 +65,9 @@ export function CaseTypeModal(props: setModal) {
             <div className="relative w-auto my-1 mx-auto max-w-3xl">
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-zinc-900 w-content bg-opacity-90 outline-none focus:outline-none">
                 <div className="flex items-start justify-between p-3 border-b border-solid border-slate-200 rounded-t">
-                  <h3 className="text-xl font-semibold">{caseName}</h3>
+                  <h3 className="text-base font-semibold">{caseName}</h3>
                 </div>
-                <div className="relative p-5 flex-auto">
+                <div className="relative p-3 flex-auto">
                   <p className="my-1 text-slate-500 text-sm leading-relaxed">
                     {cases.map((item: any) => {
                       if (item.name === caseName) {
