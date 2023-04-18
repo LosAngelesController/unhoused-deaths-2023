@@ -1,64 +1,97 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 interface setModal {
-    showModal: boolean,
-    setShowModal: any,
-    caseClicked: string
+  showModal: boolean;
+  setShowModal: any;
+  caseClicked: string;
 }
 
 export function CaseTypeModal(props: setModal) {
-    const caseName = props.caseClicked;
+  const caseName = props.caseClicked;
 
-    const [cases] = useState([
-        {name: "FRP", description: "Foreclosure Registry Program - VBA unit conducts inspection on sites that are registered through LAHD as foreclosed."},
-        {name: "General", description: "Investigation of code violations in existing commercial buildings, hotels, motels, and single-family residential buildings"},
-        {name: "Citations", description: "Issuing of citations on transient types of violations such as open air vending, zoning regulations, noise violations, and nuisance lighting violations"},
-        {name: "PACE", description: "Pro-Active Code Enforcement - Funded by the Community Development Block Grant to survey and target specific code enforcement problems in limited geographic regions in the City"},
-        {name: "Billboards", description: "Off-site Sign Periodic Inspection Division (OSSPID) conducts 2-year periodic inspection of all billboard signs"},
-        {name: "VEIP", description: "Vehicle Establishment Inspection Program - Fee-supported program, annually inspecting all auto repair garages (including smog test shops, window tinting and replacement shops, vinyl or similar covering materials, installation of parts/accessories and all similar uses) used vehicle sales areas, auto dismantling yards, junk yards, scrap metal or recycling materials processing yards, recycling collection and/or buyback centers, recycling materials sorting facilities and cargo container storage yards for violations of both building and land use ordinances"},
-        {name: "Signs", description: "Sign Unit responds to complaints regarding signs constructed without a permit/approval."},
-        {name: "CNAP", description: "Contract Nuisance Abatement Program - The Contract Nuisance Abatement Division abates open, vacant, abandoned, and vandalized buildings, under a process known as Vacant Building Abatement (VBA). The VBA process includes declaring these properties a “Nuisance” and/or “Hazard” after a public hearing. When property owners fail to comply with orders requiring them to clean, secure, rehabilitate or demolish these buildings, VBA steps in and performs the physical abatement work of cleaning, securing, and if necessary, demolishing a building by way of an annually awarded contract to various private contractors."},
-        {name: "NAR", description: "PCUP unit on pro-actively inspecting facilities with entitlements approved by City Planning; inspects and verifies that the sites maintain or meet the conditions of approval"}
-    ])
+  const [cases] = useState([
+    {
+      name: "FRP",
+      description:
+        "Foreclosure Registry Program - VBA unit conducts inspection on sites that are registered through LAHD as foreclosed.",
+    },
+    {
+      name: "General",
+      description:
+        "Investigation of code violations in existing commercial buildings, hotels, motels, and single-family residential buildings",
+    },
+    {
+      name: "Citations",
+      description:
+        "Issuing of citations on transient types of violations such as open air vending, zoning regulations, noise violations, and nuisance lighting violations",
+    },
+    {
+      name: "PACE",
+      description:
+        "Pro-Active Code Enforcement - Funded by the Community Development Block Grant to survey and target specific code enforcement problems in limited geographic regions in the City",
+    },
+    {
+      name: "Billboards",
+      description:
+        "Off-site Sign Periodic Inspection Division (OSSPID) conducts 2-year periodic inspection of all billboard signs",
+    },
+    {
+      name: "VEIP",
+      description:
+        "Vehicle Establishment Inspection Program - Fee-supported program, annually inspecting all auto repair garages (including smog test shops, window tinting and replacement shops, vinyl or similar covering materials, installation of parts/accessories and all similar uses) used vehicle sales areas, auto dismantling yards, junk yards, scrap metal or recycling materials processing yards, recycling collection and/or buyback centers, recycling materials sorting facilities and cargo container storage yards for violations of both building and land use ordinances",
+    },
+    {
+      name: "Signs",
+      description:
+        "Sign Unit responds to complaints regarding signs constructed without a permit/approval.",
+    },
+    {
+      name: "CNAP",
+      description:
+        "Contract Nuisance Abatement Program - The Contract Nuisance Abatement Division abates open, vacant, abandoned, and vandalized buildings, under a process known as Vacant Building Abatement (VBA). The VBA process includes declaring these properties a “Nuisance” and/or “Hazard” after a public hearing. When property owners fail to comply with orders requiring them to clean, secure, rehabilitate or demolish these buildings, VBA steps in and performs the physical abatement work of cleaning, securing, and if necessary, demolishing a building by way of an annually awarded contract to various private contractors.",
+    },
+    {
+      name: "NAR",
+      description:
+        "PCUP unit on pro-actively inspecting facilities with entitlements approved by City Planning; inspects and verifies that the sites maintain or meet the conditions of approval",
+    },
+  ]);
 
-    return (
-        <div>
-        {props.showModal ? (
-            <>
-            <div
-              className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-            >
-              <div className="relative w-auto my-6 mx-auto max-w-3xl">
-                <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-zinc-900 w-content bg-opacity-90 outline-none focus:outline-none">
-                  <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                    <h3 className="text-3xl font-semibold">
-                      {caseName}
-                    </h3>
-                  </div>
-                  <div className="relative p-6 flex-auto">
-                    <p className="my-4 text-slate-500 text-lg leading-relaxed">
-                      {cases.map((item) => {
-                        if (item.name === caseName) {
-                            return item.description;
-                        } return null;
+  return (
+    <div>
+      {props.showModal ? (
+        <>
+          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+            <div className="relative w-auto my-6 mx-auto max-w-3xl">
+              <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-zinc-900 w-content bg-opacity-90 outline-none focus:outline-none">
+                <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+                  <h3 className="text-3xl font-semibold">{caseName}</h3>
+                </div>
+                <div className="relative p-6 flex-auto">
+                  <p className="my-4 text-slate-500 text-lg leading-relaxed">
+                    {cases.map((item) => {
+                      if (item.name === caseName) {
+                        return item.description;
+                      }
+                      return null;
                     })}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
-                    <button
-                      className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                      type="button"
-                      onClick={() => props.setShowModal(false)}
-                    >
-                      Close
-                    </button>
-                  </div>
+                  </p>
+                </div>
+                <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                  <button
+                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button"
+                    onClick={() => props.setShowModal(false)}
+                  >
+                    Close
+                  </button>
                 </div>
               </div>
             </div>
-            <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-            </>
-        ) : null}
-        </div>
-    )
+          </div>
+          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+        </>
+      ) : null}
+    </div>
+  );
 }

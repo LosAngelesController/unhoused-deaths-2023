@@ -812,7 +812,7 @@ const Home: NextPage = () => {
     const caseType = e.target.textContent;
     console.log("onCaseClicked", caseType);
     setCaseClicked(caseType);
-}
+  };
 
   return (
     <div className="flex flex-col h-full w-screen absolute">
@@ -897,7 +897,11 @@ const Home: NextPage = () => {
         <div className="flex-initial h-content flex-col flex z-50">
           <div className="max-h-screen flex-col flex z-5">
             <MapTitle />
-            <CaseTypeModal showModal={showModal} setShowModal={setShowModal} caseClicked={caseClicked}/>
+            <CaseTypeModal
+              showModal={showModal}
+              setShowModal={setShowModal}
+              caseClicked={caseClicked}
+            />
             <div
               className="filterandinfobox fixed top-auto bottom-0 left-0 right-0 
               sm:max-w-sm sm:absolute sm:mt-[6em] md:mt-[3em] sm:ml-3 sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto flex flex-col gap-y-2"
@@ -1084,7 +1088,7 @@ const Home: NextPage = () => {
                       <p className="text-gray-200 text-xs mt-2">
                         Code Enforcement Cases by Case Type
                       </p>
-                      <CaseTypes onCaseClicked={onCaseClicked}/>
+                      <CaseTypes onCaseClicked={onCaseClicked} />
                     </div>
                   )}
                 </div>
