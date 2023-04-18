@@ -6,6 +6,8 @@ import { CloseButton } from "../components/CloseButton";
 import { SelectButtons } from "@/components/SelectButtons";
 import { MapTitle } from "@/components/MapTitle";
 import { FilterButton } from "@/components/FilterButton";
+import { CaseTypes } from "@/components/CaseTypes";
+import { CaseTypeModal } from "@/components/CaseTypeModal";
 import { signintrack, uploadMapboxTrack } from "../components/mapboxtrack";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import MapboxLanguage from "@mapbox/mapbox-gl-language";
@@ -803,6 +805,15 @@ const Home: NextPage = () => {
     }
   };
 
+  const [showModal, setShowModal] = useState(false);
+  const [caseClicked, setCaseClicked] = useState("");
+  const onCaseClicked = (e: any) => {
+    setShowModal(true);
+    const caseType = e.target.textContent;
+    console.log("onCaseClicked", caseType);
+    setCaseClicked(caseType);
+}
+
   return (
     <div className="flex flex-col h-full w-screen absolute">
       <MantineProvider
@@ -855,14 +866,20 @@ const Home: NextPage = () => {
             key="twitterimg"
             content="https://buildingandsafety.lacontroller.io/building-map.png"
           ></meta>
-          <meta name="description" content="Building and Safety Code Enforcement Cases." />
+          <meta
+            name="description"
+            content="Building and Safety Code Enforcement Cases."
+          />
 
           <meta
             property="og:url"
             content="https://buildingandsafety.lacontroller.io"
           />
           <meta property="og:type" content="website" />
-          <meta property="og:title" content="Building and Safety Code Enforcement Cases | Map" />
+          <meta
+            property="og:title"
+            content="Building and Safety Code Enforcement Cases | Map"
+          />
           <meta
             property="og:description"
             content="Building and Safety Code Enforcement Cases."
@@ -878,8 +895,9 @@ const Home: NextPage = () => {
         </div>
 
         <div className="flex-initial h-content flex-col flex z-50">
-          <div className="   max-h-screen flex-col flex z-5">
+          <div className="max-h-screen flex-col flex z-5">
             <MapTitle />
+            <CaseTypeModal showModal={showModal} setShowModal={setShowModal} caseClicked={caseClicked}/>
             <div
               className="filterandinfobox fixed top-auto bottom-0 left-0 right-0 
               sm:max-w-sm sm:absolute sm:mt-[6em] md:mt-[3em] sm:ml-3 sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto flex flex-col gap-y-2"
@@ -1066,6 +1084,7 @@ const Home: NextPage = () => {
                       <p className="text-gray-200 text-xs mt-2">
                         Code Enforcement Cases by Case Type
                       </p>
+                      <CaseTypes onCaseClicked={onCaseClicked}/>
                     </div>
                   )}
                 </div>
