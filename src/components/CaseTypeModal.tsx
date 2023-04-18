@@ -16,12 +16,12 @@ export function CaseTypeModal(props: setModal) {
         "Foreclosure Registry Program - VBA unit conducts inspection on sites that are registered through LAHD as foreclosed.",
     },
     {
-      name: "General",
+      name: "GENERAL",
       description:
         "Investigation of code violations in existing commercial buildings, hotels, motels, and single-family residential buildings",
     },
     {
-      name: "Citations",
+      name: "CITATIONS",
       description:
         "Issuing of citations on transient types of violations such as open air vending, zoning regulations, noise violations, and nuisance lighting violations",
     },
@@ -31,7 +31,7 @@ export function CaseTypeModal(props: setModal) {
         "Pro-Active Code Enforcement - Funded by the Community Development Block Grant to survey and target specific code enforcement problems in limited geographic regions in the City",
     },
     {
-      name: "Billboards",
+      name: "BILLBOARDS",
       description:
         "Off-site Sign Periodic Inspection Division (OSSPID) conducts 2-year periodic inspection of all billboard signs",
     },
@@ -41,7 +41,7 @@ export function CaseTypeModal(props: setModal) {
         "Vehicle Establishment Inspection Program - Fee-supported program, annually inspecting all auto repair garages (including smog test shops, window tinting and replacement shops, vinyl or similar covering materials, installation of parts/accessories and all similar uses) used vehicle sales areas, auto dismantling yards, junk yards, scrap metal or recycling materials processing yards, recycling collection and/or buyback centers, recycling materials sorting facilities and cargo container storage yards for violations of both building and land use ordinances",
     },
     {
-      name: "Signs",
+      name: "SIGNS",
       description:
         "Sign Unit responds to complaints regarding signs constructed without a permit/approval.",
     },
