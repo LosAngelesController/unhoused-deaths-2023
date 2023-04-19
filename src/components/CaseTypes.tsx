@@ -2,7 +2,6 @@ import React from "react";
 import classes from "./CaseTypes.module.css";
 
 export function CaseTypes(props: any) {
-
   return (
     <>
       <div className={classes.legend}>

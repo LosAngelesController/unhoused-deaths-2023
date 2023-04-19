@@ -903,7 +903,7 @@ const Home: NextPage = () => {
               id="geocoder"
             ></div>
             <div className="w-content"></div>
-            
+
             <CaseTypeModal
               showModal={showModal}
               setShowModal={setShowModal}
@@ -1008,7 +1008,7 @@ const Home: NextPage = () => {
                           </Checkbox.Group>
                         </div>
                       </div>
-                      <p className="text-blue-400 text-xs mt-2">
+                      <p className="text-blue-400 text-xs mt-1">
                         <strong>Code Enforcement Cases by Year</strong>
                       </p>
                     </div>
@@ -1050,7 +1050,7 @@ const Home: NextPage = () => {
                           </Checkbox.Group>
                         </div>
                       </div>
-                      <p className="text-blue-400 text-xs mt-2">
+                      <p className="text-blue-400 text-xs mt-1">
                         <strong>
                           Code Enforcement Cases by Area Planning Commission
                         </strong>
@@ -1058,7 +1058,7 @@ const Home: NextPage = () => {
                     </div>
                   )}
                   {selectedfilteropened === "case" && (
-                    <div className="mt-2">
+                    <div className="mt-1">
                       <SelectButtons
                         onSelect={onSelect}
                         onUnselect={onUnselect}
@@ -1095,10 +1095,10 @@ const Home: NextPage = () => {
                         </div>
                       </div>
                       <div>
-                      <p className="text-blue-400 text-xs mt-2">
-                        <strong>Code Enforcement Cases by Case Type</strong>
-                      </p>
-                      <CaseTypes onCaseClicked={onCaseClicked} />
+                        <p className="text-blue-400 text-xs mt-0">
+                          <strong>Code Enforcement Cases by Case Type</strong>
+                        </p>
+                        <CaseTypes onCaseClicked={onCaseClicked} />
                       </div>
                     </div>
                   )}
