@@ -1,0 +1,5 @@
+@media (max-width: 915px) and (orientation: landscape) {
+    .legend {
+        display: none;
+    }
+  }

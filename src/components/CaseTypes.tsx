@@ -1,11 +1,12 @@
 import React from "react";
+import classes from "./CaseTypes.module.css";
 
 export function CaseTypes(props: any) {
 
   return (
     <>
-      <div className="my-2">
-        <p className="text-xs text-[#41ffca]">
+      <div className={classes.legend}>
+        <p className="my-2 text-xs text-[#41ffca]">
           <strong>Click on Case Type for more info:</strong>
         </p>
         <ul className="text-xs cursor-pointer">

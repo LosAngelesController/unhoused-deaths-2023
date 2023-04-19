@@ -14,6 +14,11 @@ module.exports = {
     extend: {
       colors: {},
     },
+    // screens: {
+    //   'phone': {'max': '900px'},
+    //   'laptop': {'max': '1024px'},
+    //   'desktop': {'max': '1280px'},
+    // }
   },
   plugins: [require("tailwind-scrollbar")({ nocompatible: true })],
 };

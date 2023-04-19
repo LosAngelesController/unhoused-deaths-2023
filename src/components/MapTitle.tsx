@@ -9,7 +9,7 @@ export function MapTitle() {
         color: "#ffffff",
       }}
     >
-      <strong className="">Building and Safety Code Enforcement Cases</strong>
+      <strong className="">Building and Safety Cases</strong>
     </div>
   );
 }
