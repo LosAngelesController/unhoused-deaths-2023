@@ -23,43 +23,51 @@ function getLang() {
   return navigator.language;
 }
 
-const filterableYears: any = {
-  2018: 39845,
-  2019: 49590,
-  2020: 12207,
-  2021: 41847,
-  2022: 31711,
-  2023: 2088,
+const filterableRaces: any = {
+  "Hispanic/Latino": 32614,
+  Black: 16192,
+  White: 9240,
+  Other: 3489,
+  Asian: 304,
 };
 
-const filterableYearsKeys = Object.keys(filterableYears);
+const filterableRacesKeys = Object.keys(filterableRaces);
 
 const filterableAreas: any = {
-  Harbor: 29805,
-  "West Los Angeles": 3543,
-  Central: 6488,
-  "South Valley": 58835,
-  "North Valley": 41744,
-  "South Los Angeles": 22981,
-  "East Los Angeles": 13588,
+  Northeast: 2003,
+  "West LA": 3543,
+  Pacific: 3550,
+  Southeast: 3145,
+  Harbor: 1930,
+  Mission: 3080,
+  "N Hollywood": 2778,
+  Wilshire: 1892,
+  "77th Street": 4687,
+  Foothill: 2105,
+  "West Valley": 2255,
+  Rampart: 5083,
+  Devonshire: 2501,
+  Newton: 3494,
+  Central: 3767,
+  Olympic: 2822,
+  Hollenbeck: 2126,
+  Topanga: 2594,
+  Southwest: 3091,
+  "Van Nuys": 3296,
+  Hollywood: 3382,
 };
 
 const filterableAreasKeys = Object.keys(filterableAreas);
 
-const filterableCases: any = {
-  FRP: 489,
-  GENERAL: 30767,
-  CITATIONS: 2276,
-  PACE: 140179,
-  BILLBOARDS: 27,
-  VEIP: 788,
-  SIGNS: 822,
-  XXX: 1,
-  CNAP: 932,
-  NAR: 1007,
+const filterableArrests: any = {
+  Felony: 30378,
+  Misdemeanor: 26245,
+  Infraction: 4186,
+  Dependent: 545,
+  Other: 520,
 };
 
-const filterableCasesKeys = Object.keys(filterableCases);
+const filterableArrestsKeys = Object.keys(filterableArrests);
 
 const Home: NextPage = () => {
   const shouldfilteropeninit =
@@ -68,28 +76,27 @@ const Home: NextPage = () => {
   var mapref: any = useRef(null);
   const okaydeletepoints: any = useRef(null);
   const [doneloadingmap, setdoneloadingmap] = useState(false);
-  const [selectedfilteropened, setselectedfilteropened] = useState("year");
-  const [filteredYears, setFilteredYears] = useState<number[]>(
-    filterableYearsKeys.map((key) => Number(key))
+  const [selectedfilteropened, setselectedfilteropened] = useState("race");
+  const [filteredRaces, setFilteredRaces] =
+    useState<string[]>(filterableRacesKeys);
+  const [filteredArrests, setFilteredArrests] = useState<string[]>(
+    filterableArrestsKeys
   );
   const [filteredAreas, setFilteredAreas] =
     useState<string[]>(filterableAreasKeys);
-
-  const [filteredCases, setFilteredCases] =
-    useState<string[]>(filterableCasesKeys);
 
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "building-safety";
+  var mapname = "LAPD-arrests-2022";
 
-  const setFilteredYearPre = (input: string[]) => {
+  const setFilteredRacePre = (input: string[]) => {
     console.log("inputvalidator", input);
     if (input.length === 0) {
-      setFilteredYears([99999]);
+      setFilteredRaces(["99999"]);
     } else {
-      setFilteredYears(input.map((x) => Number(x)));
+      setFilteredRaces(input);
     }
   };
 
@@ -102,12 +109,12 @@ const Home: NextPage = () => {
     }
   };
 
-  const setFilteredCasesPre = (input: string[]) => {
+  const setFilteredArrestPre = (input: string[]) => {
     console.log("inputvalidator", input);
     if (input.length === 0) {
-      setFilteredCases(["99999"]);
+      setFilteredArrests(["99999"]);
     } else {
-      setFilteredCases(input);
+      setFilteredArrests(input);
     }
   };
 
@@ -171,7 +178,7 @@ const Home: NextPage = () => {
 
     var mapparams: any = {
       container: divRef.current, // container ID
-      style: "mapbox://styles/kennethmejia/clg3x9ahb000001mzegwualfn", // style URL (THIS IS STREET VIEW)
+      style: "mapbox://styles/kennethmejia/clgqr3ha2000001pp5tcl2j2u", // style URL (THIS IS STREET VIEW)
       center: [-118.41, 34], // starting position [lng, lat]
       zoom: formulaForZoom(), // starting zoom
     };
@@ -374,7 +381,7 @@ const Home: NextPage = () => {
       checkHideOrShowTopRightGeocoder();
 
       //create mousedown trigger
-      map.on("mousedown", "building-safety", (e) => {
+      map.on("mousedown", "lapd-arrests-2022", (e) => {
         console.log("mousedown", e, e.features);
         if (e.features) {
           const closestcoords = computeclosestcoordsfromevent(e);
@@ -398,7 +405,7 @@ const Home: NextPage = () => {
         closeOnClick: false,
       });
 
-      map.on("mouseover", "building-safety", (e: any) => {
+      map.on("mouseover", "lapd-arrests-2022", (e: any) => {
         console.log("mouseover", e.features);
 
         if (e.features) {
@@ -425,46 +432,79 @@ const Home: NextPage = () => {
           if (filteredfeatures.length > 0) {
             if (filteredfeatures[0]) {
               if (filteredfeatures[0].properties) {
-                if (
-                  filteredfeatures[0].properties["Area Planning Commission"]
-                ) {
-                  const areaPC =
-                    filteredfeatures[0].properties["Area Planning Commission"];
+                if (filteredfeatures[0].properties["Area Name"]) {
+                  const areaPC = filteredfeatures[0].properties["Area Name"];
                   console.log("filteredfeatures", filteredfeatures);
 
                   const allthelineitems = filteredfeatures.map(
                     (eachCase: any) => {
-                      if (eachCase.properties?.["Case #"]) {
-                        return `<li class="leading-none  my-1">Case #${
-                          eachCase.properties["Case #"]
+                      if (eachCase.properties?.["Report ID"]) {
+                        return `<li class="leading-none  my-1">Report ID: ${
+                          eachCase.properties["Report ID"]
+                        }${" "}
+                        ${
+                          eachCase.properties?.["Arrest Date"]
+                            ? `<span class="text-sky-400">Arrest Date: ${eachCase.properties["Arrest Date"]}</span>`
+                            : ""
                         }
+                        <br />
+                        ${
+                          eachCase.properties?.["Area Name"]
+                            ? `<span class="text-teal-200">Area: ${eachCase.properties["Area Name"]}</span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["Address"]
+                            ? `<span class="text-teal-200">${eachCase.properties["Address"]}</span> `
+                            : ""
+                        }
+                        ${
+                          eachCase.properties?.["Cross Street"]
+                            ? `<span class="text-teal-200">Cross St: ${eachCase.properties["Cross Street"]}</span>`
+                            : ""
+                        }
+                        <br/>
+                        ${
+                          eachCase.properties?.["Age"] &&
+                          eachCase.properties["Age"] != "UNKNOWN"
+                            ? `<span class="text-teal-200">Age: ${eachCase.properties["Age"]}</span> `
+                            : ""
+                        }
+                        ${
+                          eachCase.properties?.["Sex"] &&
+                          eachCase.properties["Sex"] != "UNKNOWN"
+                            ? `<span class="text-teal-700">Sex: ${eachCase.properties["Sex"]}</span> `
+                            : ""
+                        }
+                        ${
+                          eachCase.properties?.["Race"] &&
+                          eachCase.properties["Race"] != "UNKNOWN"
+                            ? `<span class="text-amber-400">Race: ${eachCase.properties["Race"]}</span>`
+                            : ""
+                        }
+                        <br/>
                   ${
-                    eachCase.properties?.["Case Type"] &&
-                    eachCase.properties["Case Type"] != "UNKNOWN"
-                      ? `<span class="text-teal-200">Type: ${eachCase.properties["Case Type"]}</span>`
+                    eachCase.properties?.["Arrest Type"] &&
+                    eachCase.properties["Arrest Type"] != "UNKNOWN"
+                      ? `<span class="text-teal-200">Type: ${eachCase.properties["Arrest Type"]}</span>`
                       : ""
                   }
                   <br/>
                   ${
-                    eachCase.properties?.["Date Case Created"] &&
-                    eachCase.properties["Date Case Created"] != "UNKNOWN"
-                      ? `<span class="text-sky-400">Created: ${eachCase.properties["Date Case Created"]}</span>`
+                    eachCase.properties?.["Charge"] &&
+                    eachCase.properties["Charge"] != "UNKNOWN"
+                      ? `<span class="text-blue-200">Charge: ${eachCase.properties["Charge"]}</span>`
                       : ""
                   }${" "}
                   ${
-                    eachCase.properties?.["Date Case Closed"] &&
-                    eachCase.properties["Date Case Closed"] != "UNKNOWN"
-                      ? `<span class="text-blue-200">Closed: ${eachCase.properties["Date Case Closed"]}</span>`
-                      : ""
-                  }${" "}
-                  ${
-                    eachCase.properties["CSR #"]
-                      ? `<br/><span class="text-pink-200">CSR #${eachCase.properties["CSR #"]}</span>`
+                    eachCase.properties["Charge Description"]
+                      ? `<br/><span class="text-pink-200">${eachCase.properties["Charge Description"]}</span>`
                       : ""
                   }${" "}${
-                          eachCase.properties["CSR Problem Description"]
-                            ? `<span class="text-pink-400">${eachCase.properties[
-                                "CSR Problem Description"
+                          eachCase.properties["Disposition Description"]
+                            ? `<span class="text-pink-400">Disposition: ${eachCase.properties[
+                                "Disposition Description"
                               ].toLowerCase()}</span>`
                             : ""
                         }
@@ -514,7 +554,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mouseleave", "building-safety", () => {
+      map.on("mouseleave", "lapd-arrests-2022", () => {
         //check if the url query string "stopmouseleave" is true
         //if it is, then don't do anything
         //if it is not, then do the following
@@ -525,7 +565,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.addSource("building-safety-point", {
+      map.addSource("arrest-point", {
         type: "geojson",
         data: {
           type: "FeatureCollection",
@@ -544,7 +584,7 @@ const Home: NextPage = () => {
           map.addLayer({
             id: "points-selected-shelter-layer",
             type: "symbol",
-            source: "building-safety-point",
+            source: "arrest-point",
             paint: {
               "icon-color": "#41ffca",
               "icon-translate": [0, -13],
@@ -731,15 +771,15 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "Year Case Created"],
-      filteredYears,
+      ["get", "Race"],
+      filteredRaces,
       true,
       false,
     ]);
 
     arrayoffilterables.push([
       "match",
-      ["get", "Area Planning Commission"],
+      ["get", "Area Name"],
       filteredAreas.map((area) => String(area)),
       true,
       false,
@@ -747,8 +787,8 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "Case Type"],
-      filteredCases.map((caseType) => String(caseType)),
+      ["get", "Arrest Type"],
+      filteredArrests.map((caseType) => String(caseType)),
       true,
       false,
     ]);
@@ -762,45 +802,45 @@ const Home: NextPage = () => {
         console.log(filterinput);
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("building-safety", filterinput);
+          mapref.current.setFilter("lapd-arrests-2022", filterinput);
         }
       }
     }
-  }, [filteredYears, filteredAreas, filteredCases]);
+  }, [filteredRaces, filteredAreas, filteredArrests]);
 
   const onSelect = () => {
     console.log("onSelect", selectedfilteropened);
-    if (selectedfilteropened === "year") {
-      setFilteredYearPre(filterableYearsKeys);
+    if (selectedfilteropened === "race") {
+      setFilteredRacePre(filterableRacesKeys);
     } else if (selectedfilteropened === "area") {
       setFilteredAreaPre(filterableAreasKeys);
-    } else if (selectedfilteropened === "case") {
-      setFilteredCasesPre(filterableCasesKeys);
+    } else if (selectedfilteropened === "arrest") {
+      setFilteredArrestPre(filterableArrestsKeys);
     }
   };
 
   const onUnselect = () => {
-    if (selectedfilteropened === "year") {
-      setFilteredYearPre([]);
+    if (selectedfilteropened === "race") {
+      setFilteredRacePre([]);
     } else if (selectedfilteropened === "area") {
       setFilteredAreaPre([]);
-    } else if (selectedfilteropened === "case") {
-      setFilteredCasesPre([]);
+    } else if (selectedfilteropened === "arrest") {
+      setFilteredArrestPre([]);
     }
   };
 
   const onInvert = () => {
-    if (selectedfilteropened === "year") {
-      setFilteredYearPre(
-        filterableYearsKeys.filter((n) => !filteredYears.includes(Number(n)))
+    if (selectedfilteropened === "race") {
+      setFilteredRacePre(
+        filterableRacesKeys.filter((n) => !filteredRaces.includes(n))
       );
     } else if (selectedfilteropened === "area") {
       setFilteredAreaPre(
         filterableAreasKeys.filter((n) => !filteredAreas.includes(n))
       );
-    } else if (selectedfilteropened === "case") {
-      setFilteredCasesPre(
-        filterableCasesKeys.filter((n) => !filteredCases.includes(n))
+    } else if (selectedfilteropened === "arrest") {
+      setFilteredArrestPre(
+        filterableArrestsKeys.filter((n) => !filteredArrests.includes(n))
       );
     }
   };
@@ -846,7 +886,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>Building and Safety Code Enforcement Cases | Map</title>
+          <title>LAPD Arrests 2022 | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -854,12 +894,12 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="Building and Safety Code Enforcement Cases | Map"
+            content="LAPD Arrests 2022 | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="Building and Safety Code Enforcement Cases"
+            content="LAPD Arrests 2022"
           ></meta>
           <meta
             name="twitter:image"
@@ -868,7 +908,7 @@ const Home: NextPage = () => {
           ></meta>
           <meta
             name="description"
-            content="Building and Safety Code Enforcement Cases."
+            content="LAPD Arrests 2022."
           />
 
           <meta
@@ -878,11 +918,11 @@ const Home: NextPage = () => {
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
-            content="Building and Safety Code Enforcement Cases | Map"
+            content="LAPD Arrests 2022 | Map"
           />
           <meta
             property="og:description"
-            content="Building and Safety Code Enforcement Cases."
+            content="LAPD Arrests 2022."
           />
           <meta
             property="og:image"
@@ -936,7 +976,7 @@ const Home: NextPage = () => {
                       setselectedfilteropened("year");
                     }}
                     className={`px-2 border-b-2 py-1  font-semibold ${
-                      selectedfilteropened === "year"
+                      selectedfilteropened === "race"
                         ? "border-[#41ffca] text-[#41ffca]"
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
@@ -957,7 +997,7 @@ const Home: NextPage = () => {
                   </button>
                   <button
                     onClick={() => {
-                      setselectedfilteropened("case");
+                      setselectedfilteropened("arrest");
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
                       selectedfilteropened === "case"
@@ -969,7 +1009,7 @@ const Home: NextPage = () => {
                   </button>
                 </div>
                 <div className="flex flex-col">
-                  {selectedfilteropened === "year" && (
+                  {selectedfilteropened === "race" && (
                     <div className="mt-2">
                       <SelectButtons
                         onSelect={onSelect}
@@ -979,14 +1019,14 @@ const Home: NextPage = () => {
                       <div className="flex flex-row gap-x-1">
                         <div className="flex items-center">
                           <Checkbox.Group
-                            value={filteredYears.map((year) => String(year))}
-                            onChange={setFilteredYearPre}
+                            value={filteredRaces}
+                            onChange={setFilteredRacePre}
                           >
                             <div
                               className={`grid grid-cols-3
                           } gap-x-4 `}
                             >
-                              {Object.entries(filterableYears).map(
+                              {Object.entries(filterableRaces).map(
                                 (eachEntry) => (
                                   <Checkbox
                                     value={eachEntry[0]}
@@ -1009,7 +1049,7 @@ const Home: NextPage = () => {
                         </div>
                       </div>
                       <p className="text-blue-400 text-xs mt-1">
-                        <strong>Code Enforcement Cases by Year</strong>
+                        <strong>LAPD Arrests by Race</strong>
                       </p>
                     </div>
                   )}
@@ -1052,13 +1092,13 @@ const Home: NextPage = () => {
                       </div>
                       <p className="text-blue-400 text-xs mt-1">
                         <strong>
-                          Code Enforcement Cases by Area Planning Commission
+                          LAPD Arrests by Area
                         </strong>
                       </p>
                     </div>
                   )}
-                  {selectedfilteropened === "case" && (
-                    <div className="mt-1">
+                  {selectedfilteropened === "arrest" && (
+                    <div className="mt-2">
                       <SelectButtons
                         onSelect={onSelect}
                         onUnselect={onUnselect}
@@ -1067,14 +1107,14 @@ const Home: NextPage = () => {
                       <div className="flex flex-row gap-x-1">
                         <div className="flex items-center">
                           <Checkbox.Group
-                            value={filteredCases}
-                            onChange={setFilteredCasesPre}
+                            value={filteredArrests}
+                            onChange={setFilteredArrestPre}
                           >
                             <div
                               className={`grid grid-cols-3
                           } gap-x-4 `}
                             >
-                              {Object.entries(filterableCases).map(
+                              {Object.entries(filterableArrests).map(
                                 (eachEntry) => (
                                   <Checkbox
                                     value={eachEntry[0]}
@@ -1095,10 +1135,10 @@ const Home: NextPage = () => {
                         </div>
                       </div>
                       <div>
-                        <p className="text-blue-400 text-xs mt-0">
-                          <strong>Code Enforcement Cases by Case Type</strong>
+                        <p className="text-blue-400 text-xs mt-1">
+                          <strong>LAPD Arrests by Arrest Type</strong>
                         </p>
-                        <CaseTypes onCaseClicked={onCaseClicked} />
+                        {/* <CaseTypes onCaseClicked={onCaseClicked} /> */}
                       </div>
                     </div>
                   )}
