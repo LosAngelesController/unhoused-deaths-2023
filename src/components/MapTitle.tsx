@@ -9,7 +9,7 @@ export function MapTitle() {
         color: "#ffffff",
       }}
     >
-      <strong className="">Building and Safety Cases</strong>
+      <strong className="">LAPD Arrests 2022</strong>
     </div>
   );
 }

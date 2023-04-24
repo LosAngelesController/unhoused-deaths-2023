@@ -450,31 +450,31 @@ const Home: NextPage = () => {
                         <br />
                         ${
                           eachCase.properties?.["Area Name"]
-                            ? `<span class="text-teal-200">Area: ${eachCase.properties["Area Name"]}</span>`
+                            ? `<span class="text-teal-200">Area: ${eachCase.properties["Area Name"]}, </span>`
                             : ""
                         }
-                        <br />
                         ${
                           eachCase.properties?.["Address"]
-                            ? `<span class="text-teal-200">${eachCase.properties["Address"]}</span> `
+                            ? `<span class="text-teal-400">${eachCase.properties["Address"]}</span> `
                             : ""
                         }
+                        ${" "}
                         ${
                           eachCase.properties?.["Cross Street"]
-                            ? `<span class="text-teal-200">Cross St: ${eachCase.properties["Cross Street"]}</span>`
+                            ? `<span class="text-indigo-300">Cross St: ${eachCase.properties["Cross Street"]}</span>`
                             : ""
                         }
-                        <br/>
+                        ${" "}
                         ${
                           eachCase.properties?.["Age"] &&
                           eachCase.properties["Age"] != "UNKNOWN"
-                            ? `<span class="text-teal-200">Age: ${eachCase.properties["Age"]}</span> `
+                            ? `<span class="text-emerald-200">Age: ${eachCase.properties["Age"]}</span> `
                             : ""
                         }
                         ${
                           eachCase.properties?.["Sex"] &&
                           eachCase.properties["Sex"] != "UNKNOWN"
-                            ? `<span class="text-teal-700">Sex: ${eachCase.properties["Sex"]}</span> `
+                            ? `<span class="text-lime-300">Sex: ${eachCase.properties["Sex"]}</span> `
                             : ""
                         }
                         ${
@@ -498,11 +498,13 @@ const Home: NextPage = () => {
                       : ""
                   }${" "}
                   ${
-                    eachCase.properties["Charge Description"]
-                      ? `<br/><span class="text-pink-200">${eachCase.properties["Charge Description"]}</span>`
+                    eachCase.properties?.["Charge Description"]
+                      ? `<br/><span class="text-pink-200">${eachCase.properties[
+                          "Charge Description"
+                        ].toLowerCase()}</span>`
                       : ""
                   }${" "}${
-                          eachCase.properties["Disposition Description"]
+                          eachCase.properties?.["Disposition Description"]
                             ? `<span class="text-pink-400">Disposition: ${eachCase.properties[
                                 "Disposition Description"
                               ].toLowerCase()}</span>`
@@ -526,11 +528,10 @@ const Home: NextPage = () => {
                   allthelineitems.length <= 7
                     ? allthelineitems.join("")
                     : allthelineitems.splice(0, 7).join("")
-                }</ul>
-                
+                }</ul> 
                 ${
                   allthelineitems.length >= 7
-                    ? `<p class="text-xs text-gray-300">Showing 10 of ${allthelineitems.length} cases</p>`
+                    ? `<p class="text-xs text-gray-300">Showing 7 of ${allthelineitems.length} cases</p>`
                     : ""
                 }
               </div><style>
@@ -618,7 +619,7 @@ const Home: NextPage = () => {
               "line-width": 3,
             },
           },
-          "road-label-navigation"
+          "road-label-simple"
         );
 
         map.addSource("citycouncildist", {
@@ -637,7 +638,7 @@ const Home: NextPage = () => {
               "line-width": 2,
             },
           },
-          "road-label-navigation"
+          "road-label-simple"
         );
 
         map.addLayer(
@@ -650,7 +651,7 @@ const Home: NextPage = () => {
               "fill-opacity": 0,
             },
           },
-          "road-label-navigation"
+          "road-label-simple"
         );
 
         map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
@@ -689,7 +690,7 @@ const Home: NextPage = () => {
               "fill-opacity": 0.25,
             },
           },
-          "road-label-navigation"
+          "road-label-simple"
         );
       }
 
@@ -741,21 +742,6 @@ const Home: NextPage = () => {
           globallat: map.getCenter().lat,
           globalzoom: map.getZoom(),
         });
-      });
-
-      map.on("zoomend", (e) => {
-        const zoom = map.getZoom();
-        if (zoom < 10) {
-          map.setZoom(10);
-        } else {
-          uploadMapboxTrack({
-            mapname,
-            eventtype: "zoomend",
-            globallng: map.getCenter().lng,
-            globallat: map.getCenter().lat,
-            globalzoom: zoom,
-          });
-        }
       });
     });
 
@@ -906,24 +892,15 @@ const Home: NextPage = () => {
             key="twitterimg"
             content="https://buildingandsafety.lacontroller.io/building-map.png"
           ></meta>
-          <meta
-            name="description"
-            content="LAPD Arrests 2022."
-          />
+          <meta name="description" content="LAPD Arrests 2022." />
 
           <meta
             property="og:url"
             content="https://buildingandsafety.lacontroller.io"
           />
           <meta property="og:type" content="website" />
-          <meta
-            property="og:title"
-            content="LAPD Arrests 2022 | Map"
-          />
-          <meta
-            property="og:description"
-            content="LAPD Arrests 2022."
-          />
+          <meta property="og:title" content="LAPD Arrests 2022 | Map" />
+          <meta property="og:description" content="LAPD Arrests 2022." />
           <meta
             property="og:image"
             content="https://buildingandsafety.lacontroller.io/building-map.png"
@@ -973,7 +950,7 @@ const Home: NextPage = () => {
                 <div className="gap-x-0 flex flex-row w-full pr-8">
                   <button
                     onClick={() => {
-                      setselectedfilteropened("year");
+                      setselectedfilteropened("race");
                     }}
                     className={`px-2 border-b-2 py-1  font-semibold ${
                       selectedfilteropened === "race"
@@ -981,7 +958,7 @@ const Home: NextPage = () => {
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                    Year
+                    Race
                   </button>
                   <button
                     onClick={() => {
@@ -1005,7 +982,7 @@ const Home: NextPage = () => {
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                    Case
+                    Arrest
                   </button>
                 </div>
                 <div className="flex flex-col">
@@ -1091,9 +1068,7 @@ const Home: NextPage = () => {
                         </div>
                       </div>
                       <p className="text-blue-400 text-xs mt-1">
-                        <strong>
-                          LAPD Arrests by Area
-                        </strong>
+                        <strong>LAPD Arrests by Area</strong>
                       </p>
                     </div>
                   )}
