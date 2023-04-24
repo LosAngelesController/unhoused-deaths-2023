@@ -1,5 +1,5 @@
-# Building and Safety Code Enforcement Cases - Mapped
+# LAPD Arrests 2022 - Mapped
 
-## What are Building and Safety Enforcement Cases?
+## Arrests Filtered by Race, Area, and Arrest Type
 
-LADBS Code Enforcement is the enforcement of applicable ordinances and land use regulations. LADBS is responsible for investigating code violations for properties containing only one dwelling unit, in addition to commercial, industrial, and vacant buildings.
+
