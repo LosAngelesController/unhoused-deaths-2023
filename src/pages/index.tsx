@@ -150,9 +150,9 @@ const Home: NextPage = () => {
     } else {
       setFilteredRaces(input);
       let total = 0;
-      for(let i=0; i<input.length; i++) {
-        for(let j=0; j<raceOptions.length; j++) {
-          if(input[i] === raceOptions[j].title) {
+      for (let i = 0; i < input.length; i++) {
+        for (let j = 0; j < raceOptions.length; j++) {
+          if (input[i] === raceOptions[j].title) {
             total = total + raceOptions[j].count;
           }
         }
@@ -882,7 +882,9 @@ const Home: NextPage = () => {
 
   const onInvert = () => {
     if (selectedfilteropened === "race") {
-      setFilteredRacePre(filterableRacesKeys.filter((n) => !filteredRaces.includes(n)));
+      setFilteredRacePre(
+        filterableRacesKeys.filter((n) => !filteredRaces.includes(n))
+      );
     } else if (selectedfilteropened === "area") {
       setFilteredAreaPre(
         filterableAreasKeys.filter((n) => !filteredAreas.includes(n))
