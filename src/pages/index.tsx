@@ -29,6 +29,9 @@ const filterableRaces: any = {
   White: 9240,
   Other: 3489,
   Asian: 304,
+  "Pacific Islander": 20,
+  Unknown: 10,
+  "American Indian/Alaskan Native": 5,
 };
 
 const filterableRacesKeys = Object.keys(filterableRaces);
@@ -69,6 +72,51 @@ const filterableArrests: any = {
 
 const filterableArrestsKeys = Object.keys(filterableArrests);
 
+var raceOptions = [
+  {
+    code: "h",
+    title: "Hispanic/Latino",
+    count: 32614,
+  },
+  {
+    code: "b",
+    title: "Black",
+    count: 16192,
+  },
+  {
+    code: "w",
+    title: "White",
+    count: 9240,
+  },
+  {
+    code: "o",
+    title: "Other",
+    count: 3489,
+  },
+  {
+    code: "a",
+    title: "Asian",
+    count: 304,
+  },
+  {
+    code: "p",
+    title: "Pacific Islander",
+    count: 20,
+  },
+  {
+    code: "u",
+    title: "Unknown",
+    count: 10,
+  },
+  {
+    code: "n",
+    title: "American Indian/Alaskan Native",
+    count: 5,
+  },
+];
+
+var total = 61876;
+
 const Home: NextPage = () => {
   const shouldfilteropeninit =
     typeof window != "undefined" ? window.innerWidth >= 640 : false;
@@ -88,6 +136,10 @@ const Home: NextPage = () => {
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
 
+  var [filterrace, setfilterrace] = useState("all");
+
+  var [filtercount, setfiltercount] = useState(0);
+
   //template name, this is used to submit to the map analytics software what the current state of the map is.
   var mapname = "LAPD-arrests-2022";
 
@@ -97,6 +149,18 @@ const Home: NextPage = () => {
       setFilteredRaces(["99999"]);
     } else {
       setFilteredRaces(input);
+      let total = 0;
+      for(let i=0; i<input.length; i++) {
+        for(let j=0; j<raceOptions.length; j++) {
+          if(input[i] === raceOptions[j].title) {
+            total = total + raceOptions[j].count;
+          }
+        }
+      }
+      console.log("total", total);
+      setfiltercount(total);
+      console.log("filtercount", filtercount);
+      setfilterrace("notall");
     }
   };
 
@@ -439,7 +503,7 @@ const Home: NextPage = () => {
                   const allthelineitems = filteredfeatures.map(
                     (eachCase: any) => {
                       if (eachCase.properties?.["Report ID"]) {
-                        return `<li class="leading-none  my-1">Report ID: ${
+                        return `<li class="leading-none my-2">Report ID: ${
                           eachCase.properties["Report ID"]
                         }${" "}
                         ${
@@ -616,7 +680,7 @@ const Home: NextPage = () => {
             paint: {
               "line-color": "#dddddd",
               "line-opacity": 1,
-              "line-width": 3,
+              "line-width": 2,
             },
           },
           "road-label-simple"
@@ -635,7 +699,7 @@ const Home: NextPage = () => {
             paint: {
               "line-color": "#7FE5D4",
               "line-opacity": 1,
-              "line-width": 2,
+              "line-width": 1.5,
             },
           },
           "road-label-simple"
@@ -686,8 +750,8 @@ const Home: NextPage = () => {
             type: "fill",
             source: "selected-council-dist",
             paint: {
-              "fill-color": "#002D25",
-              "fill-opacity": 0.25,
+              "fill-color": "#DBEAFE",
+              "fill-opacity": 0.2,
             },
           },
           "road-label-simple"
@@ -808,6 +872,7 @@ const Home: NextPage = () => {
   const onUnselect = () => {
     if (selectedfilteropened === "race") {
       setFilteredRacePre([]);
+      setfiltercount(0);
     } else if (selectedfilteropened === "area") {
       setFilteredAreaPre([]);
     } else if (selectedfilteropened === "arrest") {
@@ -817,9 +882,7 @@ const Home: NextPage = () => {
 
   const onInvert = () => {
     if (selectedfilteropened === "race") {
-      setFilteredRacePre(
-        filterableRacesKeys.filter((n) => !filteredRaces.includes(n))
-      );
+      setFilteredRacePre(filterableRacesKeys.filter((n) => !filteredRaces.includes(n)));
     } else if (selectedfilteropened === "area") {
       setFilteredAreaPre(
         filterableAreasKeys.filter((n) => !filteredAreas.includes(n))
@@ -988,6 +1051,19 @@ const Home: NextPage = () => {
                 <div className="flex flex-col">
                   {selectedfilteropened === "race" && (
                     <div className="mt-2">
+                      <div className="grow">
+                        {filterrace === "all" && (
+                          <span>61,874 Total Arrests</span>
+                        )}
+
+                        {filterrace !== "all" && (
+                          <span>
+                            {filtercount.toLocaleString()} of 61,874 Total
+                            Arrests (
+                            {((filtercount / total) * 100).toFixed(2) + "%"})
+                          </span>
+                        )}
+                      </div>
                       <SelectButtons
                         onSelect={onSelect}
                         onUnselect={onUnselect}
@@ -1003,16 +1079,14 @@ const Home: NextPage = () => {
                               className={`grid grid-cols-3
                           } gap-x-4 `}
                             >
-                              {Object.entries(filterableRaces).map(
+                              {/* {Object.entries(filterableRaces).map(
                                 (eachEntry) => (
                                   <Checkbox
                                     value={eachEntry[0]}
                                     label={
                                       <span className="text-nowrap text-xs">
                                         <span className="text-white">
-                                          {titleCase(
-                                            eachEntry[0].toLowerCase()
-                                          )}
+                                          {eachEntry[0]}
                                         </span>{" "}
                                         <span>{eachEntry[1]}</span>
                                       </span>
@@ -1020,9 +1094,45 @@ const Home: NextPage = () => {
                                     key={eachEntry[0]}
                                   />
                                 )
-                              )}
+                              )} */}
+                              {Object.entries(raceOptions).map((eachEntry) => (
+                                <Checkbox
+                                  value={eachEntry[1].title}
+                                  label={
+                                    <span className="text-nowrap text-xs">
+                                      <span className="text-white">
+                                        {eachEntry[1].title}
+                                      </span>{" "}
+                                      <span>{eachEntry[1].count}</span>
+                                    </span>
+                                  }
+                                  key={eachEntry[1].title}
+                                />
+                              ))}
                             </div>
                           </Checkbox.Group>
+                          {/* <div
+                            className="flex flex-row flex-wrap gap-1 md:gap-1.5"
+                          >
+                            {raceOptions.map((eachItem) => (
+                              <button
+                                key={eachItem.code}
+                                className={`text-sm md:text-base px-2 rounded-xl border-white  ${
+                                  filterrace === eachItem.code
+                                    ? "border-mejito border-2"
+                                    : "border"
+                                }`}
+                                onClick={(e) => {
+                                  setfilterrace(eachItem.code);
+                                  setfiltercount(eachItem.count);
+
+                                  // filterraceaction(eachItem.code);
+                                }}
+                              >
+                                {eachItem.title}
+                              </button>
+                            ))}
+                          </div> */}
                         </div>
                       </div>
                       <p className="text-blue-400 text-xs mt-1">
