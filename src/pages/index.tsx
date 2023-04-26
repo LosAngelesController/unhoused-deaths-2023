@@ -144,9 +144,9 @@ const Home: NextPage = () => {
   var mapname = "LAPD-arrests-2022";
 
   const setFilteredRacePre = (input: string[]) => {
-    console.log("inputvalidator", input);
     if (input.length === 0) {
       setFilteredRaces(["99999"]);
+      setfiltercount(0);
     } else {
       setFilteredRaces(input);
       let total = 0;
@@ -157,15 +157,12 @@ const Home: NextPage = () => {
           }
         }
       }
-      console.log("total", total);
       setfiltercount(total);
-      console.log("filtercount", filtercount);
-      setfilterrace("notall");
+      setfilterrace("not-all");
     }
   };
 
   const setFilteredAreaPre = (input: string[]) => {
-    console.log("inputvalidator", input);
     if (input.length === 0) {
       setFilteredAreas(["99999"]);
     } else {
@@ -174,7 +171,6 @@ const Home: NextPage = () => {
   };
 
   const setFilteredArrestPre = (input: string[]) => {
-    console.log("inputvalidator", input);
     if (input.length === 0) {
       setFilteredArrests(["99999"]);
     } else {
@@ -193,11 +189,9 @@ const Home: NextPage = () => {
       if (toprightgeocoderbox) {
         if (typeof window != "undefined") {
           if (window.innerWidth >= 768) {
-            console.log("changing to block");
             toprightgeocoderbox.style.display = "block";
           } else {
             toprightgeocoderbox.style.display = "none";
-            console.log("hiding");
           }
         } else {
           toprightgeocoderbox.style.display = "none";
@@ -213,12 +207,6 @@ const Home: NextPage = () => {
   const divRef: any = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log("map div", divRef);
-
-    if (divRef.current) {
-      console.log("app render");
-    }
-
     mapboxgl.accessToken =
       "pk.eyJ1Ijoia2VubmV0aG1lamlhIiwiYSI6ImNsZG1oYnpxNDA2aTQzb2tkYXU2ZWc1b3UifQ.PxO_XgMo13klJ3mQw1QxlQ";
 
@@ -299,9 +287,6 @@ const Home: NextPage = () => {
             },
           ],
         });
-
-        console.log("event.result.geometry", eventmapbox.result.geometry);
-        console.log("geocoderesult", eventmapbox);
       };
 
       const processgeocodereventselect = (object: any) => {
@@ -355,8 +340,6 @@ const Home: NextPage = () => {
       var geocoderId = document.getElementById("geocoder");
 
       if (geocoderId) {
-        console.log("geocoder div found");
-
         if (!document.querySelector(".geocoder input")) {
           geocoderId.appendChild(geocoder3.onAdd(map));
 
@@ -444,25 +427,6 @@ const Home: NextPage = () => {
 
       checkHideOrShowTopRightGeocoder();
 
-      //create mousedown trigger
-      map.on("mousedown", "lapd-arrests-2022", (e) => {
-        console.log("mousedown", e, e.features);
-        if (e.features) {
-          const closestcoords = computeclosestcoordsfromevent(e);
-
-          const filteredfeatures = e.features.filter((feature: any) => {
-            return (
-              feature.geometry.coordinates[0] === closestcoords[0] &&
-              feature.geometry.coordinates[1] === closestcoords[1]
-            );
-          });
-
-          if (filteredfeatures.length > 0) {
-            console.log("filtered features", filteredfeatures);
-          }
-        }
-      });
-
       // Create a popup, but don't add it to the map yet.
       const popup = new mapboxgl.Popup({
         closeButton: false,
@@ -470,8 +434,6 @@ const Home: NextPage = () => {
       });
 
       map.on("mouseover", "lapd-arrests-2022", (e: any) => {
-        console.log("mouseover", e.features);
-
         if (e.features) {
           map.getCanvas().style.cursor = "pointer";
           const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -498,7 +460,6 @@ const Home: NextPage = () => {
               if (filteredfeatures[0].properties) {
                 if (filteredfeatures[0].properties["Area Name"]) {
                   const areaPC = filteredfeatures[0].properties["Area Name"];
-                  console.log("filteredfeatures", filteredfeatures);
 
                   const allthelineitems = filteredfeatures.map(
                     (eachCase: any) => {
@@ -849,8 +810,6 @@ const Home: NextPage = () => {
           JSON.stringify(["all", ...arrayoffilterables])
         );
 
-        console.log(filterinput);
-
         if (doneloadingmap === true) {
           mapref.current.setFilter("lapd-arrests-2022", filterinput);
         }
@@ -859,7 +818,6 @@ const Home: NextPage = () => {
   }, [filteredRaces, filteredAreas, filteredArrests]);
 
   const onSelect = () => {
-    console.log("onSelect", selectedfilteropened);
     if (selectedfilteropened === "race") {
       setFilteredRacePre(filterableRacesKeys);
     } else if (selectedfilteropened === "area") {
@@ -901,7 +859,6 @@ const Home: NextPage = () => {
   const onCaseClicked = (e: any) => {
     setShowModal(true);
     const caseType = e.target.textContent;
-    console.log("onCaseClicked", caseType);
     setCaseClicked(caseType);
   };
 
@@ -1052,19 +1009,19 @@ const Home: NextPage = () => {
                 </div>
                 <div className="flex flex-col">
                   {selectedfilteropened === "race" && (
-                    <div className="mt-2">
-                      <div className="grow">
+                    <div className="mt-1 mb-0">
+                      <div className="grow font-semibold">
+                        <span className='text-red-400'>*</span>
                         {filterrace === "all" && (
-                          <span>61,874 Total Arrests</span>
+                          <span>61,874 Total Arrests (100%)</span>
                         )}
-
                         {filterrace !== "all" && (
                           <span>
                             {filtercount.toLocaleString()} of 61,874 Total
                             Arrests (
                             {((filtercount / total) * 100).toFixed(2) + "%"})
                           </span>
-                        )}
+                        )}  
                       </div>
                       <SelectButtons
                         onSelect={onSelect}
@@ -1081,22 +1038,6 @@ const Home: NextPage = () => {
                               className={`grid grid-cols-3
                           } gap-x-4 `}
                             >
-                              {/* {Object.entries(filterableRaces).map(
-                                (eachEntry) => (
-                                  <Checkbox
-                                    value={eachEntry[0]}
-                                    label={
-                                      <span className="text-nowrap text-xs">
-                                        <span className="text-white">
-                                          {eachEntry[0]}
-                                        </span>{" "}
-                                        <span>{eachEntry[1]}</span>
-                                      </span>
-                                    }
-                                    key={eachEntry[0]}
-                                  />
-                                )
-                              )} */}
                               {Object.entries(raceOptions).map((eachEntry) => (
                                 <Checkbox
                                   value={eachEntry[1].title}
@@ -1113,33 +1054,12 @@ const Home: NextPage = () => {
                               ))}
                             </div>
                           </Checkbox.Group>
-                          {/* <div
-                            className="flex flex-row flex-wrap gap-1 md:gap-1.5"
-                          >
-                            {raceOptions.map((eachItem) => (
-                              <button
-                                key={eachItem.code}
-                                className={`text-sm md:text-base px-2 rounded-xl border-white  ${
-                                  filterrace === eachItem.code
-                                    ? "border-mejito border-2"
-                                    : "border"
-                                }`}
-                                onClick={(e) => {
-                                  setfilterrace(eachItem.code);
-                                  setfiltercount(eachItem.count);
-
-                                  // filterraceaction(eachItem.code);
-                                }}
-                              >
-                                {eachItem.title}
-                              </button>
-                            ))}
-                          </div> */}
                         </div>
                       </div>
                       <p className="text-blue-400 text-xs mt-1">
                         <strong>LAPD Arrests by Race</strong>
                       </p>
+                      <p className="text-xs text-red-400 mt-0 mb-1">*% of race(s) when all areas and arrest types are selected</p>
                     </div>
                   )}
                   {selectedfilteropened === "area" && (
