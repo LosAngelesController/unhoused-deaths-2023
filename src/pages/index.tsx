@@ -1011,7 +1011,7 @@ const Home: NextPage = () => {
                   {selectedfilteropened === "race" && (
                     <div className="mt-1 mb-0">
                       <div className="grow font-semibold">
-                        <span className='text-red-400'>*</span>
+                        <span className="text-red-400">*</span>
                         {filterrace === "all" && (
                           <span>61,874 Total Arrests (100%)</span>
                         )}
@@ -1021,7 +1021,7 @@ const Home: NextPage = () => {
                             Arrests (
                             {((filtercount / total) * 100).toFixed(2) + "%"})
                           </span>
-                        )}  
+                        )}
                       </div>
                       <SelectButtons
                         onSelect={onSelect}
@@ -1059,7 +1059,10 @@ const Home: NextPage = () => {
                       <p className="text-blue-400 text-xs mt-1">
                         <strong>LAPD Arrests by Race</strong>
                       </p>
-                      <p className="text-xs text-red-400 mt-0 mb-1">*% of race(s) when all areas and arrest types are selected</p>
+                      <p className="text-xs text-red-400 mt-0 mb-1">
+                        *% of race(s) when all areas and arrest types are
+                        selected
+                      </p>
                     </div>
                   )}
                   {selectedfilteropened === "area" && (
