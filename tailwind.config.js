@@ -20,5 +20,6 @@ module.exports = {
     //   'desktop': {'max': '1280px'},
     // }
   },
-  plugins: [require("tailwind-scrollbar")({ nocompatible: true })],
+  darkMode: "class",
+  plugins: [require("tailwind-scrollbar")({ nocompatible: true })], 
 };

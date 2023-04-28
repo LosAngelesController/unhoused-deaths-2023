@@ -6,7 +6,7 @@ import { CloseButton } from "../components/CloseButton";
 import { SelectButtons } from "@/components/SelectButtons";
 import { MapTitle } from "@/components/MapTitle";
 import { FilterButton } from "@/components/FilterButton";
-import { CaseTypes } from "@/components/CaseTypes";
+import { InfoCarousel } from "@/components/InfoCarousel";
 import { CaseTypeModal } from "@/components/CaseTypeModal";
 import { signintrack, uploadMapboxTrack } from "../components/mapboxtrack";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
@@ -140,6 +140,15 @@ const Home: NextPage = () => {
 
   var [filtercount, setfiltercount] = useState(0);
 
+  let [arrestData, setArrestData]: any = useState(null);
+  let [arrestInfoOpen, setArrestInfoOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [caseClicked, setCaseClicked] = useState("");
+
+  useEffect(() => {
+    console.log("arrestData updated:", arrestData);
+  }, [arrestData]);
+
   //template name, this is used to submit to the map analytics software what the current state of the map is.
   var mapname = "LAPD-arrests-2022";
 
@@ -206,6 +215,38 @@ const Home: NextPage = () => {
 
   const divRef: any = React.useRef<HTMLDivElement>(null);
 
+  const closeInfoBox = () => {
+    console.log("mapref.current", mapref.current);
+    console.log(
+      "mapref.current.getSource arrest-point",
+      mapref.current.getSource("arrest-point")
+    );
+
+    // var arrestPoint: any = mapref.current.getSource('arrest-point')
+    //     arrestPoint.setData(null);
+
+    mapref.current.setLayoutProperty(
+      "points-selected-arrests-layer",
+      "visibility",
+      "none"
+    );
+    setArrestInfoOpen(false);
+    if (mapref) {
+      if (mapref.current) {
+        var arrestPoint: any = mapref.current.getSource("arrest-point");
+        arrestPoint.setData(null);
+      } else {
+        console.log("no current ref");
+      }
+    } else {
+      console.log("no ref");
+    }
+
+    if (okaydeletepoints.current) {
+      okaydeletepoints.current();
+    }
+  };
+
   useEffect(() => {
     mapboxgl.accessToken =
       "pk.eyJ1Ijoia2VubmV0aG1lamlhIiwiYSI6ImNsZG1oYnpxNDA2aTQzb2tkYXU2ZWc1b3UifQ.PxO_XgMo13klJ3mQw1QxlQ";
@@ -268,8 +309,8 @@ const Home: NextPage = () => {
 
       okaydeletepoints.current = () => {
         try {
-          var affordablepoint: any = map.getSource("selected-home-point");
-          affordablepoint.setData(null);
+          var arrestPoint: any = map.getSource("arrest-point");
+          arrestPoint.setData(null);
         } catch (err) {
           console.error(err);
         }
@@ -445,6 +486,8 @@ const Home: NextPage = () => {
             );
           });
 
+          console.log("filteredfeatures", filteredfeatures);
+
           // Copy coordinates array.
           const coordinates = closestcoords.slice();
 
@@ -608,11 +651,11 @@ const Home: NextPage = () => {
         if (true) {
           // example of how to add a pointer to what is currently selected
           map.addLayer({
-            id: "points-selected-shelter-layer",
+            id: "points-selected-arrests-layer",
             type: "symbol",
             source: "arrest-point",
             paint: {
-              "icon-color": "#41ffca",
+              "icon-color": "#FF8C00",
               "icon-translate": [0, -13],
             },
             layout: {
@@ -622,11 +665,46 @@ const Home: NextPage = () => {
               "icon-allow-overlap": true,
               "icon-ignore-placement": true,
               "text-ignore-placement": true,
-              "icon-size": 0.4,
+              "icon-size": 0.5,
               "icon-text-fit": "both",
             },
           });
         }
+      });
+
+      map.on("mousedown", "lapd-arrests-2022", (e: any) => {
+        console.log("mousedown", e.features);
+        // setArrestData(e.features);
+        setArrestInfoOpen(true);
+        let filteredData = e.features.map((obj: any) => {
+          return {
+            area: obj.properties["Area Name"],
+            reportId: obj.properties["Report ID"],
+            arrestDate: obj.properties["Arrest Date"],
+            address: obj.properties["Address"],
+            crossStreet: obj.properties["Cross Street"],
+            age: obj.properties.Age,
+            sex: obj.properties.Sex,
+            race: obj.properties.Race,
+            type: obj.properties["Arrest Type"],
+            charge: obj.properties.Charge,
+            description: obj.properties["Charge Description"],
+            disposition: obj.properties["Disposition Description"],
+          };
+        });
+
+        console.log("filteredData", filteredData);
+
+        var arrestPoint: any = map.getSource("arrest-point");
+        arrestPoint.setData(e.features[0].geometry);
+
+        map.setLayoutProperty(
+          "points-selected-arrests-layer",
+          "visibility",
+          "visible"
+        );
+
+        setArrestData(filteredData);
       });
 
       if (true) {
@@ -854,13 +932,12 @@ const Home: NextPage = () => {
     }
   };
 
-  const [showModal, setShowModal] = useState(false);
-  const [caseClicked, setCaseClicked] = useState("");
   const onCaseClicked = (e: any) => {
     setShowModal(true);
     const caseType = e.target.textContent;
     setCaseClicked(caseType);
   };
+  console.log("arrestData", arrestData);
 
   return (
     <div className="flex flex-col h-full w-screen absolute">
@@ -948,6 +1025,7 @@ const Home: NextPage = () => {
               setShowModal={setShowModal}
               caseClicked={caseClicked}
             />
+
             <div
               className="filterandinfobox fixed top-auto bottom-0 left-0 right-0 
               sm:max-w-sm sm:absolute sm:mt-[6em] md:mt-[3em] sm:ml-3 sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto flex flex-col gap-y-2"
@@ -1154,6 +1232,33 @@ const Home: NextPage = () => {
                   )}
                 </div>
               </div>
+                  <div
+                    className={`text-sm ${
+                      arrestInfoOpen
+                        ? `px-3 pt-2 pb-3 fixed sm:relative top-auto bottom-0 left-0 right-0 w-full sm:mt-2 sm:w-auto 
+                                    sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto bg-[#212121] sm:rounded-xl bg-opacity-90 sm:bg-opacity-80 text-white 
+                                    border-t-2 border-gray-200 sm:border sm:border-gray-400`
+                        : "hidden"
+                    }`}
+                  >
+                    <CloseButton
+                      onClose={() => {
+                        closeInfoBox();
+
+                        if (mapref.current) {
+                          var arrestPoint: any =
+                            mapref.current.getSource("arrest-point");
+                          if (arrestPoint) {
+                            arrestPoint.setData(null);
+                          }
+                        } else {
+                          console.log("no ref current");
+                        }
+                      }}
+                    />
+                    {arrestData && <InfoCarousel arrestData={arrestData}/>}
+                  </div>
+                  
             </div>
           </div>
         </div>
