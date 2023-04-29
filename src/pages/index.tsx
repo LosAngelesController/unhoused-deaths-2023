@@ -144,6 +144,7 @@ const Home: NextPage = () => {
   let [arrestInfoOpen, setArrestInfoOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [caseClicked, setCaseClicked] = useState("");
+  const [infoBoxLength, setInfoBoxLength] = useState(1);
 
   useEffect(() => {
     console.log("arrestData updated:", arrestData);
@@ -222,14 +223,12 @@ const Home: NextPage = () => {
       mapref.current.getSource("arrest-point")
     );
 
-    // var arrestPoint: any = mapref.current.getSource('arrest-point')
-    //     arrestPoint.setData(null);
-
     mapref.current.setLayoutProperty(
       "points-selected-arrests-layer",
       "visibility",
       "none"
     );
+
     setArrestInfoOpen(false);
     if (mapref) {
       if (mapref.current) {
@@ -593,13 +592,13 @@ const Home: NextPage = () => {
                       }</p>
 
                 <ul class='list-disc leading-none'>${
-                  allthelineitems.length <= 7
+                  allthelineitems.length <= 3
                     ? allthelineitems.join("")
-                    : allthelineitems.splice(0, 7).join("")
+                    : allthelineitems.splice(0, 3).join("")
                 }</ul> 
                 ${
-                  allthelineitems.length >= 7
-                    ? `<p class="text-xs text-gray-300">Showing 7 of ${allthelineitems.length} cases</p>`
+                  allthelineitems.length > 1
+                    ? `<p class="text-xs font-bold text-gray-300 mt-4">CLICK LOCATION TO SEE MORE</p>`
                     : ""
                 }
               </div><style>
@@ -932,13 +931,6 @@ const Home: NextPage = () => {
     }
   };
 
-  const onCaseClicked = (e: any) => {
-    setShowModal(true);
-    const caseType = e.target.textContent;
-    setCaseClicked(caseType);
-  };
-  console.log("arrestData", arrestData);
-
   return (
     <div className="flex flex-col h-full w-screen absolute">
       <MantineProvider
@@ -1019,12 +1011,6 @@ const Home: NextPage = () => {
               id="geocoder"
             ></div>
             <div className="w-content"></div>
-
-            <CaseTypeModal
-              showModal={showModal}
-              setShowModal={setShowModal}
-              caseClicked={caseClicked}
-            />
 
             <div
               className="filterandinfobox fixed top-auto bottom-0 left-0 right-0 
@@ -1244,7 +1230,7 @@ const Home: NextPage = () => {
                 <CloseButton
                   onClose={() => {
                     closeInfoBox();
-
+                    setInfoBoxLength(1);
                     if (mapref.current) {
                       var arrestPoint: any =
                         mapref.current.getSource("arrest-point");
@@ -1256,7 +1242,7 @@ const Home: NextPage = () => {
                     }
                   }}
                 />
-                {arrestData && <InfoCarousel arrestData={arrestData} />}
+                {arrestData && <InfoCarousel arrestData={arrestData} infoBoxLength={infoBoxLength} setInfoBoxLength={setInfoBoxLength}/>}
               </div>
             </div>
           </div>
