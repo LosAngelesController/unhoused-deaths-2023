@@ -23,7 +23,6 @@ export function InfoCarousel(props: CarouselProps) {
     console.log(arrestInfo);
   };
 
-
   return (
     <div className={classes.carousel}>
       <div className={classes.arrow} onClick={handlePrev}>

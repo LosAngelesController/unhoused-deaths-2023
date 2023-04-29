@@ -1242,7 +1242,13 @@ const Home: NextPage = () => {
                     }
                   }}
                 />
-                {arrestData && <InfoCarousel arrestData={arrestData} infoBoxLength={infoBoxLength} setInfoBoxLength={setInfoBoxLength}/>}
+                {arrestData && (
+                  <InfoCarousel
+                    arrestData={arrestData}
+                    infoBoxLength={infoBoxLength}
+                    setInfoBoxLength={setInfoBoxLength}
+                  />
+                )}
               </div>
             </div>
           </div>
