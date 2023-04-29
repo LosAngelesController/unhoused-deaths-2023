@@ -4,23 +4,25 @@ interface CarouselProps {
   arrestData: any[];
   infoBoxLength: number;
   setInfoBoxLength: any;
+  arrestInfo: number;
+  setArrestInfo: any;
 }
 
 export function InfoCarousel(props: CarouselProps) {
-  const [arrestInfo, setArrestInfo] = useState(0);
+  // const [arrestInfo, setArrestInfo] = useState(0);
   // const [infoBoxLength, setInfoBoxLength] = useState(1);
   const dataLength = props.arrestData.length;
 
   const handleNext = () => {
-    setArrestInfo((prev) => (prev === 0 ? dataLength - 1 : prev - 1));
+    props.setArrestInfo((prev: any) => (prev === dataLength - 1 ? 0 : prev + 1));
     props.setInfoBoxLength((prev: any) => (prev === dataLength ? 1 : prev + 1));
-    console.log(arrestInfo);
+    console.log(props.arrestInfo);
   };
 
   const handlePrev = () => {
-    setArrestInfo((prev) => (prev === dataLength - 1 ? 0 : prev + 1));
+    props.setArrestInfo((prev: any) => (prev === 0 ? dataLength - 1 : prev - 1));
     props.setInfoBoxLength((prev: any) => (prev === 1 ? dataLength : prev - 1));
-    console.log(arrestInfo);
+    console.log(props.arrestInfo);
   };
 
   return (
@@ -33,29 +35,29 @@ export function InfoCarousel(props: CarouselProps) {
           <div>
             <p className="pr-4">
               <b className="text-stone-400">Area:</b>{" "}
-              {props.arrestData[arrestInfo]?.area} <br />
+              {props.arrestData[props.arrestInfo]?.area} <br />
               <b className="text-stone-400">Report ID:</b>{" "}
-              {props.arrestData[arrestInfo]?.reportId} <br />
+              {props.arrestData[props.arrestInfo]?.reportId} <br />
               <b className="text-stone-400">Arrest Date:</b>{" "}
-              {props.arrestData[arrestInfo]?.arrestDate} <br />
+              {props.arrestData[props.arrestInfo]?.arrestDate} <br />
               <b className="text-stone-400">Address:</b>{" "}
-              {props.arrestData[arrestInfo]?.address} <br />
+              {props.arrestData[props.arrestInfo]?.address} <br />
               <b className="text-stone-400">Cross Street:</b>{" "}
-              {props.arrestData[arrestInfo]?.crossStreet} <br />
+              {props.arrestData[props.arrestInfo]?.crossStreet} <br />
               <b className="text-stone-400">Age:</b>{" "}
-              {props.arrestData[arrestInfo]?.age} <br />
+              {props.arrestData[props.arrestInfo]?.age} <br />
               <b className="text-stone-400">Sex:</b>{" "}
-              {props.arrestData[arrestInfo]?.sex} <br />
+              {props.arrestData[props.arrestInfo]?.sex} <br />
               <b className="text-stone-400">Race:</b>{" "}
-              {props.arrestData[arrestInfo]?.race} <br />
+              {props.arrestData[props.arrestInfo]?.race} <br />
               <b className="text-stone-400">Arrest Type:</b>{" "}
-              {props.arrestData[arrestInfo]?.type} <br />
+              {props.arrestData[props.arrestInfo]?.type} <br />
               <b className="text-stone-400">Charge:</b>{" "}
-              {props.arrestData[arrestInfo]?.charge} <br />
+              {props.arrestData[props.arrestInfo]?.charge} <br />
               <b className="text-stone-400">Charge Description:</b>{" "}
-              {props.arrestData[arrestInfo]?.description} <br />
+              {props.arrestData[props.arrestInfo]?.description} <br />
               <b className="text-stone-400">Disposition:</b>{" "}
-              {props.arrestData[arrestInfo]?.disposition} <br />
+              {props.arrestData[props.arrestInfo]?.disposition} <br />
             </p>
           </div>
           <div className="mt-3">

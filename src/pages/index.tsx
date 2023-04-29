@@ -145,6 +145,8 @@ const Home: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [caseClicked, setCaseClicked] = useState("");
   const [infoBoxLength, setInfoBoxLength] = useState(1);
+  const [arrestInfo, setArrestInfo] = useState(0);
+
 
   useEffect(() => {
     console.log("arrestData updated:", arrestData);
@@ -1231,6 +1233,7 @@ const Home: NextPage = () => {
                   onClose={() => {
                     closeInfoBox();
                     setInfoBoxLength(1);
+                    setArrestInfo(0);
                     if (mapref.current) {
                       var arrestPoint: any =
                         mapref.current.getSource("arrest-point");
@@ -1247,6 +1250,8 @@ const Home: NextPage = () => {
                     arrestData={arrestData}
                     infoBoxLength={infoBoxLength}
                     setInfoBoxLength={setInfoBoxLength}
+                    arrestInfo={arrestInfo}
+                    setArrestInfo={setArrestInfo}
                   />
                 )}
               </div>
