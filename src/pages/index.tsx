@@ -673,8 +673,8 @@ const Home: NextPage = () => {
       });
 
       map.on("mousedown", "lapd-arrests-2022", (e: any) => {
-        console.log("mousedown", e.features);
-        // setArrestData(e.features);
+        setArrestInfo(0);
+        setInfoBoxLength(1);
         setArrestInfoOpen(true);
         let filteredData = e.features.map((obj: any) => {
           return {
@@ -790,7 +790,7 @@ const Home: NextPage = () => {
             source: "selected-council-dist",
             paint: {
               "fill-color": "#DBEAFE",
-              "fill-opacity": 0.2,
+              "fill-opacity": 0.15,
             },
           },
           "road-label-simple"

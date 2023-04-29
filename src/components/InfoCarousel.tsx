@@ -9,8 +9,6 @@ interface CarouselProps {
 }
 
 export function InfoCarousel(props: CarouselProps) {
-  // const [arrestInfo, setArrestInfo] = useState(0);
-  // const [infoBoxLength, setInfoBoxLength] = useState(1);
   const dataLength = props.arrestData.length;
 
   const handleNext = () => {
@@ -18,7 +16,6 @@ export function InfoCarousel(props: CarouselProps) {
       prev === dataLength - 1 ? 0 : prev + 1
     );
     props.setInfoBoxLength((prev: any) => (prev === dataLength ? 1 : prev + 1));
-    console.log(props.arrestInfo);
   };
 
   const handlePrev = () => {
@@ -26,7 +23,6 @@ export function InfoCarousel(props: CarouselProps) {
       prev === 0 ? dataLength - 1 : prev - 1
     );
     props.setInfoBoxLength((prev: any) => (prev === 1 ? dataLength : prev - 1));
-    console.log(props.arrestInfo);
   };
 
   return (
