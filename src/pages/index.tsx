@@ -507,7 +507,7 @@ const Home: NextPage = () => {
                   const allthelineitems = filteredfeatures.map(
                     (eachCase: any) => {
                       if (eachCase.properties?.["Report ID"]) {
-                        return `<li class="leading-none my-2">Report ID: ${
+                        return `<li class="leading-none my-2 text-blue-400">Report ID: ${
                           eachCase.properties["Report ID"]
                         }${" "}
                         ${
@@ -1232,33 +1232,32 @@ const Home: NextPage = () => {
                   )}
                 </div>
               </div>
-                  <div
-                    className={`text-sm ${
-                      arrestInfoOpen
-                        ? `px-3 pt-2 pb-3 fixed sm:relative top-auto bottom-0 left-0 right-0 w-full sm:mt-2 sm:w-auto 
+              <div
+                className={`text-sm ${
+                  arrestInfoOpen
+                    ? `px-3 pt-2 pb-3 fixed sm:relative top-auto bottom-0 left-0 right-0 w-full sm:mt-2 sm:w-auto 
                                     sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto bg-[#212121] sm:rounded-xl bg-opacity-90 sm:bg-opacity-80 text-white 
                                     border-t-2 border-gray-200 sm:border sm:border-gray-400`
-                        : "hidden"
-                    }`}
-                  >
-                    <CloseButton
-                      onClose={() => {
-                        closeInfoBox();
+                    : "hidden"
+                }`}
+              >
+                <CloseButton
+                  onClose={() => {
+                    closeInfoBox();
 
-                        if (mapref.current) {
-                          var arrestPoint: any =
-                            mapref.current.getSource("arrest-point");
-                          if (arrestPoint) {
-                            arrestPoint.setData(null);
-                          }
-                        } else {
-                          console.log("no ref current");
-                        }
-                      }}
-                    />
-                    {arrestData && <InfoCarousel arrestData={arrestData}/>}
-                  </div>
-                  
+                    if (mapref.current) {
+                      var arrestPoint: any =
+                        mapref.current.getSource("arrest-point");
+                      if (arrestPoint) {
+                        arrestPoint.setData(null);
+                      }
+                    } else {
+                      console.log("no ref current");
+                    }
+                  }}
+                />
+                {arrestData && <InfoCarousel arrestData={arrestData} />}
+              </div>
             </div>
           </div>
         </div>
