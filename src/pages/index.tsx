@@ -147,7 +147,6 @@ const Home: NextPage = () => {
   const [infoBoxLength, setInfoBoxLength] = useState(1);
   const [arrestInfo, setArrestInfo] = useState(0);
 
-
   useEffect(() => {
     console.log("arrestData updated:", arrestData);
   }, [arrestData]);

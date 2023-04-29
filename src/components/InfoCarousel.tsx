@@ -14,13 +14,17 @@ export function InfoCarousel(props: CarouselProps) {
   const dataLength = props.arrestData.length;
 
   const handleNext = () => {
-    props.setArrestInfo((prev: any) => (prev === dataLength - 1 ? 0 : prev + 1));
+    props.setArrestInfo((prev: any) =>
+      prev === dataLength - 1 ? 0 : prev + 1
+    );
     props.setInfoBoxLength((prev: any) => (prev === dataLength ? 1 : prev + 1));
     console.log(props.arrestInfo);
   };
 
   const handlePrev = () => {
-    props.setArrestInfo((prev: any) => (prev === 0 ? dataLength - 1 : prev - 1));
+    props.setArrestInfo((prev: any) =>
+      prev === 0 ? dataLength - 1 : prev - 1
+    );
     props.setInfoBoxLength((prev: any) => (prev === 1 ? dataLength : prev - 1));
     console.log(props.arrestInfo);
   };
