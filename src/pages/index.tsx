@@ -77,41 +77,49 @@ var raceOptions = [
     code: "h",
     title: "Hispanic/Latino",
     count: 32614,
+    percent: "52.71%"
   },
   {
     code: "b",
     title: "Black",
     count: 16192,
+    percent: "26.17%"
   },
   {
     code: "w",
     title: "White",
     count: 9240,
+    percent: "14.93%"
   },
   {
     code: "o",
     title: "Other",
     count: 3489,
+    percent: "5.64%"
   },
   {
     code: "a",
     title: "Asian",
     count: 304,
+    percent: "0.49%"
   },
   {
     code: "p",
     title: "Pacific Islander",
     count: 20,
+    percent: "0.03%"
   },
   {
     code: "u",
     title: "Unknown",
     count: 10,
+    percent: "0.02%"
   },
   {
     code: "n",
     title: "American Indian/Alaskan Native",
     count: 5,
+    percent: "0.01%"
   },
 ];
 
@@ -1111,6 +1119,7 @@ const Home: NextPage = () => {
                                       <span className="text-white">
                                         {eachEntry[1].title}
                                       </span>{" "}
+                                      <span className="text-red-400">{eachEntry[1].percent}</span>{" "}
                                       <span>{eachEntry[1].count}</span>
                                     </span>
                                   }
