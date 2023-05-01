@@ -1121,8 +1121,8 @@ const Home: NextPage = () => {
                                       </span>{" "}
                                       <span className="text-red-400">
                                         {eachEntry[1].percent}
-                                      </span>{" "}
-                                      <span>{eachEntry[1].count}</span>
+                                      </span>
+                                      {/* <span>{eachEntry[1].count}</span> */}
                                     </span>
                                   }
                                   key={eachEntry[1].title}
