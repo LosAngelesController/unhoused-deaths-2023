@@ -7,7 +7,6 @@ import { SelectButtons } from "@/components/SelectButtons";
 import { MapTitle } from "@/components/MapTitle";
 import { FilterButton } from "@/components/FilterButton";
 import { InfoCarousel } from "@/components/InfoCarousel";
-import { CaseTypeModal } from "@/components/CaseTypeModal";
 import { signintrack, uploadMapboxTrack } from "../components/mapboxtrack";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import MapboxLanguage from "@mapbox/mapbox-gl-language";
@@ -17,6 +16,54 @@ import React, { useEffect, useState, useRef } from "react";
 const councildistricts = require("./CouncilDistricts.json");
 const citybounds = require("./citybounds.json");
 import mapboxgl from "mapbox-gl";
+const arrestsByDistrict = require("./LapdArrests2022.json");
+
+// function assignPointsToDistrict(points, districtJson) {
+//   const districtPolygons = districtJson.features.map((feature) => feature.geometry.coordinates);
+
+//   const pointDistricts = points.map((point) => {
+//     for (let i = 0; i < districtPolygons.length; i++) {
+//       const polygon = districtPolygons[i];
+//       const pointInside = insidePolygon(point, polygon);
+//       if (pointInside) {
+//         return districtJson.features[i].properties.dist_name;
+//       }
+//     }
+//     return null;
+//   });
+
+//   return pointDistricts;
+// }
+
+// function insidePolygon(point, polygon) {
+//   const x = point[0];
+//   const y = point[1];
+
+//   let inside = false;
+
+//   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+//     const xi = polygon[i][0];
+//     const yi = polygon[i][1];
+//     const xj = polygon[j][0];
+//     const yj = polygon[j][1];
+
+//     const intersect = ((yi > y) !== (yj > y)) &&
+//       (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+
+//     if (intersect) {
+//       inside = !inside;
+//     }
+//   }
+
+//   return inside;
+// }
+
+const locationPoints = arrestsByDistrict.map((arrest: any) => {
+  return {
+    lat: arrest["LAT"], 
+    lon: arrest["LON"]
+  }});
+console.log(locationPoints);
 
 function getLang() {
   if (navigator.languages != undefined) return navigator.languages[0];
@@ -37,27 +84,27 @@ const filterableRaces: any = {
 const filterableRacesKeys = Object.keys(filterableRaces);
 
 const filterableAreas: any = {
-  Northeast: 2003,
-  "West LA": 3543,
-  Pacific: 3550,
-  Southeast: 3145,
-  Harbor: 1930,
-  Mission: 3080,
-  "N Hollywood": 2778,
-  Wilshire: 1892,
-  "77th Street": 4687,
-  Foothill: 2105,
-  "West Valley": 2255,
-  Rampart: 5083,
-  Devonshire: 2501,
-  Newton: 3494,
   Central: 3767,
-  Olympic: 2822,
+  Devonshire: 2501,
+  Foothill: 2105,
+  Harbor: 1930,
   Hollenbeck: 2126,
-  Topanga: 2594,
-  Southwest: 3091,
-  "Van Nuys": 3296,
   Hollywood: 3382,
+  Mission: 3080,
+  Newton: 3494,
+  Northeast: 2003,
+  "N Hollywood": 2778,
+  Olympic: 2822,
+  Pacific: 3550,
+  Rampart: 5083,
+  "77th Street": 4687,
+  Southeast: 3145,
+  Southwest: 3091,
+  Topanga: 2594,
+  "West LA": 3543,
+  "West Valley": 2255,
+  Wilshire: 1892,
+  "Van Nuys": 3296,
 };
 
 const filterableAreasKeys = Object.keys(filterableAreas);
@@ -1065,7 +1112,7 @@ const Home: NextPage = () => {
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                    Area
+                    Division
                   </button>
                   <button
                     onClick={() => {
@@ -1179,7 +1226,7 @@ const Home: NextPage = () => {
                         </div>
                       </div>
                       <p className="text-blue-400 text-xs mt-1">
-                        <strong>LAPD Arrests by Area</strong>
+                        <strong>LAPD Arrests by LAPD Divisions</strong>
                       </p>
                     </div>
                   )}
