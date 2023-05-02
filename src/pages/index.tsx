@@ -66,11 +66,6 @@ const locationPoints = arrestsByDistrict.map((arrest: any) => {
 });
 console.log(locationPoints);
 
-function getLang() {
-  if (navigator.languages != undefined) return navigator.languages[0];
-  return navigator.language;
-}
-
 const filterableRaces: any = {
   "Hispanic/Latino": 32614,
   Black: 16192,
@@ -198,8 +193,6 @@ const Home: NextPage = () => {
 
   let [arrestData, setArrestData]: any = useState(null);
   let [arrestInfoOpen, setArrestInfoOpen] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [caseClicked, setCaseClicked] = useState("");
   const [infoBoxLength, setInfoBoxLength] = useState(1);
   const [arrestInfo, setArrestInfo] = useState(0);
 
@@ -1120,7 +1113,7 @@ const Home: NextPage = () => {
                       setselectedfilteropened("arrest");
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "case"
+                      selectedfilteropened === "arrest"
                         ? "border-[#41ffca] text-[#41ffca]"
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
