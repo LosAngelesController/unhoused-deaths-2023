@@ -60,9 +60,10 @@ const arrestsByDistrict = require("./LapdArrests2022.json");
 
 const locationPoints = arrestsByDistrict.map((arrest: any) => {
   return {
-    lat: arrest["LAT"], 
-    lon: arrest["LON"]
-  }});
+    lat: arrest["LAT"],
+    lon: arrest["LON"],
+  };
+});
 console.log(locationPoints);
 
 function getLang() {
