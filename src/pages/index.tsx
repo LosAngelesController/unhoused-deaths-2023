@@ -16,55 +16,6 @@ import React, { useEffect, useState, useRef } from "react";
 const councildistricts = require("./CouncilDistricts.json");
 const citybounds = require("./citybounds.json");
 import mapboxgl from "mapbox-gl";
-const arrestsByDistrict = require("./LapdArrests2022.json");
-
-// function assignPointsToDistrict(points, districtJson) {
-//   const districtPolygons = districtJson.features.map((feature) => feature.geometry.coordinates);
-
-//   const pointDistricts = points.map((point) => {
-//     for (let i = 0; i < districtPolygons.length; i++) {
-//       const polygon = districtPolygons[i];
-//       const pointInside = insidePolygon(point, polygon);
-//       if (pointInside) {
-//         return districtJson.features[i].properties.dist_name;
-//       }
-//     }
-//     return null;
-//   });
-
-//   return pointDistricts;
-// }
-
-// function insidePolygon(point, polygon) {
-//   const x = point[0];
-//   const y = point[1];
-
-//   let inside = false;
-
-//   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-//     const xi = polygon[i][0];
-//     const yi = polygon[i][1];
-//     const xj = polygon[j][0];
-//     const yj = polygon[j][1];
-
-//     const intersect = ((yi > y) !== (yj > y)) &&
-//       (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-
-//     if (intersect) {
-//       inside = !inside;
-//     }
-//   }
-
-//   return inside;
-// }
-
-const locationPoints = arrestsByDistrict.map((arrest: any) => {
-  return {
-    lat: arrest["LAT"],
-    lon: arrest["LON"],
-  };
-});
-console.log(locationPoints);
 
 const filterableRaces: any = {
   "Hispanic/Latino": 32614,
@@ -114,6 +65,26 @@ const filterableArrests: any = {
 };
 
 const filterableArrestsKeys = Object.keys(filterableArrests);
+
+const filterableDistricts: any = {
+  1: 6071,
+  2: 3141,
+  3: 3405,
+  4: 2337,
+  5: 2284,
+  6: 4933,
+  7: 2771,
+  8: 6012,
+  9: 5709,
+  10: 3601,
+  11: 4389,
+  12: 2627,
+  13: 5268,
+  14: 6138,
+  15: 2986,
+};
+
+const filterableDistrictsKeys = Object.keys(filterableDistricts);
 
 var raceOptions = [
   {
@@ -183,6 +154,9 @@ const Home: NextPage = () => {
   );
   const [filteredAreas, setFilteredAreas] =
     useState<string[]>(filterableAreasKeys);
+  const [filteredDistricts, setFilteredDistricts] = useState<number[]>(
+    filterableDistrictsKeys.map((key) => Number(key))
+  );
 
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
@@ -235,6 +209,14 @@ const Home: NextPage = () => {
       setFilteredArrests(["99999"]);
     } else {
       setFilteredArrests(input);
+    }
+  };
+
+  const setFilteredDistrictPre = (input: string[]) => {
+    if (input.length === 0) {
+      setFilteredDistricts([99999]);
+    } else {
+      setFilteredDistricts(input.map((x)=> Number(x)));
     }
   };
 
@@ -931,6 +913,14 @@ const Home: NextPage = () => {
       false,
     ]);
 
+    arrayoffilterables.push([
+      "match",
+      ["get", "CD#"],
+      filteredDistricts,
+      true,
+      false,
+    ]);
+
     if (mapref.current) {
       if (doneloadingmap) {
         const filterinput = JSON.parse(
@@ -942,7 +932,7 @@ const Home: NextPage = () => {
         }
       }
     }
-  }, [filteredRaces, filteredAreas, filteredArrests]);
+  }, [filteredRaces, filteredAreas, filteredArrests, filteredDistricts]);
 
   const onSelect = () => {
     if (selectedfilteropened === "race") {
@@ -951,6 +941,8 @@ const Home: NextPage = () => {
       setFilteredAreaPre(filterableAreasKeys);
     } else if (selectedfilteropened === "arrest") {
       setFilteredArrestPre(filterableArrestsKeys);
+    } else if (selectedfilteropened === "district") {
+      setFilteredDistrictPre(filterableDistrictsKeys);
     }
   };
 
@@ -962,6 +954,8 @@ const Home: NextPage = () => {
       setFilteredAreaPre([]);
     } else if (selectedfilteropened === "arrest") {
       setFilteredArrestPre([]);
+    } else if (selectedfilteropened === "district") {
+      setFilteredDistrictPre([]);
     }
   };
 
@@ -977,6 +971,10 @@ const Home: NextPage = () => {
     } else if (selectedfilteropened === "arrest") {
       setFilteredArrestPre(
         filterableArrestsKeys.filter((n) => !filteredArrests.includes(n))
+      );
+    } else if (selectedfilteropened === "district") {
+      setFilteredDistrictPre(
+        filterableDistrictsKeys.filter((n) => !filteredDistricts.includes(Number(n)))
       );
     }
   };
@@ -1119,6 +1117,18 @@ const Home: NextPage = () => {
                     }`}
                   >
                     Arrest
+                  </button>
+                  <button
+                    onClick={() => {
+                      setselectedfilteropened("district");
+                    }}
+                    className={`px-2 border-b-2  py-1  font-semibold ${
+                      selectedfilteropened === "district"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                    District
                   </button>
                 </div>
                 <div className="flex flex-col">
@@ -1264,6 +1274,51 @@ const Home: NextPage = () => {
                       <div>
                         <p className="text-blue-400 text-xs mt-1">
                           <strong>LAPD Arrests by Arrest Type</strong>
+                        </p>
+                        {/* <CaseTypes onCaseClicked={onCaseClicked} /> */}
+                      </div>
+                    </div>
+                  )}
+                  {selectedfilteropened === "district" && (
+                    <div className="mt-2">
+                      <SelectButtons
+                        onSelect={onSelect}
+                        onUnselect={onUnselect}
+                        onInvert={onInvert}
+                      />
+                      <div className="flex flex-row gap-x-1">
+                        <div className="flex items-center">
+                          <Checkbox.Group
+                            value={filteredDistricts.map((district) => String(district))}
+                            onChange={setFilteredDistrictPre}
+                          >
+                            <div
+                              className={`grid grid-cols-3
+                          } gap-x-4 `}
+                            >
+                              {Object.entries(filterableDistricts).map(
+                                (eachEntry) => (
+                                  <Checkbox
+                                    value={eachEntry[0]}
+                                    label={
+                                      <span className="text-nowrap text-xs">
+                                        <span className="text-white">
+                                          {eachEntry[0]}
+                                        </span>{" "}
+                                        <span>{eachEntry[1]}</span>
+                                      </span>
+                                    }
+                                    key={eachEntry[0]}
+                                  />
+                                )
+                              )}
+                            </div>
+                          </Checkbox.Group>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-blue-400 text-xs mt-1">
+                          <strong>LAPD Arrests by Council District</strong>
                         </p>
                         {/* <CaseTypes onCaseClicked={onCaseClicked} /> */}
                       </div>
