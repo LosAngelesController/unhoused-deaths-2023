@@ -216,7 +216,7 @@ const Home: NextPage = () => {
     if (input.length === 0) {
       setFilteredDistricts([99999]);
     } else {
-      setFilteredDistricts(input.map((x)=> Number(x)));
+      setFilteredDistricts(input.map((x) => Number(x)));
     }
   };
 
@@ -974,7 +974,9 @@ const Home: NextPage = () => {
       );
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre(
-        filterableDistrictsKeys.filter((n) => !filteredDistricts.includes(Number(n)))
+        filterableDistrictsKeys.filter(
+          (n) => !filteredDistricts.includes(Number(n))
+        )
       );
     }
   };
@@ -1289,7 +1291,9 @@ const Home: NextPage = () => {
                       <div className="flex flex-row gap-x-1">
                         <div className="flex items-center">
                           <Checkbox.Group
-                            value={filteredDistricts.map((district) => String(district))}
+                            value={filteredDistricts.map((district) =>
+                              String(district)
+                            )}
                             onChange={setFilteredDistrictPre}
                           >
                             <div
