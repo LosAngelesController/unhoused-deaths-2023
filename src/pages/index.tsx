@@ -943,7 +943,7 @@ const Home: NextPage = () => {
       setFilteredAreaPre(filterableAreasKeys);
     } else if (selectedfilteropened === "arrest") {
       setFilteredArrestPre(filterableArrestsKeys);
-    } 
+    }
   };
 
   const onUnselect = () => {
@@ -956,7 +956,7 @@ const Home: NextPage = () => {
       setFilteredAreaPre([]);
     } else if (selectedfilteropened === "arrest") {
       setFilteredArrestPre([]);
-    } 
+    }
   };
 
   const onInvert = () => {
@@ -978,7 +978,7 @@ const Home: NextPage = () => {
       setFilteredArrestPre(
         filterableArrestsKeys.filter((n) => !filteredArrests.includes(n))
       );
-    } 
+    }
   };
 
   return (
