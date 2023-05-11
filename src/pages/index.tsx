@@ -196,6 +196,14 @@ const Home: NextPage = () => {
     }
   };
 
+  const setFilteredDistrictPre = (input: string[]) => {
+    if (input.length === 0) {
+      setFilteredDistricts([99999]);
+    } else {
+      setFilteredDistricts(input.map((x) => Number(x)));
+    }
+  };
+
   const setFilteredAreaPre = (input: string[]) => {
     if (input.length === 0) {
       setFilteredAreas(["99999"]);
@@ -209,14 +217,6 @@ const Home: NextPage = () => {
       setFilteredArrests(["99999"]);
     } else {
       setFilteredArrests(input);
-    }
-  };
-
-  const setFilteredDistrictPre = (input: string[]) => {
-    if (input.length === 0) {
-      setFilteredDistricts([99999]);
-    } else {
-      setFilteredDistricts(input.map((x) => Number(x)));
     }
   };
 
@@ -899,6 +899,14 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
+      ["get", "CD#"],
+      filteredDistricts,
+      true,
+      false,
+    ]);
+
+    arrayoffilterables.push([
+      "match",
       ["get", "Area Name"],
       filteredAreas.map((area) => String(area)),
       true,
@@ -909,14 +917,6 @@ const Home: NextPage = () => {
       "match",
       ["get", "Arrest Type"],
       filteredArrests.map((caseType) => String(caseType)),
-      true,
-      false,
-    ]);
-
-    arrayoffilterables.push([
-      "match",
-      ["get", "CD#"],
-      filteredDistricts,
       true,
       false,
     ]);
@@ -937,32 +937,38 @@ const Home: NextPage = () => {
   const onSelect = () => {
     if (selectedfilteropened === "race") {
       setFilteredRacePre(filterableRacesKeys);
+    } else if (selectedfilteropened === "district") {
+      setFilteredDistrictPre(filterableDistrictsKeys);
     } else if (selectedfilteropened === "area") {
       setFilteredAreaPre(filterableAreasKeys);
     } else if (selectedfilteropened === "arrest") {
       setFilteredArrestPre(filterableArrestsKeys);
-    } else if (selectedfilteropened === "district") {
-      setFilteredDistrictPre(filterableDistrictsKeys);
-    }
+    } 
   };
 
   const onUnselect = () => {
     if (selectedfilteropened === "race") {
       setFilteredRacePre([]);
       setfiltercount(0);
+    } else if (selectedfilteropened === "district") {
+      setFilteredDistrictPre([]);
     } else if (selectedfilteropened === "area") {
       setFilteredAreaPre([]);
     } else if (selectedfilteropened === "arrest") {
       setFilteredArrestPre([]);
-    } else if (selectedfilteropened === "district") {
-      setFilteredDistrictPre([]);
-    }
+    } 
   };
 
   const onInvert = () => {
     if (selectedfilteropened === "race") {
       setFilteredRacePre(
         filterableRacesKeys.filter((n) => !filteredRaces.includes(n))
+      );
+    } else if (selectedfilteropened === "district") {
+      setFilteredDistrictPre(
+        filterableDistrictsKeys.filter(
+          (n) => !filteredDistricts.includes(Number(n))
+        )
       );
     } else if (selectedfilteropened === "area") {
       setFilteredAreaPre(
@@ -972,13 +978,7 @@ const Home: NextPage = () => {
       setFilteredArrestPre(
         filterableArrestsKeys.filter((n) => !filteredArrests.includes(n))
       );
-    } else if (selectedfilteropened === "district") {
-      setFilteredDistrictPre(
-        filterableDistrictsKeys.filter(
-          (n) => !filteredDistricts.includes(Number(n))
-        )
-      );
-    }
+    } 
   };
 
   return (
@@ -1098,6 +1098,18 @@ const Home: NextPage = () => {
                   </button>
                   <button
                     onClick={() => {
+                      setselectedfilteropened("district");
+                    }}
+                    className={`px-2 border-b-2  py-1  font-semibold ${
+                      selectedfilteropened === "district"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                    CD#
+                  </button>
+                  <button
+                    onClick={() => {
                       setselectedfilteropened("area");
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
@@ -1119,18 +1131,6 @@ const Home: NextPage = () => {
                     }`}
                   >
                     Arrest
-                  </button>
-                  <button
-                    onClick={() => {
-                      setselectedfilteropened("district");
-                    }}
-                    className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "district"
-                        ? "border-[#41ffca] text-[#41ffca]"
-                        : "hover:border-white border-transparent text-gray-50"
-                    }`}
-                  >
-                    District
                   </button>
                 </div>
                 <div className="flex flex-col">
@@ -1192,6 +1192,52 @@ const Home: NextPage = () => {
                         *% of race(s) when all areas and arrest types are
                         selected
                       </p>
+                    </div>
+                  )}
+                  {selectedfilteropened === "district" && (
+                    <div className="mt-2">
+                      <SelectButtons
+                        onSelect={onSelect}
+                        onUnselect={onUnselect}
+                        onInvert={onInvert}
+                      />
+                      <div className="flex flex-row gap-x-1">
+                        <div className="flex items-center">
+                          <Checkbox.Group
+                            value={filteredDistricts.map((district) =>
+                              String(district)
+                            )}
+                            onChange={setFilteredDistrictPre}
+                          >
+                            <div
+                              className={`grid grid-cols-3
+                          } gap-x-4 `}
+                            >
+                              {Object.entries(filterableDistricts).map(
+                                (eachEntry) => (
+                                  <Checkbox
+                                    value={eachEntry[0]}
+                                    label={
+                                      <span className="text-nowrap text-xs">
+                                        <span className="text-white">
+                                          {eachEntry[0]}
+                                        </span>{" "}
+                                        <span>{eachEntry[1]}</span>
+                                      </span>
+                                    }
+                                    key={eachEntry[0]}
+                                  />
+                                )
+                              )}
+                            </div>
+                          </Checkbox.Group>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-blue-400 text-xs mt-1">
+                          <strong>LAPD Arrests by Council District</strong>
+                        </p>
+                      </div>
                     </div>
                   )}
                   {selectedfilteropened === "area" && (
@@ -1277,54 +1323,6 @@ const Home: NextPage = () => {
                         <p className="text-blue-400 text-xs mt-1">
                           <strong>LAPD Arrests by Arrest Type</strong>
                         </p>
-                        {/* <CaseTypes onCaseClicked={onCaseClicked} /> */}
-                      </div>
-                    </div>
-                  )}
-                  {selectedfilteropened === "district" && (
-                    <div className="mt-2">
-                      <SelectButtons
-                        onSelect={onSelect}
-                        onUnselect={onUnselect}
-                        onInvert={onInvert}
-                      />
-                      <div className="flex flex-row gap-x-1">
-                        <div className="flex items-center">
-                          <Checkbox.Group
-                            value={filteredDistricts.map((district) =>
-                              String(district)
-                            )}
-                            onChange={setFilteredDistrictPre}
-                          >
-                            <div
-                              className={`grid grid-cols-3
-                          } gap-x-4 `}
-                            >
-                              {Object.entries(filterableDistricts).map(
-                                (eachEntry) => (
-                                  <Checkbox
-                                    value={eachEntry[0]}
-                                    label={
-                                      <span className="text-nowrap text-xs">
-                                        <span className="text-white">
-                                          {eachEntry[0]}
-                                        </span>{" "}
-                                        <span>{eachEntry[1]}</span>
-                                      </span>
-                                    }
-                                    key={eachEntry[0]}
-                                  />
-                                )
-                              )}
-                            </div>
-                          </Checkbox.Group>
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-blue-400 text-xs mt-1">
-                          <strong>LAPD Arrests by Council District</strong>
-                        </p>
-                        {/* <CaseTypes onCaseClicked={onCaseClicked} /> */}
                       </div>
                     </div>
                   )}
