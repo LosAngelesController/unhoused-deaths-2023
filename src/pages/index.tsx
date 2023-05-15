@@ -18,70 +18,70 @@ const citybounds = require("./citybounds.json");
 import mapboxgl from "mapbox-gl";
 
 const filterableRaces: any = {
-  "Hispanic/Latino": 32614,
-  Black: 16192,
-  White: 9240,
-  Other: 3489,
-  Asian: 304,
+  "Hispanic/Latino": 34226,
+  Black: 18393,
+  White: 10470,
+  Other: 3402,
+  Asian: 289,
   "Pacific Islander": 20,
-  Unknown: 10,
-  "American Indian/Alaskan Native": 5,
+  Unknown: 8,
+  "American Indian/Alaskan Native": 6,
 };
 
 const filterableRacesKeys = Object.keys(filterableRaces);
 
 const filterableAreas: any = {
-  Central: 3767,
-  Devonshire: 2501,
-  Foothill: 2105,
-  Harbor: 1930,
-  Hollenbeck: 2126,
-  Hollywood: 3382,
-  Mission: 3080,
-  Newton: 3494,
-  Northeast: 2003,
-  "N Hollywood": 2778,
-  Olympic: 2822,
-  Pacific: 3550,
-  Rampart: 5083,
-  "77th Street": 4687,
-  Southeast: 3145,
-  Southwest: 3091,
-  Topanga: 2594,
-  "West LA": 3543,
-  "West Valley": 2255,
-  Wilshire: 1892,
-  "Van Nuys": 3296,
+  "77th Street": 5249,
+  Central: 4128,
+  Devonshire: 1791,
+  Foothill: 2278,
+  Harbor: 2138,
+  Hollenbeck: 2276,
+  Hollywood: 3871,
+  Mission: 3062,
+  "N Hollywood": 2891,
+  Newton: 3975,
+  Northeast: 2185,
+  Olympic: 2833,
+  Pacific: 5520,
+  Rampart: 4181,
+  Southeast: 3288,
+  Southwest: 3658,
+  Topanga: 3091,
+  "Van Nuys": 3817,
+  "West LA": 2399,
+  "West Valley": 2369,
+  Wilshire: 1814,
 };
 
 const filterableAreasKeys = Object.keys(filterableAreas);
 
 const filterableArrests: any = {
-  Felony: 30378,
-  Misdemeanor: 26245,
-  Infraction: 4186,
-  Dependent: 545,
-  Other: 520,
+  Felony: 32597,
+  Misdemeanor: 28552,
+  Infraction: 4627,
+  Dependent: 422,
+  Other: 596,
 };
 
 const filterableArrestsKeys = Object.keys(filterableArrests);
 
 const filterableDistricts: any = {
-  1: 6071,
-  2: 3141,
-  3: 3405,
-  4: 2337,
-  5: 2284,
-  6: 4933,
-  7: 2771,
-  8: 6012,
-  9: 5709,
-  10: 3601,
-  11: 4389,
-  12: 2627,
-  13: 5268,
-  14: 6138,
-  15: 2986,
+  1: 4773,
+  2: 3148,
+  3: 3625,
+  4: 2618,
+  5: 2123,
+  6: 5197,
+  7: 2753,
+  8: 6539,
+  9: 6044,
+  10: 3881,
+  11: 5669,
+  12: 1989,
+  13: 5470,
+  14: 6536,
+  15: 3090,
 };
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
@@ -90,31 +90,31 @@ var raceOptions = [
   {
     code: "h",
     title: "Hispanic/Latino",
-    count: 32614,
+    count: 34226,
     percent: "52.71%",
   },
   {
     code: "b",
     title: "Black",
-    count: 16192,
+    count: 18393,
     percent: "26.17%",
   },
   {
     code: "w",
     title: "White",
-    count: 9240,
+    count: 10470,
     percent: "14.93%",
   },
   {
     code: "o",
     title: "Other",
-    count: 3489,
+    count: 3402,
     percent: "5.64%",
   },
   {
     code: "a",
     title: "Asian",
-    count: 304,
+    count: 289,
     percent: "0.49%",
   },
   {
@@ -126,18 +126,18 @@ var raceOptions = [
   {
     code: "u",
     title: "Unknown",
-    count: 10,
+    count: 8,
     percent: "0.02%",
   },
   {
     code: "n",
     title: "American Indian/Alaskan Native",
-    count: 5,
+    count: 6,
     percent: "0.01%",
   },
 ];
 
-var total = 61876;
+var total = 66815;
 
 const Home: NextPage = () => {
   const shouldfilteropeninit =
@@ -175,7 +175,7 @@ const Home: NextPage = () => {
   }, [arrestData]);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "LAPD-arrests-2022";
+  var mapname = "LAPD-Arrests-2021";
 
   const setFilteredRacePre = (input: string[]) => {
     if (input.length === 0) {
@@ -302,7 +302,7 @@ const Home: NextPage = () => {
 
     var mapparams: any = {
       container: divRef.current, // container ID
-      style: "mapbox://styles/kennethmejia/clgqr3ha2000001pp5tcl2j2u", // style URL (THIS IS STREET VIEW)
+      style: "mapbox://styles/kennethmejia/clhp5ghsj00nk01rh2yy60h38", // style URL (THIS IS STREET VIEW)
       center: [-118.41, 34], // starting position [lng, lat]
       zoom: formulaForZoom(), // starting zoom
     };
@@ -505,7 +505,7 @@ const Home: NextPage = () => {
         closeOnClick: false,
       });
 
-      map.on("mouseover", "lapd-arrests-2022", (e: any) => {
+      map.on("mouseover", "lapd-arrests-2021", (e: any) => {
         if (e.features) {
           map.getCanvas().style.cursor = "pointer";
           const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -654,7 +654,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mouseleave", "lapd-arrests-2022", () => {
+      map.on("mouseleave", "lapd-arrests-2021", () => {
         //check if the url query string "stopmouseleave" is true
         //if it is, then don't do anything
         //if it is not, then do the following
@@ -703,7 +703,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mousedown", "lapd-arrests-2022", (e: any) => {
+      map.on("mousedown", "lapd-arrests-2021", (e: any) => {
         setArrestInfo(0);
         setInfoBoxLength(1);
         setArrestInfoOpen(true);
@@ -753,7 +753,7 @@ const Home: NextPage = () => {
               "line-width": 2,
             },
           },
-          "road-label-simple"
+          "road-label-navigation"
         );
 
         map.addSource("citycouncildist", {
@@ -772,7 +772,7 @@ const Home: NextPage = () => {
               "line-width": 1.5,
             },
           },
-          "road-label-simple"
+          "road-label-navigation"
         );
 
         map.addLayer(
@@ -785,7 +785,7 @@ const Home: NextPage = () => {
               "fill-opacity": 0,
             },
           },
-          "road-label-simple"
+          "road-label-navigation"
         );
 
         map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
@@ -824,7 +824,7 @@ const Home: NextPage = () => {
               "fill-opacity": 0.15,
             },
           },
-          "road-label-simple"
+          "road-label-navigation"
         );
       }
 
@@ -899,7 +899,7 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "CD#"],
+      ["get", "CD"],
       filteredDistricts,
       true,
       false,
@@ -928,7 +928,7 @@ const Home: NextPage = () => {
         );
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("lapd-arrests-2022", filterinput);
+          mapref.current.setFilter("lapd-arrests-2021", filterinput);
         }
       }
     }
@@ -1013,7 +1013,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>LAPD Arrests 2022 | Map</title>
+          <title>LAPD Arrests 2021 | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -1021,30 +1021,30 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="LAPD Arrests 2022 | Map"
+            content="LAPD Arrests 2021 | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="LAPD Arrests 2022"
+            content="LAPD Arrests 2021"
           ></meta>
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://buildingandsafety.lacontroller.io/building-map.png"
+            content="https://lapd-arrests-2021.lacontroller.io/building-map.png"
           ></meta>
-          <meta name="description" content="LAPD Arrests 2022." />
+          <meta name="description" content="LAPD Arrests 2021." />
 
           <meta
             property="og:url"
-            content="https://buildingandsafety.lacontroller.io"
+            content="https://lapd-arrests-2021.lacontroller.io"
           />
           <meta property="og:type" content="website" />
-          <meta property="og:title" content="LAPD Arrests 2022 | Map" />
-          <meta property="og:description" content="LAPD Arrests 2022." />
+          <meta property="og:title" content="LAPD Arrests 2021 | Map" />
+          <meta property="og:description" content="LAPD Arrests 2021." />
           <meta
             property="og:image"
-            content="https://buildingandsafety.lacontroller.io/building-map.png"
+            content="https://lapd-arrests-2021.lacontroller.io/building-map.png"
           />
         </Head>
 
@@ -1139,11 +1139,11 @@ const Home: NextPage = () => {
                       <div className="grow font-semibold">
                         <span className="text-red-400">*</span>
                         {filterrace === "all" && (
-                          <span>61,874 Total Arrests (100%)</span>
+                          <span>66,815 Total Arrests (100%)</span>
                         )}
                         {filterrace !== "all" && (
                           <span>
-                            {filtercount.toLocaleString()} of 61,874 Total
+                            {filtercount.toLocaleString()} of 66,815 Total
                             Arrests (
                             {((filtercount / total) * 100).toFixed(2) + "%"})
                           </span>
