@@ -137,7 +137,7 @@ var raceOptions = [
   },
 ];
 
-var total = 66984;
+var total = 66983;
 
 const Home: NextPage = () => {
   const shouldfilteropeninit =
@@ -175,7 +175,7 @@ const Home: NextPage = () => {
   }, [arrestData]);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "LAPD-Arrests-2021";
+  var mapname = "LAPD-Arrests-2020";
 
   const setFilteredRacePre = (input: string[]) => {
     if (input.length === 0) {
@@ -505,7 +505,7 @@ const Home: NextPage = () => {
         closeOnClick: false,
       });
 
-      map.on("mouseover", "lapd-arrests-2021", (e: any) => {
+      map.on("mouseover", "lapd-arrests-2020", (e: any) => {
         if (e.features) {
           map.getCanvas().style.cursor = "pointer";
           const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -654,7 +654,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mouseleave", "lapd-arrests-2021", () => {
+      map.on("mouseleave", "lapd-arrests-2020", () => {
         //check if the url query string "stopmouseleave" is true
         //if it is, then don't do anything
         //if it is not, then do the following
@@ -703,7 +703,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mousedown", "lapd-arrests-2021", (e: any) => {
+      map.on("mousedown", "lapd-arrests-2020", (e: any) => {
         setArrestInfo(0);
         setInfoBoxLength(1);
         setArrestInfoOpen(true);
@@ -928,7 +928,7 @@ const Home: NextPage = () => {
         );
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("lapd-arrests-2021", filterinput);
+          mapref.current.setFilter("lapd-arrests-2020", filterinput);
         }
       }
     }
@@ -1139,11 +1139,11 @@ const Home: NextPage = () => {
                       <div className="grow font-semibold">
                         <span className="text-red-400">*</span>
                         {filterrace === "all" && (
-                          <span>66,984 Total Arrests (100%)</span>
+                          <span>66,983 Total Arrests (100%)</span>
                         )}
                         {filterrace !== "all" && (
                           <span>
-                            {filtercount.toLocaleString()} of 66,984 Total
+                            {filtercount.toLocaleString()} of 66,983 Total
                             Arrests (
                             {((filtercount / total) * 100).toFixed(2) + "%"})
                           </span>
