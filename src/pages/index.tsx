@@ -18,70 +18,70 @@ const citybounds = require("./citybounds.json");
 import mapboxgl from "mapbox-gl";
 
 const filterableRaces: any = {
-  "Hispanic/Latino": 34333,
-  Black: 18523,
-  White: 10388,
-  Other: 3391,
-  Asian: 319,
-  "Pacific Islander": 19,
-  Unknown: 9,
-  "American Indian/Alaskan Native": 1,
+  "Hispanic/Latino": 44367,
+  Black: 26286,
+  White: 16104,
+  Other: 5016,
+  Asian: 514,
+  "Pacific Islander": 39,
+  Unknown: 14,
+  "American Indian/Alaskan Native": 10,
 };
 
 const filterableRacesKeys = Object.keys(filterableRaces);
 
 const filterableAreas: any = {
-  "77th Street": 5153,
-  Central: 4987,
-  Devonshire: 1894,
-  Foothill: 2471,
-  Harbor: 2363,
-  Hollenbeck: 2338,
-  Hollywood: 4210,
-  Mission: 3529,
-  "N Hollywood": 3181,
-  Newton: 4133,
-  Northeast: 2032,
-  Olympic: 2866,
-  Pacific: 4425,
-  Rampart: 3650,
-  Southeast: 3410,
-  Southwest: 3608,
-  Topanga: 2789,
-  "Van Nuys": 3855,
-  "West LA": 1985,
-  "West Valley": 2347,
-  Wilshire: 1757,
+  "77th Street": 5781,
+  Central: 9718,
+  Devonshire: 2634,
+  Foothill: 3050,
+  Harbor: 3069,
+  Hollenbeck: 3323,
+  Hollywood: 6346,
+  Mission: 4052,
+  "N Hollywood": 4979,
+  Newton: 5491,
+  Northeast: 3334,
+  Olympic: 3955,
+  Pacific: 6010,
+  Rampart: 5664,
+  Southeast: 3863,
+  Southwest: 5386,
+  Topanga: 2897,
+  "Van Nuys": 5430,
+  "West LA": 2039,
+  "West Valley": 3012,
+  Wilshire: 2317,
 };
 
 const filterableAreasKeys = Object.keys(filterableAreas);
 
 const filterableArrests: any = {
-  Felony: 31015,
-  Misdemeanor: 30405,
-  Infraction: 4254,
-  Dependent: 429,
-  Other: 880,
+  Felony: 33663,
+  Misdemeanor: 49232,
+  Infraction: 6722,
+  Dependent: 464,
+  Other: 2269,
 };
 
 const filterableArrestsKeys = Object.keys(filterableArrests);
 
 const filterableDistricts: any = {
-  1: 4511,
-  2: 3575,
-  3: 3244,
-  4: 2620,
-  5: 2053,
-  6: 5589,
-  7: 3058,
-  8: 6469,
-  9: 6190,
-  10: 4095,
-  11: 4838,
-  12: 2108,
-  13: 5734,
-  14: 7620,
-  15: 3462,
+  1: 7486,
+  2: 5152,
+  3: 3652,
+  4: 3690,
+  5: 2645,
+  6: 7675,
+  7: 3814,
+  8: 7895,
+  9: 8122,
+  10: 5529,
+  11: 6342,
+  12: 2912,
+  13: 8714,
+  14: 13989,
+  15: 4294,
 };
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
@@ -90,54 +90,54 @@ var raceOptions = [
   {
     code: "h",
     title: "Hispanic/Latino",
-    count: 34333,
-    percent: "51.23%",
+    count: 44367,
+    percent: "48.04%",
   },
   {
     code: "b",
     title: "Black",
-    count: 18523,
-    percent: "27.53%",
+    count: 26286,
+    percent: "28.46%",
   },
   {
     code: "w",
     title: "White",
-    count: 10388,
-    percent: "15.67%",
+    count: 16104,
+    percent: "17.44%",
   },
   {
     code: "o",
     title: "Other",
-    count: 3391,
-    percent: "5.09%",
+    count: 5016,
+    percent: "5.43%",
   },
   {
     code: "a",
     title: "Asian",
-    count: 319,
-    percent: "0.43%",
+    count: 514,
+    percent: "0.56%",
   },
   {
     code: "p",
     title: "Pacific Islander",
-    count: 19,
-    percent: "0.03%",
+    count: 39,
+    percent: "0.04%",
   },
   {
     code: "u",
     title: "Unknown",
-    count: 9,
-    percent: "0.01%",
+    count: 14,
+    percent: "0.02%",
   },
   {
     code: "n",
     title: "American Indian/Alaskan Native",
-    count: 1,
+    count: 10,
     percent: "0.01%",
   },
 ];
 
-var total = 66983;
+var total = 92350;
 
 const Home: NextPage = () => {
   const shouldfilteropeninit =
@@ -175,7 +175,7 @@ const Home: NextPage = () => {
   }, [arrestData]);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "LAPD-Arrests-2020";
+  var mapname = "LAPD-Arrests-2019";
 
   const setFilteredRacePre = (input: string[]) => {
     if (input.length === 0) {
@@ -302,7 +302,7 @@ const Home: NextPage = () => {
 
     var mapparams: any = {
       container: divRef.current, // container ID
-      style: "mapbox://styles/kennethmejia/clhpl5b4a00lo01q10w6of6sz", // style URL (THIS IS STREET VIEW)
+      style: "mapbox://styles/kennethmejia/clhpnz0wo00ny01rhcap1hkor", // style URL (THIS IS STREET VIEW)
       center: [-118.41, 34], // starting position [lng, lat]
       zoom: formulaForZoom(), // starting zoom
     };
@@ -505,7 +505,7 @@ const Home: NextPage = () => {
         closeOnClick: false,
       });
 
-      map.on("mouseover", "lapd-arrests-2020", (e: any) => {
+      map.on("mouseover", "lapd-arrests-2019", (e: any) => {
         if (e.features) {
           map.getCanvas().style.cursor = "pointer";
           const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -654,7 +654,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mouseleave", "lapd-arrests-2020", () => {
+      map.on("mouseleave", "lapd-arrests-2019", () => {
         //check if the url query string "stopmouseleave" is true
         //if it is, then don't do anything
         //if it is not, then do the following
@@ -703,7 +703,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mousedown", "lapd-arrests-2020", (e: any) => {
+      map.on("mousedown", "lapd-arrests-2019", (e: any) => {
         setArrestInfo(0);
         setInfoBoxLength(1);
         setArrestInfoOpen(true);
@@ -928,7 +928,7 @@ const Home: NextPage = () => {
         );
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("lapd-arrests-2020", filterinput);
+          mapref.current.setFilter("lapd-arrests-2019", filterinput);
         }
       }
     }
@@ -1021,30 +1021,30 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="LAPD Arrests 2020 | Map"
+            content="LAPD Arrests 2019 | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="LAPD Arrests 2020"
+            content="LAPD Arrests 2019"
           ></meta>
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://lapd-arrests-2020.lacontroller.io/building-map.png"
+            content="https://lapd-arrests-2019.lacontroller.io/building-map.png"
           ></meta>
-          <meta name="description" content="LAPD Arrests 2020." />
+          <meta name="description" content="LAPD Arrests 2019." />
 
           <meta
             property="og:url"
-            content="https://lapd-arrests-2020.lacontroller.io"
+            content="https://lapd-arrests-2019.lacontroller.io"
           />
           <meta property="og:type" content="website" />
-          <meta property="og:title" content="LAPD Arrests 2020 | Map" />
-          <meta property="og:description" content="LAPD Arrests 2020." />
+          <meta property="og:title" content="LAPD Arrests 2019 | Map" />
+          <meta property="og:description" content="LAPD Arrests 2019." />
           <meta
             property="og:image"
-            content="https://lapd-arrests-2020.lacontroller.io/building-map.png"
+            content="https://lapd-arrests-2019.lacontroller.io/building-map.png"
           />
         </Head>
 
@@ -1139,11 +1139,11 @@ const Home: NextPage = () => {
                       <div className="grow font-semibold">
                         <span className="text-red-400">*</span>
                         {filterrace === "all" && (
-                          <span>66,983 Total Arrests (100%)</span>
+                          <span>92,350 Total Arrests (100%)</span>
                         )}
                         {filterrace !== "all" && (
                           <span>
-                            {filtercount.toLocaleString()} of 66,983 Total
+                            {filtercount.toLocaleString()} of 92,350 Total
                             Arrests (
                             {((filtercount / total) * 100).toFixed(2) + "%"})
                           </span>

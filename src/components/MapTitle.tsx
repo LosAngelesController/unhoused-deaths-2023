@@ -9,7 +9,7 @@ export function MapTitle() {
         color: "#ffffff",
       }}
     >
-      <strong className="">LAPD Arrests 2020</strong>
+      <strong className="">LAPD Arrests 2019</strong>
     </div>
   );
 }
