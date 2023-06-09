@@ -90,37 +90,37 @@ var raceOptions = [
     code: "h",
     title: "Hispanic/Latino",
     count: 7552,
-    percent: "48.04%",
+    percent: "20.52%",
   },
   {
     code: "b",
     title: "Black",
     count: 15654,
-    percent: "28.46%",
+    percent: "42.53%",
   },
   {
     code: "w",
     title: "White",
     count: 12495,
-    percent: "17.44%",
+    percent: "33.95%",
   },
   {
     code: "o",
     title: "Other",
     count: 887,
-    percent: "5.43%",
+    percent: "2.41%",
   },
   {
     code: "a",
     title: "Asian",
     count: 198,
-    percent: "0.56%",
+    percent: "0.54%",
   },
   {
     code: "p",
     title: "Pacific Islander",
     count: 4,
-    percent: "0.04%",
+    percent: "0.01%",
   },
   {
     code: "u",
@@ -132,7 +132,7 @@ var raceOptions = [
     code: "n",
     title: "American Indian/Alaskan Native",
     count: 9,
-    percent: "0.01%",
+    percent: "0.02%",
   },
 ];
 
