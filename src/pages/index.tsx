@@ -840,8 +840,8 @@ const Home: NextPage = () => {
             type: "fill",
             source: "selected-council-dist",
             paint: {
-              "fill-color": "#DBEAFE",
-              "fill-opacity": 0.05,
+              "fill-color": "#000000",
+              "fill-opacity": 0.3,
             },
           },
           "road-label-simple"
