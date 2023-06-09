@@ -18,70 +18,69 @@ const citybounds = require("./citybounds.json");
 import mapboxgl from "mapbox-gl";
 
 const filterableRaces: any = {
-  "Hispanic/Latino": 44367,
-  Black: 26286,
-  White: 16104,
-  Other: 5016,
-  Asian: 514,
-  "Pacific Islander": 39,
-  Unknown: 14,
-  "American Indian/Alaskan Native": 10,
+  "Hispanic/Latino": 7552,
+  Black: 15654,
+  White: 12495,
+  Other: 887,
+  Asian: 198,
+  "Pacific Islander": 4,
+  Unknown: 8,
+  "American Indian/Alaskan Native": 9,
 };
 
 const filterableRacesKeys = Object.keys(filterableRaces);
 
-const filterableAreas: any = {
-  "77th Street": 5781,
-  Central: 9718,
-  Devonshire: 2634,
-  Foothill: 3050,
-  Harbor: 3069,
-  Hollenbeck: 3323,
-  Hollywood: 6346,
-  Mission: 4052,
-  "N Hollywood": 4979,
-  Newton: 5491,
-  Northeast: 3334,
-  Olympic: 3955,
-  Pacific: 6010,
-  Rampart: 5664,
-  Southeast: 3863,
-  Southwest: 5386,
-  Topanga: 2897,
-  "Van Nuys": 5430,
-  "West LA": 2039,
-  "West Valley": 3012,
-  Wilshire: 2317,
+const filterableTimeRange: any = {
+  "12am-4am": 681,
+  "4am-8am": 9930,
+  "8am-12pm": 12624,
+  "12pm-4pm": 8241,
+  "4pm-8pm": 3931,
+  "8pm-12am": 1391,
 };
 
-const filterableAreasKeys = Object.keys(filterableAreas);
+const filterableTimesKeys = Object.keys(filterableTimeRange);
 
-const filterableArrests: any = {
-  Felony: 33663,
-  Misdemeanor: 49232,
-  Infraction: 6722,
-  Dependent: 464,
-  Other: 2269,
+const filterableSex: any = {
+  Male: 681,
+  Female: 9930,
 };
 
-const filterableArrestsKeys = Object.keys(filterableArrests);
+const filterableSexKeys = Object.keys(filterableSex);
+
+const filterableYears: any = {
+  2012: 4096,
+  2013: 5411,
+  2014: 4583,
+  2015: 4742,
+  2016: 5438,
+  2017: 5738,
+  2018: 3456,
+  2019: 887,
+  2020: 340,
+  2021: 568,
+  2022: 853,
+  2023: 695,
+};
+
+const filterableYearsKeys = Object.keys(filterableYears);
 
 const filterableDistricts: any = {
-  1: 7486,
-  2: 5152,
-  3: 3652,
-  4: 3690,
-  5: 2645,
-  6: 7675,
-  7: 3814,
-  8: 7895,
-  9: 8122,
-  10: 5529,
-  11: 6342,
-  12: 2912,
-  13: 8714,
-  14: 13989,
-  15: 4294,
+  1: 873,
+  2: 673,
+  3: 239,
+  4: 611,
+  5: 747,
+  6: 353,
+  7: 162,
+  8: 599,
+  9: 900,
+  10: 172,
+  11: 5961,
+  12: 745,
+  13: 5206,
+  14: 18972,
+  15: 329,
 };
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
@@ -90,54 +89,54 @@ var raceOptions = [
   {
     code: "h",
     title: "Hispanic/Latino",
-    count: 44367,
+    count: 7552,
     percent: "48.04%",
   },
   {
     code: "b",
     title: "Black",
-    count: 26286,
+    count: 15654,
     percent: "28.46%",
   },
   {
     code: "w",
     title: "White",
-    count: 16104,
+    count: 12495,
     percent: "17.44%",
   },
   {
     code: "o",
     title: "Other",
-    count: 5016,
+    count: 887,
     percent: "5.43%",
   },
   {
     code: "a",
     title: "Asian",
-    count: 514,
+    count: 198,
     percent: "0.56%",
   },
   {
     code: "p",
     title: "Pacific Islander",
-    count: 39,
+    count: 4,
     percent: "0.04%",
   },
   {
     code: "u",
     title: "Unknown",
-    count: 14,
+    count: 8,
     percent: "0.02%",
   },
   {
     code: "n",
     title: "American Indian/Alaskan Native",
-    count: 10,
+    count: 9,
     percent: "0.01%",
   },
 ];
 
-var total = 92350;
+var total = 36807;
 
 const Home: NextPage = () => {
   const shouldfilteropeninit =
@@ -149,13 +148,14 @@ const Home: NextPage = () => {
   const [selectedfilteropened, setselectedfilteropened] = useState("race");
   const [filteredRaces, setFilteredRaces] =
     useState<string[]>(filterableRacesKeys);
-  const [filteredArrests, setFilteredArrests] = useState<string[]>(
-    filterableArrestsKeys
-  );
-  const [filteredAreas, setFilteredAreas] =
-    useState<string[]>(filterableAreasKeys);
+  const [filteredTimes, setFilteredTimes] =
+    useState<string[]>(filterableTimesKeys);
+  const [filteredSex, setFilteredSex] = useState<string[]>(filterableSexKeys);
   const [filteredDistricts, setFilteredDistricts] = useState<number[]>(
     filterableDistrictsKeys.map((key) => Number(key))
+  );
+  const [filteredYears, setFilteredYears] = useState<number[]>(
+    filterableYearsKeys.map((key) => Number(key))
   );
 
   const [filterpanelopened, setfilterpanelopened] =
@@ -175,7 +175,7 @@ const Home: NextPage = () => {
   }, [arrestData]);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "LAPD-Arrests-2019";
+  var mapname = "4118-Map";
 
   const setFilteredRacePre = (input: string[]) => {
     if (input.length === 0) {
@@ -204,19 +204,27 @@ const Home: NextPage = () => {
     }
   };
 
-  const setFilteredAreaPre = (input: string[]) => {
+  const setFilteredYearsPre = (input: string[]) => {
     if (input.length === 0) {
-      setFilteredAreas(["99999"]);
+      setFilteredYears([99999]);
     } else {
-      setFilteredAreas(input);
+      setFilteredYears(input.map((x) => Number(x)));
     }
   };
 
-  const setFilteredArrestPre = (input: string[]) => {
+  const setFilteredSexPre = (input: string[]) => {
     if (input.length === 0) {
-      setFilteredArrests(["99999"]);
+      setFilteredSex(["99999"]);
     } else {
-      setFilteredArrests(input);
+      setFilteredSex(input);
+    }
+  };
+
+  const setFilteredTimePre = (input: string[]) => {
+    if (input.length === 0) {
+      setFilteredTimes(["99999"]);
+    } else {
+      setFilteredTimes(input);
     }
   };
 
@@ -302,7 +310,7 @@ const Home: NextPage = () => {
 
     var mapparams: any = {
       container: divRef.current, // container ID
-      style: "mapbox://styles/kennethmejia/clhpnz0wo00ny01rhcap1hkor", // style URL (THIS IS STREET VIEW)
+      style: "mapbox://styles/kennethmejia/climkzw58008101r8cpo4df4r", // style URL (THIS IS STREET VIEW)
       center: [-118.41, 34], // starting position [lng, lat]
       zoom: formulaForZoom(), // starting zoom
     };
@@ -505,7 +513,7 @@ const Home: NextPage = () => {
         closeOnClick: false,
       });
 
-      map.on("mouseover", "lapd-arrests-2019", (e: any) => {
+      map.on("mouseover", "4118map", (e: any) => {
         if (e.features) {
           map.getCanvas().style.cursor = "pointer";
           const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -654,7 +662,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mouseleave", "lapd-arrests-2019", () => {
+      map.on("mouseleave", "4118map", () => {
         //check if the url query string "stopmouseleave" is true
         //if it is, then don't do anything
         //if it is not, then do the following
@@ -703,7 +711,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mousedown", "lapd-arrests-2019", (e: any) => {
+      map.on("mousedown", "4118map", (e: any) => {
         setArrestInfo(0);
         setInfoBoxLength(1);
         setArrestInfoOpen(true);
@@ -750,7 +758,7 @@ const Home: NextPage = () => {
             paint: {
               "line-color": "#dddddd",
               "line-opacity": 1,
-              "line-width": 2,
+              "line-width": 1,
             },
           },
           "road-label-simple"
@@ -769,7 +777,7 @@ const Home: NextPage = () => {
             paint: {
               "line-color": "#7FE5D4",
               "line-opacity": 1,
-              "line-width": 1.5,
+              "line-width": 0.8,
             },
           },
           "road-label-simple"
@@ -821,7 +829,7 @@ const Home: NextPage = () => {
             source: "selected-council-dist",
             paint: {
               "fill-color": "#DBEAFE",
-              "fill-opacity": 0.15,
+              "fill-opacity": 0.05,
             },
           },
           "road-label-simple"
@@ -907,16 +915,24 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "Area Name"],
-      filteredAreas.map((area) => String(area)),
+      ["get", "Year"],
+      filteredYears,
       true,
       false,
     ]);
 
     arrayoffilterables.push([
       "match",
-      ["get", "Arrest Type"],
-      filteredArrests.map((caseType) => String(caseType)),
+      ["get", "Time Range"],
+      filteredTimes.map((range) => String(range)),
+      true,
+      false,
+    ]);
+
+    arrayoffilterables.push([
+      "match",
+      ["get", "Sex"],
+      filteredSex.map((sex) => String(sex)),
       true,
       false,
     ]);
@@ -928,21 +944,29 @@ const Home: NextPage = () => {
         );
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("lapd-arrests-2019", filterinput);
+          mapref.current.setFilter("4118map", filterinput);
         }
       }
     }
-  }, [filteredRaces, filteredAreas, filteredArrests, filteredDistricts]);
+  }, [
+    filteredRaces,
+    filteredSex,
+    filteredYears,
+    filteredDistricts,
+    filteredTimes,
+  ]);
 
   const onSelect = () => {
     if (selectedfilteropened === "race") {
       setFilteredRacePre(filterableRacesKeys);
+    } else if (selectedfilteropened === "year") {
+      setFilteredYearsPre(filterableYearsKeys);
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre(filterableDistrictsKeys);
-    } else if (selectedfilteropened === "area") {
-      setFilteredAreaPre(filterableAreasKeys);
-    } else if (selectedfilteropened === "arrest") {
-      setFilteredArrestPre(filterableArrestsKeys);
+    } else if (selectedfilteropened === "sex") {
+      setFilteredSexPre(filterableSexKeys);
+    } else if (selectedfilteropened === "time") {
+      setFilteredTimePre(filterableTimesKeys);
     }
   };
 
@@ -950,12 +974,14 @@ const Home: NextPage = () => {
     if (selectedfilteropened === "race") {
       setFilteredRacePre([]);
       setfiltercount(0);
+    } else if (selectedfilteropened === "year") {
+      setFilteredYearsPre([]);
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre([]);
-    } else if (selectedfilteropened === "area") {
-      setFilteredAreaPre([]);
-    } else if (selectedfilteropened === "arrest") {
-      setFilteredArrestPre([]);
+    } else if (selectedfilteropened === "sex") {
+      setFilteredSexPre([]);
+    } else if (selectedfilteropened === "time") {
+      setFilteredTimePre([]);
     }
   };
 
@@ -964,19 +990,23 @@ const Home: NextPage = () => {
       setFilteredRacePre(
         filterableRacesKeys.filter((n) => !filteredRaces.includes(n))
       );
+    } else if (selectedfilteropened === "year") {
+      setFilteredYearsPre(
+        filterableYearsKeys.filter((n) => !filteredYears.includes(Number(n)))
+      );
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre(
         filterableDistrictsKeys.filter(
           (n) => !filteredDistricts.includes(Number(n))
         )
       );
-    } else if (selectedfilteropened === "area") {
-      setFilteredAreaPre(
-        filterableAreasKeys.filter((n) => !filteredAreas.includes(n))
+    } else if (selectedfilteropened === "sex") {
+      setFilteredSexPre(
+        filterableSexKeys.filter((n) => !filteredSex.includes(n))
       );
-    } else if (selectedfilteropened === "arrest") {
-      setFilteredArrestPre(
-        filterableArrestsKeys.filter((n) => !filteredArrests.includes(n))
+    } else if (selectedfilteropened === "time") {
+      setFilteredTimePre(
+        filterableTimesKeys.filter((n) => !filteredTimes.includes(n))
       );
     }
   };
@@ -1013,7 +1043,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>LAPD Arrests 2019 | Map</title>
+          <title>City of LA 41.18 Arrests 2013-2023 | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -1021,30 +1051,36 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="LAPD Arrests 2019 | Map"
+            content="City of LA 41.18 Arrests 2013-2023 | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="LAPD Arrests 2019"
+            content="City of LA 41.18 Arrests 2013-2023"
           ></meta>
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://lapd-arrests-2019.lacontroller.io/building-map.png"
+            content="https://4118-arrests-map.vercel.app/building-map.png"
           ></meta>
           <meta name="description" content="LAPD Arrests 2019." />
 
           <meta
             property="og:url"
-            content="https://lapd-arrests-2019.lacontroller.io"
+            content="https://4118-arrests-map.vercel.app"
           />
           <meta property="og:type" content="website" />
-          <meta property="og:title" content="LAPD Arrests 2019 | Map" />
-          <meta property="og:description" content="LAPD Arrests 2019." />
+          <meta
+            property="og:title"
+            content="City of LA 41.18 Arrests 2013-2023 | Map"
+          />
+          <meta
+            property="og:description"
+            content="City of LA 41.18 Arrests 2013-2023"
+          />
           <meta
             property="og:image"
-            content="https://lapd-arrests-2019.lacontroller.io/building-map.png"
+            content="https://4118-arrests-map.vercel.app/building-map.png"
           />
         </Head>
 
@@ -1098,6 +1134,18 @@ const Home: NextPage = () => {
                   </button>
                   <button
                     onClick={() => {
+                      setselectedfilteropened("year");
+                    }}
+                    className={`px-2 border-b-2  py-1  font-semibold ${
+                      selectedfilteropened === "year"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                    Year
+                  </button>
+                  <button
+                    onClick={() => {
                       setselectedfilteropened("district");
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
@@ -1110,27 +1158,27 @@ const Home: NextPage = () => {
                   </button>
                   <button
                     onClick={() => {
-                      setselectedfilteropened("area");
+                      setselectedfilteropened("sex");
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "area"
+                      selectedfilteropened === "sex"
                         ? "border-[#41ffca] text-[#41ffca]"
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                    Division
+                    Sex
                   </button>
                   <button
                     onClick={() => {
-                      setselectedfilteropened("arrest");
+                      setselectedfilteropened("time");
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "arrest"
+                      selectedfilteropened === "time"
                         ? "border-[#41ffca] text-[#41ffca]"
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                    Arrest
+                    Time
                   </button>
                 </div>
                 <div className="flex flex-col">
@@ -1139,11 +1187,11 @@ const Home: NextPage = () => {
                       <div className="grow font-semibold">
                         <span className="text-red-400">*</span>
                         {filterrace === "all" && (
-                          <span>92,350 Total Arrests (100%)</span>
+                          <span>36,807 Total Arrests (100%)</span>
                         )}
                         {filterrace !== "all" && (
                           <span>
-                            {filtercount.toLocaleString()} of 92,350 Total
+                            {filtercount.toLocaleString()} of 36,807 Total
                             Arrests (
                             {((filtercount / total) * 100).toFixed(2) + "%"})
                           </span>
@@ -1186,12 +1234,58 @@ const Home: NextPage = () => {
                         </div>
                       </div>
                       <p className="text-blue-400 text-xs mt-1">
-                        <strong>LAPD Arrests by Race</strong>
+                        <strong>41.18 Arrests by Race</strong>
                       </p>
                       <p className="text-xs text-red-400 mt-0 mb-1">
-                        *% of race(s) when all areas and arrest types are
+                        *% of race(s) when all Year, CD#, Sex, Time filters are
                         selected
                       </p>
+                    </div>
+                  )}
+                  {selectedfilteropened === "year" && (
+                    <div className="mt-2">
+                      <SelectButtons
+                        onSelect={onSelect}
+                        onUnselect={onUnselect}
+                        onInvert={onInvert}
+                      />
+                      <div className="flex flex-row gap-x-1">
+                        <div className="flex items-center">
+                          <Checkbox.Group
+                            value={filteredYears.map((year) =>
+                              String(year)
+                            )}
+                            onChange={setFilteredYearsPre}
+                          >
+                            <div
+                              className={`grid grid-cols-3
+                          } gap-x-4 `}
+                            >
+                              {Object.entries(filterableYears).map(
+                                (eachEntry) => (
+                                  <Checkbox
+                                    value={eachEntry[0]}
+                                    label={
+                                      <span className="text-nowrap text-xs">
+                                        <span className="text-white">
+                                          {eachEntry[0]}
+                                        </span>{" "}
+                                        <span>{eachEntry[1]}</span>
+                                      </span>
+                                    }
+                                    key={eachEntry[0]}
+                                  />
+                                )
+                              )}
+                            </div>
+                          </Checkbox.Group>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-blue-400 text-xs mt-1">
+                          <strong>41.18 Arrests by Year</strong>
+                        </p>
+                      </div>
                     </div>
                   )}
                   {selectedfilteropened === "district" && (
@@ -1235,12 +1329,12 @@ const Home: NextPage = () => {
                       </div>
                       <div>
                         <p className="text-blue-400 text-xs mt-1">
-                          <strong>LAPD Arrests by Council District</strong>
+                          <strong>41.18 Arrests by Council District</strong>
                         </p>
                       </div>
                     </div>
                   )}
-                  {selectedfilteropened === "area" && (
+                  {selectedfilteropened === "sex" && (
                     <div className="mt-2">
                       <SelectButtons
                         onSelect={onSelect}
@@ -1250,14 +1344,14 @@ const Home: NextPage = () => {
                       <div className="flex flex-row gap-x-1">
                         <div className="flex items-center">
                           <Checkbox.Group
-                            value={filteredAreas}
-                            onChange={setFilteredAreaPre}
+                            value={filteredSex}
+                            onChange={setFilteredSexPre}
                           >
                             <div
                               className={`grid grid-cols-3
                           } gap-x-4 `}
                             >
-                              {Object.entries(filterableAreas).map(
+                              {Object.entries(filterableSex).map(
                                 (eachEntry) => (
                                   <Checkbox
                                     value={eachEntry[0]}
@@ -1278,11 +1372,11 @@ const Home: NextPage = () => {
                         </div>
                       </div>
                       <p className="text-blue-400 text-xs mt-1">
-                        <strong>LAPD Arrests by LAPD Divisions</strong>
+                        <strong>41.18 Arrests by Sex</strong>
                       </p>
                     </div>
                   )}
-                  {selectedfilteropened === "arrest" && (
+                  {selectedfilteropened === "time" && (
                     <div className="mt-2">
                       <SelectButtons
                         onSelect={onSelect}
@@ -1292,14 +1386,14 @@ const Home: NextPage = () => {
                       <div className="flex flex-row gap-x-1">
                         <div className="flex items-center">
                           <Checkbox.Group
-                            value={filteredArrests}
-                            onChange={setFilteredArrestPre}
+                            value={filteredTimes}
+                            onChange={setFilteredTimePre}
                           >
                             <div
                               className={`grid grid-cols-3
                           } gap-x-4 `}
                             >
-                              {Object.entries(filterableArrests).map(
+                              {Object.entries(filterableTimeRange).map(
                                 (eachEntry) => (
                                   <Checkbox
                                     value={eachEntry[0]}
@@ -1321,7 +1415,7 @@ const Home: NextPage = () => {
                       </div>
                       <div>
                         <p className="text-blue-400 text-xs mt-1">
-                          <strong>LAPD Arrests by Arrest Type</strong>
+                          <strong>41.18 Arrests by Time Range</strong>
                         </p>
                       </div>
                     </div>
