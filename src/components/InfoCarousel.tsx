@@ -36,10 +36,14 @@ export function InfoCarousel(props: CarouselProps) {
             <p className="pr-4">
               <b className="text-stone-400">Area:</b>{" "}
               {props.arrestData[props.arrestInfo]?.area} <br />
+              <b className="text-stone-400">CD#:</b>{" "}
+              {props.arrestData[props.arrestInfo]?.cd} <br />
               <b className="text-stone-400">Report ID:</b>{" "}
               {props.arrestData[props.arrestInfo]?.reportId} <br />
               <b className="text-stone-400">Arrest Date:</b>{" "}
               {props.arrestData[props.arrestInfo]?.arrestDate} <br />
+              <b className="text-stone-400">Time Range:</b>{" "}
+              {props.arrestData[props.arrestInfo]?.timeRange} <br />
               <b className="text-stone-400">Address:</b>{" "}
               {props.arrestData[props.arrestInfo]?.address} <br />
               <b className="text-stone-400">Cross Street:</b>{" "}

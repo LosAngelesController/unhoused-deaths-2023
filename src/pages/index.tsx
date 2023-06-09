@@ -553,8 +553,18 @@ const Home: NextPage = () => {
                           eachCase.properties?.["Arrest Date"]
                             ? `<span class="text-sky-400">Arrest Date: ${eachCase.properties["Arrest Date"]}</span>`
                             : ""
+                        }${" "}
+                        ${
+                          eachCase.properties?.["Time Range"]
+                            ? `<span class="text-slate-400">Time Range: ${eachCase.properties["Time Range"]}</span>`
+                            : ""
                         }
                         <br />
+                        ${
+                          eachCase.properties?.["CD"]
+                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["CD"]} </span>`
+                            : ""
+                        }
                         ${
                           eachCase.properties?.["Area Name"]
                             ? `<span class="text-teal-200">Area: ${eachCase.properties["Area Name"]}, </span>`
@@ -718,8 +728,10 @@ const Home: NextPage = () => {
         let filteredData = e.features.map((obj: any) => {
           return {
             area: obj.properties["Area Name"],
+            cd: obj.properties["CD"],
             reportId: obj.properties["Report ID"],
             arrestDate: obj.properties["Arrest Date"],
+            timeRange: obj.properties["Time Range"],
             address: obj.properties["Address"],
             crossStreet: obj.properties["Cross Street"],
             age: obj.properties.Age,
