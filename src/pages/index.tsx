@@ -1061,13 +1061,13 @@ const Home: NextPage = () => {
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://4118-arrests-map.vercel.app/building-map.png"
+            content="https://4118-map.vercel.app/4118.png"
           ></meta>
           <meta name="description" content="LAPD Arrests 2019." />
 
           <meta
             property="og:url"
-            content="https://4118-arrests-map.vercel.app"
+            content="https://4118-map.vercel.app"
           />
           <meta property="og:type" content="website" />
           <meta
@@ -1080,7 +1080,7 @@ const Home: NextPage = () => {
           />
           <meta
             property="og:image"
-            content="https://4118-arrests-map.vercel.app/building-map.png"
+            content="https://4118-map.vercel.app/4118.png"
           />
         </Head>
 
