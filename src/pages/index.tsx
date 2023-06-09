@@ -1252,9 +1252,7 @@ const Home: NextPage = () => {
                       <div className="flex flex-row gap-x-1">
                         <div className="flex items-center">
                           <Checkbox.Group
-                            value={filteredYears.map((year) =>
-                              String(year)
-                            )}
+                            value={filteredYears.map((year) => String(year))}
                             onChange={setFilteredYearsPre}
                           >
                             <div
