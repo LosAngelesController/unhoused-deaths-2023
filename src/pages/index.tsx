@@ -42,8 +42,8 @@ const filterableTimeRange: any = {
 const filterableTimesKeys = Object.keys(filterableTimeRange);
 
 const filterableSex: any = {
-  Male: 681,
-  Female: 9930,
+  Male: 26871,
+  Female: 9936,
 };
 
 const filterableSexKeys = Object.keys(filterableSex);
