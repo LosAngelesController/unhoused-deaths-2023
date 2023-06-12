@@ -1324,18 +1324,18 @@ const Home: NextPage = () => {
                           <strong>41.18 Arrests by Year</strong>
                         </p>
                         <p className="mt-2 text-xs italic text-[#41ffca]">
-                        Los Angeles Municipal Code 41.18 criminalizes sitting,
-                        lying, sleeping or storing, using, maintaining, or
-                        placing personal property in the public right-of-way in
-                        certain instances.
-                      </p>
-                      <a
-                        href="https://codelibrary.amlegal.com/codes/los_angeles/latest/lamc/0-0-0-128514"
-                        className="text-sm text-blue-300"
-                        target="blank"
-                      >
-                        Click to Learn More
-                      </a>
+                          Los Angeles Municipal Code 41.18 criminalizes sitting,
+                          lying, sleeping or storing, using, maintaining, or
+                          placing personal property in the public right-of-way
+                          in certain instances.
+                        </p>
+                        <a
+                          href="https://codelibrary.amlegal.com/codes/los_angeles/latest/lamc/0-0-0-128514"
+                          className="text-sm text-blue-300"
+                          target="blank"
+                        >
+                          Click to Learn More
+                        </a>
                       </div>
                     </div>
                   )}
@@ -1383,18 +1383,18 @@ const Home: NextPage = () => {
                           <strong>41.18 Arrests by Council District</strong>
                         </p>
                         <p className="mt-2 text-xs italic text-[#41ffca]">
-                        Los Angeles Municipal Code 41.18 criminalizes sitting,
-                        lying, sleeping or storing, using, maintaining, or
-                        placing personal property in the public right-of-way in
-                        certain instances.
-                      </p>
-                      <a
-                        href="https://codelibrary.amlegal.com/codes/los_angeles/latest/lamc/0-0-0-128514"
-                        className="text-sm text-blue-300"
-                        target="blank"
-                      >
-                        Click to Learn More
-                      </a>
+                          Los Angeles Municipal Code 41.18 criminalizes sitting,
+                          lying, sleeping or storing, using, maintaining, or
+                          placing personal property in the public right-of-way
+                          in certain instances.
+                        </p>
+                        <a
+                          href="https://codelibrary.amlegal.com/codes/los_angeles/latest/lamc/0-0-0-128514"
+                          className="text-sm text-blue-300"
+                          target="blank"
+                        >
+                          Click to Learn More
+                        </a>
                       </div>
                     </div>
                   )}
@@ -1495,18 +1495,18 @@ const Home: NextPage = () => {
                           <strong>41.18 Arrests by Time Range</strong>
                         </p>
                         <p className="mt-2 text-xs italic text-[#41ffca]">
-                        Los Angeles Municipal Code 41.18 criminalizes sitting,
-                        lying, sleeping or storing, using, maintaining, or
-                        placing personal property in the public right-of-way in
-                        certain instances.
-                      </p>
-                      <a
-                        href="https://codelibrary.amlegal.com/codes/los_angeles/latest/lamc/0-0-0-128514"
-                        className="text-sm text-blue-300"
-                        target="blank"
-                      >
-                        Click to Learn More
-                      </a>
+                          Los Angeles Municipal Code 41.18 criminalizes sitting,
+                          lying, sleeping or storing, using, maintaining, or
+                          placing personal property in the public right-of-way
+                          in certain instances.
+                        </p>
+                        <a
+                          href="https://codelibrary.amlegal.com/codes/los_angeles/latest/lamc/0-0-0-128514"
+                          className="text-sm text-blue-300"
+                          target="blank"
+                        >
+                          Click to Learn More
+                        </a>
                       </div>
                     </div>
                   )}
