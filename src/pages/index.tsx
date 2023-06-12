@@ -18,7 +18,7 @@ const citybounds = require("./citybounds.json");
 import mapboxgl from "mapbox-gl";
 
 const filterableRaces: any = {
-  "Hispanic/Latino": 7552,
+  "Hispanic/Latin": 7552,
   Black: 15654,
   White: 12495,
   Other: 887,
@@ -88,7 +88,7 @@ const filterableDistrictsKeys = Object.keys(filterableDistricts);
 var raceOptions = [
   {
     code: "h",
-    title: "Hispanic/Latino",
+    title: "Hispanic/Latin",
     count: 7552,
     percent: "20.52%",
   },
@@ -1248,6 +1248,9 @@ const Home: NextPage = () => {
                       <p className="text-xs text-red-400 mt-0 mb-1">
                         *% of race(s) when all Year, CD#, Sex, Time filters are
                         selected
+                      </p>
+                      <p className="text-xs text-red-400 mt-0 mb-1">
+                        *Race categories created by LAPD
                       </p>
                     </div>
                   )}
