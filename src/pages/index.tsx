@@ -1190,6 +1190,12 @@ const Home: NextPage = () => {
                     Time
                   </button>
                 </div>
+                <div className="px-2 py-1">
+                  <p className="text-xs italic text-[#41ffca]">
+                    Los Angeles Municipal Code 41.18 criminalizes sitting, lying, sleeping or storing, using, maintaining, or placing personal property in the public right-of-way in certain instances.
+                  </p>
+                  <a href="https://codelibrary.amlegal.com/codes/los_angeles/latest/lamc/0-0-0-128514" className="text-sm text-blue-300" target="blank">Click to Learn More</a>
+                </div>
                 <div className="flex flex-col">
                   {selectedfilteropened === "race" && (
                     <div className="mt-1 mb-0">
