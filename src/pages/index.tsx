@@ -1457,12 +1457,12 @@ const Home: NextPage = () => {
                         </div>
                       </div>
                       <p className="text-xs mt-2">
-                        ***Under City law, alleged violations of 41.18 can be cited
-                        as infractions or misdemeanors. Infractions empower the
-                        City to levy fines of up to $2,500 for each violation.
-                        Misdemeanors empower the City to seek fines of up to
-                        $1,000 and imprisonment for up to six months for each
-                        violation.***
+                        ***Under City law, alleged violations of 41.18 can be
+                        cited as infractions or misdemeanors. Infractions
+                        empower the City to levy fines of up to $2,500 for each
+                        violation. Misdemeanors empower the City to seek fines
+                        of up to $1,000 and imprisonment for up to six months
+                        for each violation.***
                       </p>
                       <p className="text-blue-400 text-xs mt-1">
                         <strong>41.18 Arrests by Arrest Type</strong>
