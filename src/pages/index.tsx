@@ -16,6 +16,7 @@ import React, { useEffect, useState, useRef } from "react";
 const councildistricts = require("./CouncilDistricts.json");
 const citybounds = require("./citybounds.json");
 import mapboxgl from "mapbox-gl";
+import { Intensity } from "@/components/Intensity";
 
 const filterableRaces: any = {
   "Hispanic/Latin": 7552,
@@ -41,12 +42,13 @@ const filterableTimeRange: any = {
 
 const filterableTimesKeys = Object.keys(filterableTimeRange);
 
-const filterableSex: any = {
-  Male: 26871,
-  Female: 9936,
+const filterableArrest: any = {
+  Misdemeanor: 31009,
+  Infraction: 5793,
+  Other: 5,
 };
 
-const filterableSexKeys = Object.keys(filterableSex);
+const filterableArrestKeys = Object.keys(filterableArrest);
 
 const filterableYears: any = {
   2012: 4096,
@@ -150,7 +152,8 @@ const Home: NextPage = () => {
     useState<string[]>(filterableRacesKeys);
   const [filteredTimes, setFilteredTimes] =
     useState<string[]>(filterableTimesKeys);
-  const [filteredSex, setFilteredSex] = useState<string[]>(filterableSexKeys);
+  const [filteredArrest, setFilteredArrest] =
+    useState<string[]>(filterableArrestKeys);
   const [filteredDistricts, setFilteredDistricts] = useState<number[]>(
     filterableDistrictsKeys.map((key) => Number(key))
   );
@@ -169,6 +172,7 @@ const Home: NextPage = () => {
   let [arrestInfoOpen, setArrestInfoOpen] = useState(false);
   const [infoBoxLength, setInfoBoxLength] = useState(1);
   const [arrestInfo, setArrestInfo] = useState(0);
+  const [normalizeIntensity, setNormalizeIntensity] = useState(false);
 
   useEffect(() => {
     console.log("arrestData updated:", arrestData);
@@ -212,11 +216,11 @@ const Home: NextPage = () => {
     }
   };
 
-  const setFilteredSexPre = (input: string[]) => {
+  const setFilteredArrestPre = (input: string[]) => {
     if (input.length === 0) {
-      setFilteredSex(["99999"]);
+      setFilteredArrest(["99999"]);
     } else {
-      setFilteredSex(input);
+      setFilteredArrest(input);
     }
   };
 
@@ -285,6 +289,26 @@ const Home: NextPage = () => {
       okaydeletepoints.current();
     }
   };
+
+  const recomputeIntensity = () => {
+    let levels = ["interpolate", ["linear"], ["zoom"], 7, 0.5, 22, 0.7];
+
+    if (normalizeIntensity === true) {
+      levels = ["interpolate", ["linear"], ["zoom"], 7, 2.5, 15, 3.5];
+    }
+
+    var layer = mapref.current.getLayer("4118map");
+
+    if (layer) {
+      mapref.current.setPaintProperty("4118map", "heatmap-intensity", levels);
+    }
+  };
+
+  useEffect(() => {
+    if (mapref.current) {
+      recomputeIntensity();
+    }
+  }, [normalizeIntensity]);
 
   useEffect(() => {
     mapboxgl.accessToken =
@@ -943,8 +967,8 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "Sex"],
-      filteredSex.map((sex) => String(sex)),
+      ["get", "Arrest Type"],
+      filteredArrest.map((arrest) => String(arrest)),
       true,
       false,
     ]);
@@ -962,7 +986,7 @@ const Home: NextPage = () => {
     }
   }, [
     filteredRaces,
-    filteredSex,
+    filteredArrest,
     filteredYears,
     filteredDistricts,
     filteredTimes,
@@ -975,8 +999,8 @@ const Home: NextPage = () => {
       setFilteredYearsPre(filterableYearsKeys);
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre(filterableDistrictsKeys);
-    } else if (selectedfilteropened === "sex") {
-      setFilteredSexPre(filterableSexKeys);
+    } else if (selectedfilteropened === "arrest") {
+      setFilteredArrestPre(filterableArrestKeys);
     } else if (selectedfilteropened === "time") {
       setFilteredTimePre(filterableTimesKeys);
     }
@@ -990,8 +1014,8 @@ const Home: NextPage = () => {
       setFilteredYearsPre([]);
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre([]);
-    } else if (selectedfilteropened === "sex") {
-      setFilteredSexPre([]);
+    } else if (selectedfilteropened === "arrest") {
+      setFilteredArrestPre([]);
     } else if (selectedfilteropened === "time") {
       setFilteredTimePre([]);
     }
@@ -1012,9 +1036,9 @@ const Home: NextPage = () => {
           (n) => !filteredDistricts.includes(Number(n))
         )
       );
-    } else if (selectedfilteropened === "sex") {
-      setFilteredSexPre(
-        filterableSexKeys.filter((n) => !filteredSex.includes(n))
+    } else if (selectedfilteropened === "arrest") {
+      setFilteredArrestPre(
+        filterableArrestKeys.filter((n) => !filteredArrest.includes(n))
       );
     } else if (selectedfilteropened === "time") {
       setFilteredTimePre(
@@ -1167,15 +1191,15 @@ const Home: NextPage = () => {
                   </button>
                   <button
                     onClick={() => {
-                      setselectedfilteropened("sex");
+                      setselectedfilteropened("arrest");
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "sex"
+                      selectedfilteropened === "arrest"
                         ? "border-[#41ffca] text-[#41ffca]"
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                    Sex
+                    Arrest
                   </button>
                   <button
                     onClick={() => {
@@ -1190,21 +1214,6 @@ const Home: NextPage = () => {
                     Time
                   </button>
                 </div>
-                {/* <div className="px-2 py-1">
-                  <p className="text-xs italic text-[#41ffca]">
-                    Los Angeles Municipal Code 41.18 criminalizes sitting,
-                    lying, sleeping or storing, using, maintaining, or placing
-                    personal property in the public right-of-way in certain
-                    instances.
-                  </p>
-                  <a
-                    href="https://codelibrary.amlegal.com/codes/los_angeles/latest/lamc/0-0-0-128514"
-                    className="text-sm text-blue-300"
-                    target="blank"
-                  >
-                    Click to Learn More
-                  </a>
-                </div> */}
                 <div className="flex flex-col">
                   {selectedfilteropened === "race" && (
                     <div className="mt-1 mb-0">
@@ -1280,6 +1289,10 @@ const Home: NextPage = () => {
                       >
                         Click to Learn More
                       </a>
+                      <Intensity
+                        normalizeIntensity={normalizeIntensity}
+                        setNormalizeIntensity={setNormalizeIntensity}
+                      />
                     </div>
                   )}
                   {selectedfilteropened === "year" && (
@@ -1337,6 +1350,10 @@ const Home: NextPage = () => {
                           Click to Learn More
                         </a>
                       </div>
+                      <Intensity
+                        normalizeIntensity={normalizeIntensity}
+                        setNormalizeIntensity={setNormalizeIntensity}
+                      />
                     </div>
                   )}
                   {selectedfilteropened === "district" && (
@@ -1396,9 +1413,13 @@ const Home: NextPage = () => {
                           Click to Learn More
                         </a>
                       </div>
+                      <Intensity
+                        normalizeIntensity={normalizeIntensity}
+                        setNormalizeIntensity={setNormalizeIntensity}
+                      />
                     </div>
                   )}
-                  {selectedfilteropened === "sex" && (
+                  {selectedfilteropened === "arrest" && (
                     <div className="mt-2">
                       <SelectButtons
                         onSelect={onSelect}
@@ -1408,14 +1429,14 @@ const Home: NextPage = () => {
                       <div className="flex flex-row gap-x-1">
                         <div className="flex items-center">
                           <Checkbox.Group
-                            value={filteredSex}
-                            onChange={setFilteredSexPre}
+                            value={filteredArrest}
+                            onChange={setFilteredArrestPre}
                           >
                             <div
                               className={`grid grid-cols-3
                           } gap-x-4 `}
                             >
-                              {Object.entries(filterableSex).map(
+                              {Object.entries(filterableArrest).map(
                                 (eachEntry) => (
                                   <Checkbox
                                     value={eachEntry[0]}
@@ -1435,8 +1456,16 @@ const Home: NextPage = () => {
                           </Checkbox.Group>
                         </div>
                       </div>
+                      <p className="text-xs mt-2">
+                        ***Under City law, alleged violations of 41.18 can be cited
+                        as infractions or misdemeanors. Infractions empower the
+                        City to levy fines of up to $2,500 for each violation.
+                        Misdemeanors empower the City to seek fines of up to
+                        $1,000 and imprisonment for up to six months for each
+                        violation.***
+                      </p>
                       <p className="text-blue-400 text-xs mt-1">
-                        <strong>41.18 Arrests by Sex</strong>
+                        <strong>41.18 Arrests by Arrest Type</strong>
                       </p>
                       <p className="mt-2 text-xs italic text-[#41ffca]">
                         Los Angeles Municipal Code 41.18 criminalizes sitting,
@@ -1451,6 +1480,10 @@ const Home: NextPage = () => {
                       >
                         Click to Learn More
                       </a>
+                      <Intensity
+                        normalizeIntensity={normalizeIntensity}
+                        setNormalizeIntensity={setNormalizeIntensity}
+                      />
                     </div>
                   )}
                   {selectedfilteropened === "time" && (
@@ -1508,6 +1541,10 @@ const Home: NextPage = () => {
                           Click to Learn More
                         </a>
                       </div>
+                      <Intensity
+                        normalizeIntensity={normalizeIntensity}
+                        setNormalizeIntensity={setNormalizeIntensity}
+                      />
                     </div>
                   )}
                 </div>
