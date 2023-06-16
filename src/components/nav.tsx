@@ -16,7 +16,7 @@ const navigationPayroll = [
 function Nav() {
   const messageBox = () => {
     alert(
-      "-Click & Drag to explore locations on the map, or enter a location in the Search bar.\n\n-Click on a map point to view arrest details by location.\n\n-Click Filter to view by Race, Year, Council District, Arrest Type, and Time."
+      "-Click & Drag to explore locations on the map, or enter a location in the Search bar.\n\n-Click on a map point to view arrest details by location.\n\n-Click Filter button to view by Race, Year, Council District, Arrest Type, and Time."
     );
   };
 
