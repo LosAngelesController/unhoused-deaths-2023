@@ -1270,7 +1270,7 @@ const Home: NextPage = () => {
                     <div className="mt-1 mb-0">
                       <div className="grow font-semibold">
                         <span className="text-red-400">*</span>
-                        {(filterrace === "all" && filterDistrict === "all") && (
+                        {filterrace === "all" && filterDistrict === "all" && (
                           <span>36,807 Total Arrests (100%)</span>
                         )}
                         {(filterrace !== "all" || filterDistrict !== "all") && (
