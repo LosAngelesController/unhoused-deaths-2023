@@ -5,7 +5,6 @@ import { computeclosestcoordsfromevent } from "../components/getclosestcoordsfro
 import { CloseButton } from "../components/CloseButton";
 import { SelectButtons } from "@/components/SelectButtons";
 import { MapTitle } from "@/components/MapTitle";
-import { FilterButton } from "@/components/FilterButton";
 import { InfoCarousel } from "@/components/InfoCarousel";
 import { signintrack, uploadMapboxTrack } from "../components/mapboxtrack";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
@@ -138,7 +137,7 @@ var raceOptions = [
   },
 ];
 
-var total = 36807;
+const total = 36807;
 
 const Home: NextPage = () => {
   const shouldfilteropeninit =
@@ -165,6 +164,7 @@ const Home: NextPage = () => {
     useState(shouldfilteropeninit);
 
   var [filterrace, setfilterrace] = useState("all");
+  var [filterDistrict, setFilterDistrict] = useState("all");
 
   var [filtercount, setfiltercount] = useState(0);
 
@@ -1014,6 +1014,7 @@ const Home: NextPage = () => {
       setFilteredYearsPre([]);
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre([]);
+      setfiltercount(0);
     } else if (selectedfilteropened === "arrest") {
       setFilteredArrestPre([]);
     } else if (selectedfilteropened === "time") {
@@ -1131,12 +1132,62 @@ const Home: NextPage = () => {
             ></div>
             <div className="w-content"></div>
 
+            <div className="fixed mt-[6em] ml-2 sm:hidden flex flex-row">
+              {filterpanelopened === false && (
+                <button
+                  onClick={() => {
+                    setfilterpanelopened(true);
+                  }}
+                  className={` md:hidden mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base 
+                  bg-gray-800 bg-opacity-80 text-white border-white border-2`}
+                >
+                  <svg
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                    }}
+                    viewBox="0 0 24 24"
+                    className="inline align-middle mt-0.5"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
+                    />
+                  </svg>
+                  <span>Filter</span>
+                </button>
+              )}
+            </div>
+
             <div
-              className="filterandinfobox fixed top-auto bottom-0 left-0 right-0 
-              sm:max-w-sm sm:absolute sm:mt-[6em] md:mt-[3em] sm:ml-3 sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto flex flex-col gap-y-2"
+              className="filterandinfobox fixed top-auto bottom-0 left-0 right-0 sm:max-w-sm sm:absolute sm:mt-[6em] md:mt-[3em] sm:ml-3 
+                        sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto flex flex-col gap-y-2"
             >
               {filterpanelopened === false && (
-                <FilterButton setfilterpanelopened={setfilterpanelopened} />
+                <div className=" flex flex-row">
+                  <button
+                    onClick={() => {
+                      setfilterpanelopened(true);
+                    }}
+                    className={`hidden md:block mt-2 rounded-full px-3 pb-1.5 pt-0.5 text-sm bold md:text-base 
+                  bg-gray-800 bg-opacity-80 text-white border-white border-2`}
+                  >
+                    <svg
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                      }}
+                      viewBox="0 0 24 24"
+                      className="inline align-middle mt-0.5"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
+                      />
+                    </svg>
+                    <span>Filter</span>
+                  </button>
+                </div>
               )}
               <div
                 className={`
@@ -1219,10 +1270,10 @@ const Home: NextPage = () => {
                     <div className="mt-1 mb-0">
                       <div className="grow font-semibold">
                         <span className="text-red-400">*</span>
-                        {filterrace === "all" && (
+                        {(filterrace === "all" && filterDistrict === "all") && (
                           <span>36,807 Total Arrests (100%)</span>
                         )}
-                        {filterrace !== "all" && (
+                        {(filterrace !== "all" || filterDistrict !== "all") && (
                           <span>
                             {filtercount.toLocaleString()} of 36,807 Total
                             Arrests (
@@ -1256,7 +1307,6 @@ const Home: NextPage = () => {
                                       <span className="text-red-400">
                                         {eachEntry[1].percent}
                                       </span>
-                                      {/* <span>{eachEntry[1].count}</span> */}
                                     </span>
                                   }
                                   key={eachEntry[1].title}

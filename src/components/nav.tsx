@@ -39,7 +39,7 @@ function Nav() {
           className="text-white py-2 text-sm md:text-base   md:py-3 px-3 block hover:text-green-300 focus:outline-none underline"
           onClick={messageBox}
         >
-          Map Guide
+          Instructions
         </p>
       </nav>
     </div>
