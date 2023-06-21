@@ -15,7 +15,7 @@ const navigationPayroll = [
     name: "Table",
     url: "https://docs.google.com/spreadsheets/d/1p7PNhgu0kKiRdeXnOUNOfYNzLmP7D6Iq1TTspxIaF_c/edit?usp=sharing",
     newtab: true,
-  }
+  },
 ];
 
 function Nav() {
