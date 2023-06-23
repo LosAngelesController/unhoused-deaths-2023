@@ -16,7 +16,7 @@ const navigationPayroll = [
     url: "https://docs.google.com/spreadsheets/d/1p7PNhgu0kKiRdeXnOUNOfYNzLmP7D6Iq1TTspxIaF_c/edit?usp=sharing",
     newtab: true,
   },
-    {
+  {
     name: "Analysis",
     url: "https://controller.lacity.gov/landings/4118",
     newtab: true,
