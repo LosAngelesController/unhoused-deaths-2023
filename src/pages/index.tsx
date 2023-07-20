@@ -894,7 +894,10 @@ const Home: NextPage = () => {
             content="City of LA Ellis Act Evictions 2007 - July 2023"
           />
 
-          <meta property="og:url" content="https://ellis-act-evictions.vercel.app" />
+          <meta
+            property="og:url"
+            content="https://ellis-act-evictions.vercel.app"
+          />
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
