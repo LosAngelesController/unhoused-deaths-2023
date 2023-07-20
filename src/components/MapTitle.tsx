@@ -9,7 +9,7 @@ export function MapTitle() {
         color: "#ffffff",
       }}
     >
-      <strong className="">41.18 Arrests (Jan 2012 - May 2023)</strong>
+      <strong className="">Ellis Act Evictions (2007 - July 2023)</strong>
     </div>
   );
 }

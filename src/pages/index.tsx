@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { titleCase } from "title-case";
 import { computeclosestcoordsfromevent } from "../components/getclosestcoordsfromevent";
 import { CloseButton } from "../components/CloseButton";
 import { SelectButtons } from "@/components/SelectButtons";
@@ -17,127 +16,49 @@ const citybounds = require("./citybounds.json");
 import mapboxgl from "mapbox-gl";
 import { Intensity } from "@/components/Intensity";
 
-const filterableRaces: any = {
-  "Hispanic/Latin": 7552,
-  Black: 15654,
-  White: 12495,
-  Other: 887,
-  Asian: 198,
-  "Pacific Islander": 4,
-  Unknown: 8,
-  "American Indian/Alaskan Native": 9,
-};
-
-const filterableRacesKeys = Object.keys(filterableRaces);
-
-const filterableTimeRange: any = {
-  "12am-4am": 681,
-  "4am-8am": 9930,
-  "8am-12pm": 12624,
-  "12pm-4pm": 8241,
-  "4pm-8pm": 3931,
-  "8pm-12am": 1391,
-};
-
-const filterableTimesKeys = Object.keys(filterableTimeRange);
-
-const filterableArrest: any = {
-  Misdemeanor: 31009,
-  Infraction: 5793,
-  Other: 5,
-};
-
-const filterableArrestKeys = Object.keys(filterableArrest);
-
 const filterableYears: any = {
-  2012: 4096,
-  2013: 5411,
-  2014: 4583,
-  2015: 4742,
-  2016: 5438,
-  2017: 5738,
-  2018: 3456,
-  2019: 887,
-  2020: 340,
-  2021: 568,
-  2022: 853,
-  2023: 695,
+  2007: 40,
+  2008: 40,
+  2009: 11,
+  2010: 25,
+  2011: 44,
+  2012: 45,
+  2013: 94,
+  2014: 235,
+  2015: 266,
+  2016: 310,
+  2017: 401,
+  2018: 450,
+  2019: 460,
+  2020: 185,
+  2021: 194,
+  2022: 200,
+  2023: 58,
 };
 
 const filterableYearsKeys = Object.keys(filterableYears);
 
 const filterableDistricts: any = {
-  1: 873,
-  2: 673,
-  3: 239,
-  4: 611,
-  5: 747,
-  6: 353,
-  7: 162,
-  8: 599,
-  9: 900,
-  10: 172,
-  11: 5961,
-  12: 745,
-  13: 5206,
-  14: 18972,
-  15: 329,
+  1: 194,
+  2: 243,
+  3: 17,
+  4: 180,
+  5: 487,
+  6: 63,
+  7: 18,
+  8: 208,
+  9: 147,
+  10: 343,
+  11: 404,
+  12: 7,
+  13: 579,
+  14: 134,
+  15: 33,
 };
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
 
-var raceOptions = [
-  {
-    code: "h",
-    title: "Hispanic/Latin",
-    count: 7552,
-    percent: "20.52%",
-  },
-  {
-    code: "b",
-    title: "Black",
-    count: 15654,
-    percent: "42.53%",
-  },
-  {
-    code: "w",
-    title: "White",
-    count: 12495,
-    percent: "33.95%",
-  },
-  {
-    code: "o",
-    title: "Other",
-    count: 887,
-    percent: "2.41%",
-  },
-  {
-    code: "a",
-    title: "Asian",
-    count: 198,
-    percent: "0.54%",
-  },
-  {
-    code: "p",
-    title: "Pacific Islander",
-    count: 4,
-    percent: "0.01%",
-  },
-  {
-    code: "u",
-    title: "Unknown",
-    count: 8,
-    percent: "0.02%",
-  },
-  {
-    code: "n",
-    title: "American Indian/Alaskan Native",
-    count: 9,
-    percent: "0.02%",
-  },
-];
-
-const total = 36807;
+// const total = 36807;
 
 const Home: NextPage = () => {
   const shouldfilteropeninit =
@@ -146,13 +67,7 @@ const Home: NextPage = () => {
   var mapref: any = useRef(null);
   const okaydeletepoints: any = useRef(null);
   const [doneloadingmap, setdoneloadingmap] = useState(false);
-  const [selectedfilteropened, setselectedfilteropened] = useState("race");
-  const [filteredRaces, setFilteredRaces] =
-    useState<string[]>(filterableRacesKeys);
-  const [filteredTimes, setFilteredTimes] =
-    useState<string[]>(filterableTimesKeys);
-  const [filteredArrest, setFilteredArrest] =
-    useState<string[]>(filterableArrestKeys);
+  const [selectedfilteropened, setselectedfilteropened] = useState("year");
   const [filteredDistricts, setFilteredDistricts] = useState<number[]>(
     filterableDistrictsKeys.map((key) => Number(key))
   );
@@ -163,42 +78,22 @@ const Home: NextPage = () => {
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
 
-  var [filterrace, setfilterrace] = useState("all");
-  var [filterDistrict, setFilterDistrict] = useState("all");
+  // var [filterDistrict, setFilterDistrict] = useState("all");
 
-  var [filtercount, setfiltercount] = useState(0);
+  // var [filtercount, setfiltercount] = useState(0);
 
-  let [arrestData, setArrestData]: any = useState(null);
-  let [arrestInfoOpen, setArrestInfoOpen] = useState(false);
+  let [evictionData, setEvictionData]: any = useState(null);
+  let [ellisInfoOpen, setEllisInfoOpen] = useState(false);
   const [infoBoxLength, setInfoBoxLength] = useState(1);
-  const [arrestInfo, setArrestInfo] = useState(0);
+  const [ellisInfo, setEllisInfo] = useState(0);
   const [normalizeIntensity, setNormalizeIntensity] = useState(false);
 
   useEffect(() => {
-    console.log("arrestData updated:", arrestData);
-  }, [arrestData]);
+    console.log("evictionData updated:", evictionData);
+  }, [evictionData]);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "4118-Map";
-
-  const setFilteredRacePre = (input: string[]) => {
-    if (input.length === 0) {
-      setFilteredRaces(["99999"]);
-      setfiltercount(0);
-    } else {
-      setFilteredRaces(input);
-      let total = 0;
-      for (let i = 0; i < input.length; i++) {
-        for (let j = 0; j < raceOptions.length; j++) {
-          if (input[i] === raceOptions[j].title) {
-            total = total + raceOptions[j].count;
-          }
-        }
-      }
-      setfiltercount(total);
-      setfilterrace("not-all");
-    }
-  };
+  var mapname = "Ellis-Act-Evictions";
 
   const setFilteredDistrictPre = (input: string[]) => {
     if (input.length === 0) {
@@ -213,22 +108,6 @@ const Home: NextPage = () => {
       setFilteredYears([99999]);
     } else {
       setFilteredYears(input.map((x) => Number(x)));
-    }
-  };
-
-  const setFilteredArrestPre = (input: string[]) => {
-    if (input.length === 0) {
-      setFilteredArrest(["99999"]);
-    } else {
-      setFilteredArrest(input);
-    }
-  };
-
-  const setFilteredTimePre = (input: string[]) => {
-    if (input.length === 0) {
-      setFilteredTimes(["99999"]);
-    } else {
-      setFilteredTimes(input);
     }
   };
 
@@ -263,21 +142,21 @@ const Home: NextPage = () => {
   const closeInfoBox = () => {
     console.log("mapref.current", mapref.current);
     console.log(
-      "mapref.current.getSource arrest-point",
-      mapref.current.getSource("arrest-point")
+      "mapref.current.getSource eviction-point",
+      mapref.current.getSource("eviction-point")
     );
 
     mapref.current.setLayoutProperty(
-      "points-selected-arrests-layer",
+      "points-selected-ellis-layer",
       "visibility",
       "none"
     );
 
-    setArrestInfoOpen(false);
+    setEllisInfoOpen(false);
     if (mapref) {
       if (mapref.current) {
-        var arrestPoint: any = mapref.current.getSource("arrest-point");
-        arrestPoint.setData(null);
+        var evictionPoint: any = mapref.current.getSource("eviction-point");
+        evictionPoint.setData(null);
       } else {
         console.log("no current ref");
       }
@@ -291,16 +170,20 @@ const Home: NextPage = () => {
   };
 
   const recomputeIntensity = () => {
-    let levels = ["interpolate", ["linear"], ["zoom"], 7, 0.5, 22, 0.7];
+    let levels = ["interpolate", ["linear"], ["zoom"], 7, 1, 22, 2];
 
     if (normalizeIntensity === true) {
       levels = ["interpolate", ["linear"], ["zoom"], 7, 2.5, 15, 3.5];
     }
 
-    var layer = mapref.current.getLayer("4118map");
+    var layer = mapref.current.getLayer("Ellis-Act-Evictions");
 
     if (layer) {
-      mapref.current.setPaintProperty("4118map", "heatmap-intensity", levels);
+      mapref.current.setPaintProperty(
+        "Ellis-Act-Evictions",
+        "heatmap-intensity",
+        levels
+      );
     }
   };
 
@@ -334,7 +217,7 @@ const Home: NextPage = () => {
 
     var mapparams: any = {
       container: divRef.current, // container ID
-      style: "mapbox://styles/kennethmejia/climkzw58008101r8cpo4df4r", // style URL (THIS IS STREET VIEW)
+      style: "mapbox://styles/kennethmejia/cljekgm10001g01r7g0fe0gng", // style URL (THIS IS STREET VIEW)
       center: [-118.41, 34], // starting position [lng, lat]
       zoom: formulaForZoom(), // starting zoom
     };
@@ -372,8 +255,8 @@ const Home: NextPage = () => {
 
       okaydeletepoints.current = () => {
         try {
-          var arrestPoint: any = map.getSource("arrest-point");
-          arrestPoint.setData(null);
+          var evictionPoint: any = map.getSource("eviction-point");
+          evictionPoint.setData(null);
         } catch (err) {
           console.error(err);
         }
@@ -534,10 +417,10 @@ const Home: NextPage = () => {
       // Create a popup, but don't add it to the map yet.
       const popup = new mapboxgl.Popup({
         closeButton: false,
-        closeOnClick: false,
+        closeOnClick: true,
       });
 
-      map.on("mouseover", "4118map", (e: any) => {
+      map.on("mouseover", "Ellis-Act-Evictions", (e: any) => {
         if (e.features) {
           map.getCanvas().style.cursor = "pointer";
           const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -564,91 +447,63 @@ const Home: NextPage = () => {
           if (filteredfeatures.length > 0) {
             if (filteredfeatures[0]) {
               if (filteredfeatures[0].properties) {
-                if (filteredfeatures[0].properties["Area Name"]) {
-                  const areaPC = filteredfeatures[0].properties["Area Name"];
+                if (filteredfeatures[0].properties["Address"]) {
+                  const areaPC = filteredfeatures[0].properties["Address"];
 
                   const allthelineitems = filteredfeatures.map(
                     (eachCase: any) => {
-                      if (eachCase.properties?.["Report ID"]) {
-                        return `<li class="leading-none my-2 text-blue-400">Report ID: ${
-                          eachCase.properties["Report ID"]
-                        }${" "}
+                      if (eachCase.properties?.["APN"]) {
+                        return `<li class="leading-none my-2 text-blue-400">APN: ${
+                          eachCase.properties["APN"]
+                        }
+                        <br />
                         ${
-                          eachCase.properties?.["Arrest Date"]
-                            ? `<span class="text-sky-400">Arrest Date: ${eachCase.properties["Arrest Date"]}</span>`
-                            : ""
-                        }${" "}
-                        ${
-                          eachCase.properties?.["Time Range"]
-                            ? `<span class="text-slate-400">Time Range: ${eachCase.properties["Time Range"]}</span>`
+                          eachCase.properties?.["Application Received"]
+                            ? `<span class="text-sky-400">Application Received: ${eachCase.properties["Application Received"]}</span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["CD"]
-                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["CD"]} </span>`
+                          eachCase.properties?.["Application Year"]
+                            ? `<span class="text-slate-400">Application Year: ${eachCase.properties["Application Year"]}</span>`
                             : ""
                         }
+                        <br />
                         ${
-                          eachCase.properties?.["Area Name"]
-                            ? `<span class="text-teal-200">Area: ${eachCase.properties["Area Name"]}, </span>`
+                          eachCase.properties?.["Council District"]
+                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["Council District"]} </span>`
                             : ""
                         }
+                        <br />
                         ${
                           eachCase.properties?.["Address"]
-                            ? `<span class="text-teal-400">${eachCase.properties["Address"]}</span> `
+                            ? `<span class="text-teal-200">Address: ${eachCase.properties["Address"]}, </span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["City"]
+                            ? `<span class="text-teal-400">City: ${eachCase.properties["City"]}</span> `
                             : ""
                         }
                         ${" "}
                         ${
-                          eachCase.properties?.["Cross Street"]
-                            ? `<span class="text-indigo-300">Cross St: ${eachCase.properties["Cross Street"]}</span>`
+                          eachCase.properties?.["Zip"]
+                            ? `<span class="text-indigo-300">Zip: ${eachCase.properties["Zip"]}</span>`
                             : ""
                         }
-                        ${" "}
+                        <br />
                         ${
-                          eachCase.properties?.["Age"] &&
-                          eachCase.properties["Age"] != "UNKNOWN"
-                            ? `<span class="text-emerald-200">Age: ${eachCase.properties["Age"]}</span> `
+                          eachCase.properties?.["Units Withdrawn"] &&
+                          eachCase.properties["Units Withdrawn"] != "UNKNOWN"
+                            ? `<span class="text-emerald-200">Units Withdrawn: ${eachCase.properties["Units Withdrawn"]}</span> `
                             : ""
                         }
+                        <br />
                         ${
-                          eachCase.properties?.["Sex"] &&
-                          eachCase.properties["Sex"] != "UNKNOWN"
-                            ? `<span class="text-lime-300">Sex: ${eachCase.properties["Sex"]}</span> `
-                            : ""
-                        }
-                        ${
-                          eachCase.properties?.["Race"] &&
-                          eachCase.properties["Race"] != "UNKNOWN"
-                            ? `<span class="text-amber-400">Race: ${eachCase.properties["Race"]}</span>`
-                            : ""
-                        }
-                        <br/>
-                  ${
-                    eachCase.properties?.["Arrest Type"] &&
-                    eachCase.properties["Arrest Type"] != "UNKNOWN"
-                      ? `<span class="text-teal-200">Type: ${eachCase.properties["Arrest Type"]}</span>`
-                      : ""
-                  }
-                  <br/>
-                  ${
-                    eachCase.properties?.["Charge"] &&
-                    eachCase.properties["Charge"] != "UNKNOWN"
-                      ? `<span class="text-blue-200">Charge: ${eachCase.properties["Charge"]}</span>`
-                      : ""
-                  }${" "}
-                  ${
-                    eachCase.properties?.["Charge Description"]
-                      ? `<br/><span class="text-pink-200">${eachCase.properties[
-                          "Charge Description"
-                        ].toLowerCase()}</span>`
-                      : ""
-                  }${" "}${
-                          eachCase.properties?.["Disposition Description"]
-                            ? `<span class="text-pink-400">Disposition: ${eachCase.properties[
-                                "Disposition Description"
-                              ].toLowerCase()}</span>`
+                          eachCase.properties?.["Replacement Unit"] &&
+                          eachCase.properties["Replacement Unit"] != "UNKNOWN"
+                            ? `<span class="text-lime-300">Replacement Unit: ${eachCase.properties["Replacement Unit"]}</span> `
                             : ""
                         }
                   </li>`;
@@ -660,7 +515,7 @@ const Home: NextPage = () => {
                     .setLngLat(coordinates)
                     .setHTML(
                       ` <div>
-                <p class="font-semibold">${titleCase(areaPC.toLowerCase())}</p>
+                <p class="font-semibold">${areaPC}</p>
                 <p>${filteredfeatures.length} Case${
                         filteredfeatures.length > 1 ? "s" : ""
                       }</p>
@@ -671,7 +526,7 @@ const Home: NextPage = () => {
                     : allthelineitems.splice(0, 3).join("")
                 }</ul> 
                 ${
-                  allthelineitems.length > 1
+                  allthelineitems.length >= 1
                     ? `<p class="text-xs font-bold text-gray-300 mt-4">CLICK LOCATION TO SEE MORE</p>`
                     : ""
                 }
@@ -696,7 +551,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mouseleave", "4118map", () => {
+      map.on("mouseleave", "Ellis-Act-Eviction", () => {
         //check if the url query string "stopmouseleave" is true
         //if it is, then don't do anything
         //if it is not, then do the following
@@ -707,7 +562,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.addSource("arrest-point", {
+      map.addSource("eviction-point", {
         type: "geojson",
         data: {
           type: "FeatureCollection",
@@ -724,9 +579,9 @@ const Home: NextPage = () => {
         if (true) {
           // example of how to add a pointer to what is currently selected
           map.addLayer({
-            id: "points-selected-arrests-layer",
+            id: "points-selected-ellis-layer",
             type: "symbol",
-            source: "arrest-point",
+            source: "eviction-point",
             paint: {
               "icon-color": "#FF8C00",
               "icon-translate": [0, -13],
@@ -745,41 +600,37 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mousedown", "4118map", (e: any) => {
-        setArrestInfo(0);
+      map.on("mousedown", "Ellis-Act-Evictions", (e: any) => {
+        setEllisInfo(0);
         setInfoBoxLength(1);
-        setArrestInfoOpen(true);
+        setEllisInfoOpen(true);
+        console.log(e.features);
         let filteredData = e.features.map((obj: any) => {
           return {
-            area: obj.properties["Area Name"],
-            cd: obj.properties["CD"],
-            reportId: obj.properties["Report ID"],
-            arrestDate: obj.properties["Arrest Date"],
-            timeRange: obj.properties["Time Range"],
-            address: obj.properties["Address"],
-            crossStreet: obj.properties["Cross Street"],
-            age: obj.properties.Age,
-            sex: obj.properties.Sex,
-            race: obj.properties.Race,
-            type: obj.properties["Arrest Type"],
-            charge: obj.properties.Charge,
-            description: obj.properties["Charge Description"],
-            disposition: obj.properties["Disposition Description"],
+            apn: obj.properties["APN"],
+            cd: obj.properties["Council District"],
+            applicationReceived: obj.properties["Application Received"],
+            year: obj.properties["Application Year"],
+            address: obj.properties.Address,
+            city: obj.properties.City,
+            zip: obj.properties.Zip,
+            unitsWithdrawn: obj.properties["Units Withdrawn"],
+            replacementUnit: obj.properties["Replacement Unit"],
           };
         });
 
         console.log("filteredData", filteredData);
 
-        var arrestPoint: any = map.getSource("arrest-point");
-        arrestPoint.setData(e.features[0].geometry);
+        var evictionPoint: any = map.getSource("eviction-point");
+        evictionPoint.setData(e.features[0].geometry);
 
         map.setLayoutProperty(
-          "points-selected-arrests-layer",
+          "points-selected-ellis-layer",
           "visibility",
           "visible"
         );
 
-        setArrestData(filteredData);
+        setEvictionData(filteredData);
       });
 
       if (true) {
@@ -935,15 +786,7 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "Race"],
-      filteredRaces,
-      true,
-      false,
-    ]);
-
-    arrayoffilterables.push([
-      "match",
-      ["get", "CD"],
+      ["get", "Council District"],
       filteredDistricts,
       true,
       false,
@@ -951,24 +794,8 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "Year"],
+      ["get", "Application Year"],
       filteredYears,
-      true,
-      false,
-    ]);
-
-    arrayoffilterables.push([
-      "match",
-      ["get", "Time Range"],
-      filteredTimes.map((range) => String(range)),
-      true,
-      false,
-    ]);
-
-    arrayoffilterables.push([
-      "match",
-      ["get", "Arrest Type"],
-      filteredArrest.map((arrest) => String(arrest)),
       true,
       false,
     ]);
@@ -980,54 +807,30 @@ const Home: NextPage = () => {
         );
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("4118map", filterinput);
+          mapref.current.setFilter("Ellis-Act-Evictions", filterinput);
         }
       }
     }
-  }, [
-    filteredRaces,
-    filteredArrest,
-    filteredYears,
-    filteredDistricts,
-    filteredTimes,
-  ]);
+  }, [filteredYears, filteredDistricts]);
 
   const onSelect = () => {
-    if (selectedfilteropened === "race") {
-      setFilteredRacePre(filterableRacesKeys);
-    } else if (selectedfilteropened === "year") {
+    if (selectedfilteropened === "year") {
       setFilteredYearsPre(filterableYearsKeys);
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre(filterableDistrictsKeys);
-    } else if (selectedfilteropened === "arrest") {
-      setFilteredArrestPre(filterableArrestKeys);
-    } else if (selectedfilteropened === "time") {
-      setFilteredTimePre(filterableTimesKeys);
     }
   };
 
   const onUnselect = () => {
-    if (selectedfilteropened === "race") {
-      setFilteredRacePre([]);
-      setfiltercount(0);
-    } else if (selectedfilteropened === "year") {
+    if (selectedfilteropened === "year") {
       setFilteredYearsPre([]);
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre([]);
-      setfiltercount(0);
-    } else if (selectedfilteropened === "arrest") {
-      setFilteredArrestPre([]);
-    } else if (selectedfilteropened === "time") {
-      setFilteredTimePre([]);
     }
   };
 
   const onInvert = () => {
-    if (selectedfilteropened === "race") {
-      setFilteredRacePre(
-        filterableRacesKeys.filter((n) => !filteredRaces.includes(n))
-      );
-    } else if (selectedfilteropened === "year") {
+    if (selectedfilteropened === "year") {
       setFilteredYearsPre(
         filterableYearsKeys.filter((n) => !filteredYears.includes(Number(n)))
       );
@@ -1036,14 +839,6 @@ const Home: NextPage = () => {
         filterableDistrictsKeys.filter(
           (n) => !filteredDistricts.includes(Number(n))
         )
-      );
-    } else if (selectedfilteropened === "arrest") {
-      setFilteredArrestPre(
-        filterableArrestKeys.filter((n) => !filteredArrest.includes(n))
-      );
-    } else if (selectedfilteropened === "time") {
-      setFilteredTimePre(
-        filterableTimesKeys.filter((n) => !filteredTimes.includes(n))
       );
     }
   };
@@ -1080,7 +875,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>City of LA 41.18 Arrests 2013-2023 | Map</title>
+          <title>City of LA Ellis Act Evictions 2007 - July 2023 | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -1088,29 +883,29 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="City of LA 41.18 Arrests 2013-2023 | Map"
+            content="City of LA Ellis Act Evictions 2007 - July 2023 | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="City of LA 41.18 Arrests 2013-2023"
+            content="City of LA Ellis Act Evictions 2007 - July 2023"
           ></meta>
           <meta
             name="twitter:image"
             key="twitterimg"
             content="https://4118-map.vercel.app/4118.png"
           ></meta>
-          <meta name="description" content="LAPD Arrests 2019." />
+          <meta name="description" content="City of LA Ellis Act Evictions 2007 - July 2023" />
 
           <meta property="og:url" content="https://4118-map.vercel.app" />
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
-            content="City of LA 41.18 Arrests 2013-2023 | Map"
+            content="City of LA Ellis Act Evictions 2007 - July 2023 | Map"
           />
           <meta
             property="og:description"
-            content="City of LA 41.18 Arrests 2013-2023"
+            content="City of LA Ellis Act Evictions 2007 - July 2023"
           />
           <meta
             property="og:image"
@@ -1206,18 +1001,6 @@ const Home: NextPage = () => {
                 <div className="gap-x-0 flex flex-row w-full pr-8">
                   <button
                     onClick={() => {
-                      setselectedfilteropened("race");
-                    }}
-                    className={`px-2 border-b-2 py-1  font-semibold ${
-                      selectedfilteropened === "race"
-                        ? "border-[#41ffca] text-[#41ffca]"
-                        : "hover:border-white border-transparent text-gray-50"
-                    }`}
-                  >
-                    Race
-                  </button>
-                  <button
-                    onClick={() => {
                       setselectedfilteropened("year");
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
@@ -1240,111 +1023,8 @@ const Home: NextPage = () => {
                   >
                     CD#
                   </button>
-                  <button
-                    onClick={() => {
-                      setselectedfilteropened("arrest");
-                    }}
-                    className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "arrest"
-                        ? "border-[#41ffca] text-[#41ffca]"
-                        : "hover:border-white border-transparent text-gray-50"
-                    }`}
-                  >
-                    Arrest
-                  </button>
-                  <button
-                    onClick={() => {
-                      setselectedfilteropened("time");
-                    }}
-                    className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "time"
-                        ? "border-[#41ffca] text-[#41ffca]"
-                        : "hover:border-white border-transparent text-gray-50"
-                    }`}
-                  >
-                    Time
-                  </button>
                 </div>
                 <div className="flex flex-col">
-                  {selectedfilteropened === "race" && (
-                    <div className="mt-1 mb-0">
-                      <div className="grow font-semibold">
-                        <span className="text-red-400">*</span>
-                        {filterrace === "all" && filterDistrict === "all" && (
-                          <span>36,807 Total Arrests (100%)</span>
-                        )}
-                        {(filterrace !== "all" || filterDistrict !== "all") && (
-                          <span>
-                            {filtercount.toLocaleString()} of 36,807 Total
-                            Arrests (
-                            {((filtercount / total) * 100).toFixed(2) + "%"})
-                          </span>
-                        )}
-                      </div>
-                      <SelectButtons
-                        onSelect={onSelect}
-                        onUnselect={onUnselect}
-                        onInvert={onInvert}
-                      />
-                      <div className="flex flex-row gap-x-1">
-                        <div className="flex items-center">
-                          <Checkbox.Group
-                            value={filteredRaces}
-                            onChange={setFilteredRacePre}
-                          >
-                            <div
-                              className={`grid grid-cols-3
-                          } gap-x-4 `}
-                            >
-                              {Object.entries(raceOptions).map((eachEntry) => (
-                                <Checkbox
-                                  value={eachEntry[1].title}
-                                  label={
-                                    <span className="text-nowrap text-xs">
-                                      <span className="text-white">
-                                        {eachEntry[1].title}
-                                      </span>{" "}
-                                      <span className="text-red-400">
-                                        {eachEntry[1].percent}
-                                      </span>
-                                    </span>
-                                  }
-                                  key={eachEntry[1].title}
-                                />
-                              ))}
-                            </div>
-                          </Checkbox.Group>
-                        </div>
-                      </div>
-                      <p className="text-blue-400 text-xs mt-1">
-                        <strong>41.18 Arrests by Race</strong>
-                      </p>
-                      <p className="text-xs text-red-400 mt-0 mb-1">
-                        *% of race(s) when all Year, CD#, Sex, Time filters are
-                        selected
-                      </p>
-                      <p className="text-xs text-red-400 mt-0 mb-1">
-                        *Race categories created by LAPD
-                      </p>
-                      <p className="mt-2 text-xs italic text-[#41ffca]">
-                        Los Angeles Municipal Code 41.18 criminalizes sitting,
-                        lying, sleeping or storing, using, maintaining, or
-                        placing personal property in the public right-of-way in
-                        certain instances.
-                      </p>
-                      <a
-                        href="https://codelibrary.amlegal.com/codes/los_angeles/latest/lamc/0-0-0-128514"
-                        className="text-sm text-blue-300"
-                        target="blank"
-                      >
-                        Click to Learn More
-                      </a>
-                      <Intensity
-                        normalizeIntensity={normalizeIntensity}
-                        setNormalizeIntensity={setNormalizeIntensity}
-                      />
-                    </div>
-                  )}
                   {selectedfilteropened === "year" && (
                     <div className="mt-2">
                       <SelectButtons
@@ -1384,21 +1064,8 @@ const Home: NextPage = () => {
                       </div>
                       <div>
                         <p className="text-blue-400 text-xs mt-1">
-                          <strong>41.18 Arrests by Year</strong>
+                          <strong>Ellis Act Evictions by Year</strong>
                         </p>
-                        <p className="mt-2 text-xs italic text-[#41ffca]">
-                          Los Angeles Municipal Code 41.18 criminalizes sitting,
-                          lying, sleeping or storing, using, maintaining, or
-                          placing personal property in the public right-of-way
-                          in certain instances.
-                        </p>
-                        <a
-                          href="https://codelibrary.amlegal.com/codes/los_angeles/latest/lamc/0-0-0-128514"
-                          className="text-sm text-blue-300"
-                          target="blank"
-                        >
-                          Click to Learn More
-                        </a>
                       </div>
                       <Intensity
                         normalizeIntensity={normalizeIntensity}
@@ -1447,149 +1114,10 @@ const Home: NextPage = () => {
                       </div>
                       <div>
                         <p className="text-blue-400 text-xs mt-1">
-                          <strong>41.18 Arrests by Council District</strong>
+                          <strong>
+                            Ellis Act Evictions by Council District
+                          </strong>
                         </p>
-                        <p className="mt-2 text-xs italic text-[#41ffca]">
-                          Los Angeles Municipal Code 41.18 criminalizes sitting,
-                          lying, sleeping or storing, using, maintaining, or
-                          placing personal property in the public right-of-way
-                          in certain instances.
-                        </p>
-                        <a
-                          href="https://codelibrary.amlegal.com/codes/los_angeles/latest/lamc/0-0-0-128514"
-                          className="text-sm text-blue-300"
-                          target="blank"
-                        >
-                          Click to Learn More
-                        </a>
-                      </div>
-                      <Intensity
-                        normalizeIntensity={normalizeIntensity}
-                        setNormalizeIntensity={setNormalizeIntensity}
-                      />
-                    </div>
-                  )}
-                  {selectedfilteropened === "arrest" && (
-                    <div className="mt-2">
-                      <SelectButtons
-                        onSelect={onSelect}
-                        onUnselect={onUnselect}
-                        onInvert={onInvert}
-                      />
-                      <div className="flex flex-row gap-x-1">
-                        <div className="flex items-center">
-                          <Checkbox.Group
-                            value={filteredArrest}
-                            onChange={setFilteredArrestPre}
-                          >
-                            <div
-                              className={`grid grid-cols-3
-                          } gap-x-4 `}
-                            >
-                              {Object.entries(filterableArrest).map(
-                                (eachEntry) => (
-                                  <Checkbox
-                                    value={eachEntry[0]}
-                                    label={
-                                      <span className="text-nowrap text-xs">
-                                        <span className="text-white">
-                                          {titleCase(eachEntry[0])}
-                                        </span>{" "}
-                                        <span>{eachEntry[1]}</span>
-                                      </span>
-                                    }
-                                    key={eachEntry[0]}
-                                  />
-                                )
-                              )}
-                            </div>
-                          </Checkbox.Group>
-                        </div>
-                      </div>
-                      <p className="text-xs mt-2">
-                        *Under City law, alleged violations of 41.18 can be
-                        cited as infractions or misdemeanors. Infractions
-                        empower the City to levy fines of up to $2,500 for each
-                        violation. Misdemeanors empower the City to seek fines
-                        of up to $1,000 and imprisonment for up to six months
-                        for each violation.*
-                      </p>
-                      <p className="text-blue-400 text-xs mt-1">
-                        <strong>41.18 Arrests by Arrest Type</strong>
-                      </p>
-                      <p className="mt-2 text-xs italic text-[#41ffca]">
-                        Los Angeles Municipal Code 41.18 criminalizes sitting,
-                        lying, sleeping or storing, using, maintaining, or
-                        placing personal property in the public right-of-way in
-                        certain instances.
-                      </p>
-                      <a
-                        href="https://codelibrary.amlegal.com/codes/los_angeles/latest/lamc/0-0-0-128514"
-                        className="text-sm text-blue-300"
-                        target="blank"
-                      >
-                        Click to Learn More
-                      </a>
-                      <Intensity
-                        normalizeIntensity={normalizeIntensity}
-                        setNormalizeIntensity={setNormalizeIntensity}
-                      />
-                    </div>
-                  )}
-                  {selectedfilteropened === "time" && (
-                    <div className="mt-2">
-                      <SelectButtons
-                        onSelect={onSelect}
-                        onUnselect={onUnselect}
-                        onInvert={onInvert}
-                      />
-                      <div className="flex flex-row gap-x-1">
-                        <div className="flex items-center">
-                          <Checkbox.Group
-                            value={filteredTimes}
-                            onChange={setFilteredTimePre}
-                          >
-                            <div
-                              className={`grid grid-cols-3
-                          } gap-x-4 `}
-                            >
-                              {Object.entries(filterableTimeRange).map(
-                                (eachEntry) => (
-                                  <Checkbox
-                                    value={eachEntry[0]}
-                                    label={
-                                      <span className="text-nowrap text-xs">
-                                        <span className="text-white">
-                                          {titleCase(eachEntry[0])}
-                                        </span>{" "}
-                                        <span>{eachEntry[1]}</span>
-                                      </span>
-                                    }
-                                    key={eachEntry[0]}
-                                  />
-                                )
-                              )}
-                            </div>
-                          </Checkbox.Group>
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-blue-400 text-xs mt-1">
-                          <strong>41.18 Arrests by Time Range</strong>
-                        </p>
-                        <p className="mt-2 text-xs italic text-[#41ffca]">
-                          Los Angeles Municipal Code 41.18 criminalizes sitting,
-                          lying, sleeping or storing, using, maintaining, or
-                          placing personal property in the public right-of-way
-                          in certain instances.
-                        </p>
-                        <a
-                          href="https://codelibrary.amlegal.com/codes/los_angeles/latest/lamc/0-0-0-128514"
-                          className="text-sm text-blue-300"
-                          target="blank"
-                        >
-                          Click to Learn More
-                        </a>
                       </div>
                       <Intensity
                         normalizeIntensity={normalizeIntensity}
@@ -1601,7 +1129,7 @@ const Home: NextPage = () => {
               </div>
               <div
                 className={`text-sm ${
-                  arrestInfoOpen
+                  ellisInfoOpen
                     ? `px-3 pt-2 pb-3 fixed sm:relative top-auto bottom-0 left-0 right-0 w-full sm:mt-2 sm:w-auto 
                                     sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto bg-[#212121] sm:rounded-xl bg-opacity-90 sm:bg-opacity-80 text-white 
                                     border-t-2 border-gray-200 sm:border sm:border-gray-400`
@@ -1612,25 +1140,25 @@ const Home: NextPage = () => {
                   onClose={() => {
                     closeInfoBox();
                     setInfoBoxLength(1);
-                    setArrestInfo(0);
+                    setEllisInfo(0);
                     if (mapref.current) {
-                      var arrestPoint: any =
-                        mapref.current.getSource("arrest-point");
-                      if (arrestPoint) {
-                        arrestPoint.setData(null);
+                      var evictionPoint: any =
+                        mapref.current.getSource("eviction-point");
+                      if (evictionPoint) {
+                        evictionPoint.setData(null);
                       }
                     } else {
                       console.log("no ref current");
                     }
                   }}
                 />
-                {arrestData && (
+                {evictionData && (
                   <InfoCarousel
-                    arrestData={arrestData}
+                    evictionData={evictionData}
                     infoBoxLength={infoBoxLength}
                     setInfoBoxLength={setInfoBoxLength}
-                    arrestInfo={arrestInfo}
-                    setArrestInfo={setArrestInfo}
+                    ellisInfo={ellisInfo}
+                    setEllisInfo={setEllisInfo}
                   />
                 )}
               </div>

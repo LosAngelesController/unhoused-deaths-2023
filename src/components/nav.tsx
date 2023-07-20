@@ -2,7 +2,7 @@ import ActiveLink from "./ActiveLink";
 
 const navigationPayroll = [
   {
-    name: "41.18",
+    name: "Ellis Act",
     url: "/",
     newtab: true,
   },
@@ -13,7 +13,7 @@ const navigationPayroll = [
   },
   {
     name: "Table",
-    url: "https://docs.google.com/spreadsheets/d/1p7PNhgu0kKiRdeXnOUNOfYNzLmP7D6Iq1TTspxIaF_c/edit?usp=sharing",
+    url: "https://docs.google.com/spreadsheets/d/1t_gk66SeFPxjizgY3jryoxBLrNONqqHZBbcNHX0V-jQ/edit?usp=sharing",
     newtab: true,
   },
   {
