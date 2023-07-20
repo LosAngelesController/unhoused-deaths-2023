@@ -895,7 +895,10 @@ const Home: NextPage = () => {
             key="twitterimg"
             content="https://4118-map.vercel.app/4118.png"
           ></meta>
-          <meta name="description" content="City of LA Ellis Act Evictions 2007 - July 2023" />
+          <meta
+            name="description"
+            content="City of LA Ellis Act Evictions 2007 - July 2023"
+          />
 
           <meta property="og:url" content="https://4118-map.vercel.app" />
           <meta property="og:type" content="website" />
