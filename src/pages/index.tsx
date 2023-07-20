@@ -58,8 +58,6 @@ const filterableDistricts: any = {
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
 
-// const total = 36807;
-
 const Home: NextPage = () => {
   const shouldfilteropeninit =
     typeof window != "undefined" ? window.innerWidth >= 640 : false;
@@ -77,10 +75,6 @@ const Home: NextPage = () => {
 
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
-
-  // var [filterDistrict, setFilterDistrict] = useState("all");
-
-  // var [filtercount, setfiltercount] = useState(0);
 
   let [evictionData, setEvictionData]: any = useState(null);
   let [ellisInfoOpen, setEllisInfoOpen] = useState(false);
@@ -417,7 +411,7 @@ const Home: NextPage = () => {
       // Create a popup, but don't add it to the map yet.
       const popup = new mapboxgl.Popup({
         closeButton: false,
-        closeOnClick: true,
+        closeOnClick: false,
       });
 
       map.on("mouseover", "Ellis-Act-Evictions", (e: any) => {
@@ -551,7 +545,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mouseleave", "Ellis-Act-Eviction", () => {
+      map.on("mouseleave", "Ellis-Act-Evictions", () => {
         //check if the url query string "stopmouseleave" is true
         //if it is, then don't do anything
         //if it is not, then do the following
@@ -893,14 +887,14 @@ const Home: NextPage = () => {
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://4118-map.vercel.app/4118.png"
+            content="https://ellis-act-evictions.vercel.app/ellis-act-evictions.png"
           ></meta>
           <meta
             name="description"
             content="City of LA Ellis Act Evictions 2007 - July 2023"
           />
 
-          <meta property="og:url" content="https://4118-map.vercel.app" />
+          <meta property="og:url" content="https://ellis-act-evictions.vercel.app" />
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
@@ -912,7 +906,7 @@ const Home: NextPage = () => {
           />
           <meta
             property="og:image"
-            content="https://4118-map.vercel.app/4118.png"
+            content="https://ellis-act-evictions.vercel.app/ellis-act-evictions.png"
           />
         </Head>
 
