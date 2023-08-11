@@ -16,47 +16,69 @@ const citybounds = require("./citybounds.json");
 import mapboxgl from "mapbox-gl";
 import { Intensity } from "@/components/Intensity";
 
-const filterableYears: any = {
-  2007: 285,
-  2008: 324,
-  2009: 85,
-  2010: 102,
-  2011: 258,
-  2012: 249,
-  2013: 347,
-  2014: 1105,
-  2015: 1022,
-  2016: 1051,
-  2017: 1706,
-  2018: 1752,
-  2019: 1579,
-  2020: 605,
-  2021: 521,
-  2022: 562,
-  2023: 167,
-};
-
-const filterableYearsKeys = Object.keys(filterableYears);
-
 const filterableDistricts: any = {
-  1: 926,
-  2: 949,
-  3: 35,
-  4: 701,
-  5: 1890,
-  6: 239,
-  7: 59,
-  8: 521,
-  9: 496,
-  10: 1187,
-  11: 2065,
-  12: 18,
-  13: 2144,
-  14: 411,
-  15: 79,
+  1: 2819,
+  2: 2297,
+  3: 3301,
+  4: 2532,
+  5: 3857,
+  6: 1684,
+  7: 607,
+  8: 1184,
+  9: 828,
+  10: 3697,
+  11: 2700,
+  12: 1492,
+  13: 5246,
+  14: 5819,
+  15: 1016,
 };
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
+
+const filterableCategories: any = {
+  "At-Fault": 39631,
+  "No-Fault": 46,
+};
+
+const filterableCategoriesKeys = Object.keys(filterableCategories);
+
+const filterableNotices: any = {
+  "3 Day": 37082,
+  "10 Day": 459,
+  "15 Day": 1,
+  "30 Day": 2017,
+  "60 Day": 97,
+  "90 Day": 16,
+  "120 Day": 5,
+};
+
+const filterableNoticesKeys = Object.keys(filterableNotices);
+
+const filterableZipCodes: any = {
+  90028: 2923,
+  90036: 2228,
+  90015: 1635,
+  90014: 1281,
+  90012: 1272,
+  91367: 1265,
+  90005: 1178,
+  90017: 1033,
+  91601: 1023,
+  90020: 965,
+  90013: 903,
+  90004: 850,
+  90057: 759,
+  91303: 747,
+  90046: 715,
+  90006: 703,
+  90045: 532,
+  90038: 523,
+  91325: 517,
+  91335: 504,
+};
+
+const filterableZipCodeKeys = Object.keys(filterableZipCodes);
 
 const Home: NextPage = () => {
   const shouldfilteropeninit =
@@ -65,21 +87,28 @@ const Home: NextPage = () => {
   var mapref: any = useRef(null);
   const okaydeletepoints: any = useRef(null);
   const [doneloadingmap, setdoneloadingmap] = useState(false);
-  const [selectedfilteropened, setselectedfilteropened] = useState("year");
+  const [selectedfilteropened, setselectedfilteropened] = useState("category");
   const [filteredDistricts, setFilteredDistricts] = useState<number[]>(
     filterableDistrictsKeys.map((key) => Number(key))
   );
-  const [filteredYears, setFilteredYears] = useState<number[]>(
-    filterableYearsKeys.map((key) => Number(key))
+  const [filteredCategories, setFilteredCategories] = useState<string[]>(
+    filterableCategoriesKeys
+  );
+
+  const [filteredNotices, setFilteredNotices] = useState<string[]>(
+    filterableNoticesKeys
+  );
+  const [filteredZipCodes, setFilteredZipCodes] = useState<number[]>(
+    filterableZipCodeKeys.map((key) => Number(key))
   );
 
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
 
   let [evictionData, setEvictionData]: any = useState(null);
-  let [ellisInfoOpen, setEllisInfoOpen] = useState(false);
+  let [evictionInfoOpen, setEvictionInfoOpen] = useState(false);
   const [infoBoxLength, setInfoBoxLength] = useState(1);
-  const [ellisInfo, setEllisInfo] = useState(0);
+  const [evictionInfo, setEvictionInfo] = useState(0);
   const [normalizeIntensity, setNormalizeIntensity] = useState(false);
 
   useEffect(() => {
@@ -87,7 +116,7 @@ const Home: NextPage = () => {
   }, [evictionData]);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "Ellis-Act-Evictions";
+  var mapname = "Evictions_07-31-23";
 
   const setFilteredDistrictPre = (input: string[]) => {
     if (input.length === 0) {
@@ -97,11 +126,29 @@ const Home: NextPage = () => {
     }
   };
 
-  const setFilteredYearsPre = (input: string[]) => {
+  const setFilteredCategoriesPre = (input: string[]) => {
+    console.log("inputvalidator", input);
     if (input.length === 0) {
-      setFilteredYears([99999]);
+      setFilteredCategories(["99999"]);
     } else {
-      setFilteredYears(input.map((x) => Number(x)));
+      setFilteredCategories(input);
+    }
+  };
+
+  const setFilteredNoticesPre = (input: string[]) => {
+    console.log("inputvalidator", input);
+    if (input.length === 0) {
+      setFilteredNotices(["99999"]);
+    } else {
+      setFilteredNotices(input);
+    }
+  };
+
+  const setFilteredZipCodesPre = (input: string[]) => {
+    if (input.length === 0) {
+      setFilteredZipCodes([99999]);
+    } else {
+      setFilteredZipCodes(input.map((x) => Number(x)));
     }
   };
 
@@ -141,12 +188,12 @@ const Home: NextPage = () => {
     );
 
     mapref.current.setLayoutProperty(
-      "points-selected-ellis-layer",
+      "points-selected-evictions-layer",
       "visibility",
       "none"
     );
 
-    setEllisInfoOpen(false);
+    setEvictionInfoOpen(false);
     if (mapref) {
       if (mapref.current) {
         var evictionPoint: any = mapref.current.getSource("eviction-point");
@@ -170,14 +217,10 @@ const Home: NextPage = () => {
       levels = ["interpolate", ["linear"], ["zoom"], 7, 2.5, 15, 3.5];
     }
 
-    var layer = mapref.current.getLayer("Ellis-Act-Evictions");
+    var layer = mapref.current.getLayer("evictions");
 
     if (layer) {
-      mapref.current.setPaintProperty(
-        "Ellis-Act-Evictions",
-        "heatmap-intensity",
-        levels
-      );
+      mapref.current.setPaintProperty("evictions", "heatmap-intensity", levels);
     }
   };
 
@@ -211,7 +254,7 @@ const Home: NextPage = () => {
 
     var mapparams: any = {
       container: divRef.current, // container ID
-      style: "mapbox://styles/kennethmejia/cljekgm10001g01r7g0fe0gng", // style URL (THIS IS STREET VIEW)
+      style: "mapbox://styles/kennethmejia/cll1gnmuz005t01rgh4h873vd", // style URL (THIS IS STREET VIEW)
       center: [-118.41, 34], // starting position [lng, lat]
       zoom: formulaForZoom(), // starting zoom
     };
@@ -414,7 +457,7 @@ const Home: NextPage = () => {
         closeOnClick: false,
       });
 
-      map.on("mouseover", "Ellis-Act-Evictions", (e: any) => {
+      map.on("mouseover", "evictions", (e: any) => {
         if (e.features) {
           map.getCanvas().style.cursor = "pointer";
           const closestcoords: any = computeclosestcoordsfromevent(e);
@@ -441,63 +484,77 @@ const Home: NextPage = () => {
           if (filteredfeatures.length > 0) {
             if (filteredfeatures[0]) {
               if (filteredfeatures[0].properties) {
-                if (filteredfeatures[0].properties["Address"]) {
-                  const areaPC = filteredfeatures[0].properties["Address"];
+                if (filteredfeatures[0].properties["address"]) {
+                  const areaPC = filteredfeatures[0].properties["address"];
 
                   const allthelineitems = filteredfeatures.map(
                     (eachCase: any) => {
-                      if (eachCase.properties?.["APN"]) {
-                        return `<li class="leading-none my-2 text-blue-400">APN: ${
-                          eachCase.properties["APN"]
+                      if (eachCase.properties?.["eviction_category"]) {
+                        return `<li class="leading-none my-2 text-blue-400">Eviction Category: ${
+                          eachCase.properties["eviction_category"]
                         }
                         <br />
                         ${
-                          eachCase.properties?.["Application Received"]
-                            ? `<span class="text-sky-400">Application Received: ${eachCase.properties["Application Received"]}</span>`
+                          eachCase.properties?.["notice_date"]
+                            ? `<span class="text-sky-400">Notice Date: ${eachCase.properties["notice_date"]}</span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["Application Year"]
-                            ? `<span class="text-slate-400">Application Year: ${eachCase.properties["Application Year"]}</span>`
+                          eachCase.properties?.["notice_type"]
+                            ? `<span class="text-sky-400">Notice Type: ${eachCase.properties["notice_type"]}</span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["Council District"]
-                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["Council District"]} </span>`
+                          eachCase.properties?.["just_cause"] &&
+                          eachCase.properties["just_cause"] != "UNKNOWN"
+                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["just_cause"]}</span> `
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["Address"]
-                            ? `<span class="text-teal-200">Address: ${eachCase.properties["Address"]}, </span>`
+                          eachCase.properties?.["cd"]
+                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["cd"]} </span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["City"]
-                            ? `<span class="text-teal-400">City: ${eachCase.properties["City"]}</span> `
+                          eachCase.properties?.["address"]
+                            ? `<span class="text-teal-400">Address: ${eachCase.properties["address"]}, </span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["city"]
+                            ? `<span class="text-teal-400">City: ${eachCase.properties["city"]}</span> `
                             : ""
                         }
                         ${" "}
                         ${
-                          eachCase.properties?.["Zip"]
-                            ? `<span class="text-indigo-300">Zip: ${eachCase.properties["Zip"]}</span>`
+                          eachCase.properties?.["zip_code"]
+                            ? `<span class="text-teal-400">Zip Code: ${eachCase.properties["zip_code"]}</span>`
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["Units Withdrawn"] &&
-                          eachCase.properties["Units Withdrawn"] != "UNKNOWN"
-                            ? `<span class="text-emerald-200">Units Withdrawn: ${eachCase.properties["Units Withdrawn"]}</span> `
+                          eachCase.properties?.["bedroom_count"]
+                            ? `<span class="text-teal-200">Bedroom Count: ${eachCase.properties["bedroom_count"]}</span> `
+                            : "Bedroom Count: n/a"
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["current_monthly_rent"] &&
+                          eachCase.properties["current_monthly_rent"] !=
+                            "UNKNOWN"
+                            ? `<span class="text-indigo-300">Current Monthly Rent: ${eachCase.properties["current_monthly_rent"]}</span> `
                             : ""
                         }
                         <br />
                         ${
-                          eachCase.properties?.["Replacement Unit"] &&
-                          eachCase.properties["Replacement Unit"] != "UNKNOWN"
-                            ? `<span class="text-lime-300">Replacement Unit: ${eachCase.properties["Replacement Unit"]}</span> `
+                          eachCase.properties?.["rent_owed_currency"] &&
+                          eachCase.properties["rent_owed_currency"] != "UNKNOWN"
+                            ? `<span class="text-red-600">Rent Owed: ${eachCase.properties["rent_owed_currency"]}</span> `
                             : ""
                         }
                   </li>`;
@@ -545,7 +602,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mouseleave", "Ellis-Act-Evictions", () => {
+      map.on("mouseleave", "evictions", () => {
         //check if the url query string "stopmouseleave" is true
         //if it is, then don't do anything
         //if it is not, then do the following
@@ -573,7 +630,7 @@ const Home: NextPage = () => {
         if (true) {
           // example of how to add a pointer to what is currently selected
           map.addLayer({
-            id: "points-selected-ellis-layer",
+            id: "points-selected-evictions-layer",
             type: "symbol",
             source: "eviction-point",
             paint: {
@@ -594,22 +651,24 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mousedown", "Ellis-Act-Evictions", (e: any) => {
-        setEllisInfo(0);
+      map.on("mousedown", "evictions", (e: any) => {
+        setEvictionInfo(0);
         setInfoBoxLength(1);
-        setEllisInfoOpen(true);
+        setEvictionInfoOpen(true);
         console.log(e.features);
         let filteredData = e.features.map((obj: any) => {
           return {
-            apn: obj.properties["APN"],
-            cd: obj.properties["Council District"],
-            applicationReceived: obj.properties["Application Received"],
-            year: obj.properties["Application Year"],
-            address: obj.properties.Address,
-            city: obj.properties.City,
-            zip: obj.properties.Zip,
-            unitsWithdrawn: obj.properties["Units Withdrawn"],
-            replacementUnit: obj.properties["Replacement Unit"],
+            address: obj.properties["address"],
+            cd: obj.properties["cd"],
+            evictionCategory: obj.properties["eviction_category"],
+            date: obj.properties["notice_date"],
+            city: obj.properties.city,
+            zip: obj.properties["zip_code"],
+            monthlyRent: obj.properties["current_monthly_rent"],
+            rentOwed: obj.properties["rent_owed_currency"],
+            bedroom: obj.properties["bedroom_count"],
+            noticeType: obj.properties["notice_type"],
+            justCause: obj.properties["just_cause"],
           };
         });
 
@@ -619,7 +678,7 @@ const Home: NextPage = () => {
         evictionPoint.setData(e.features[0].geometry);
 
         map.setLayoutProperty(
-          "points-selected-ellis-layer",
+          "points-selected-evictions-layer",
           "visibility",
           "visible"
         );
@@ -642,7 +701,7 @@ const Home: NextPage = () => {
               "line-width": 1,
             },
           },
-          "road-label-simple"
+          "road-label-navigation"
         );
 
         map.addSource("citycouncildist", {
@@ -661,7 +720,7 @@ const Home: NextPage = () => {
               "line-width": 0.8,
             },
           },
-          "road-label-simple"
+          "road-label-navigation"
         );
 
         map.addLayer(
@@ -674,7 +733,7 @@ const Home: NextPage = () => {
               "fill-opacity": 0,
             },
           },
-          "road-label-simple"
+          "road-label-navigation"
         );
 
         map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
@@ -713,7 +772,7 @@ const Home: NextPage = () => {
               "fill-opacity": 0.3,
             },
           },
-          "road-label-simple"
+          "road-label-navigation"
         );
       }
 
@@ -780,7 +839,7 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "Council District"],
+      ["get", "cd"],
       filteredDistricts,
       true,
       false,
@@ -788,8 +847,16 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "Application Year"],
-      filteredYears,
+      ["get", "eviction_category"],
+      filteredCategories.map((category) => String(category)),
+      true,
+      false,
+    ]);
+
+    arrayoffilterables.push([
+      "match",
+      ["get", "notice_type"],
+      filteredNotices.map((noticeType) => String(noticeType)),
       true,
       false,
     ]);
@@ -801,32 +868,40 @@ const Home: NextPage = () => {
         );
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("Ellis-Act-Evictions", filterinput);
+          mapref.current.setFilter("evictions", filterinput);
         }
       }
     }
-  }, [filteredYears, filteredDistricts]);
+  }, [filteredCategories, filteredDistricts, filteredNotices]);
 
   const onSelect = () => {
-    if (selectedfilteropened === "year") {
-      setFilteredYearsPre(filterableYearsKeys);
+    if (selectedfilteropened === "notice") {
+      setFilteredNoticesPre(filterableNoticesKeys);
+    } else if (selectedfilteropened === "category") {
+      setFilteredCategoriesPre(filterableCategoriesKeys);
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre(filterableDistrictsKeys);
     }
   };
 
   const onUnselect = () => {
-    if (selectedfilteropened === "year") {
-      setFilteredYearsPre([]);
+    if (selectedfilteropened === "notice") {
+      setFilteredNoticesPre([]);
+    } else if (selectedfilteropened === "category") {
+      setFilteredCategoriesPre([]);
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre([]);
     }
   };
 
   const onInvert = () => {
-    if (selectedfilteropened === "year") {
-      setFilteredYearsPre(
-        filterableYearsKeys.filter((n) => !filteredYears.includes(Number(n)))
+    if (selectedfilteropened === "notice") {
+      setFilteredNoticesPre(
+        filterableNoticesKeys.filter((n) => !filteredNotices.includes(n))
+      );
+    } else if (selectedfilteropened === "category") {
+      setFilteredCategoriesPre(
+        filterableCategoriesKeys.filter((n) => !filteredCategories.includes(n))
       );
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre(
@@ -869,7 +944,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>City of LA Ellis Act Evictions 2007 - July 2023 | Map</title>
+          <title>City of LA Evictions (Jan - July 2023) | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -877,12 +952,12 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="City of LA Ellis Act Evictions 2007 - July 2023 | Map"
+            content="City of LA Evictions (Jan - July 2023) | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="City of LA Ellis Act Evictions 2007 - July 2023"
+            content="City of LA Evictions (Jan - July 2023)"
           ></meta>
           <meta
             name="twitter:image"
@@ -891,7 +966,7 @@ const Home: NextPage = () => {
           ></meta>
           <meta
             name="description"
-            content="City of LA Ellis Act Evictions 2007 - July 2023"
+            content="City of LA Evictions (Jan - July 2023)"
           />
 
           <meta
@@ -901,11 +976,11 @@ const Home: NextPage = () => {
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
-            content="City of LA Ellis Act Evictions 2007 - July 2023 | Map"
+            content="City of LA Evictions (Jan - July 2023) | Map"
           />
           <meta
             property="og:description"
-            content="City of LA Ellis Act Evictions 2007 - July 2023"
+            content="City of LA Evictions (Jan - July 2023)"
           />
           <meta
             property="og:image"
@@ -1001,15 +1076,27 @@ const Home: NextPage = () => {
                 <div className="gap-x-0 flex flex-row w-full pr-8">
                   <button
                     onClick={() => {
-                      setselectedfilteropened("year");
+                      setselectedfilteropened("category");
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "year"
+                      selectedfilteropened === "category"
                         ? "border-[#41ffca] text-[#41ffca]"
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                    Year
+                    Category
+                  </button>
+                  <button
+                    onClick={() => {
+                      setselectedfilteropened("notice");
+                    }}
+                    className={`px-2 border-b-2  py-1  font-semibold ${
+                      selectedfilteropened === "notice"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                    Notice
                   </button>
                   <button
                     onClick={() => {
@@ -1021,11 +1108,11 @@ const Home: NextPage = () => {
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                    CD#
+                    CD
                   </button>
                 </div>
                 <div className="flex flex-col">
-                  {selectedfilteropened === "year" && (
+                  {selectedfilteropened === "category" && (
                     <div className="mt-2">
                       <SelectButtons
                         onSelect={onSelect}
@@ -1035,14 +1122,16 @@ const Home: NextPage = () => {
                       <div className="flex flex-row gap-x-1">
                         <div className="flex items-center">
                           <Checkbox.Group
-                            value={filteredYears.map((year) => String(year))}
-                            onChange={setFilteredYearsPre}
+                            value={filteredCategories.map((category) =>
+                              String(category)
+                            )}
+                            onChange={setFilteredCategoriesPre}
                           >
                             <div
                               className={`grid grid-cols-3
                           } gap-x-4 `}
                             >
-                              {Object.entries(filterableYears).map(
+                              {Object.entries(filterableCategories).map(
                                 (eachEntry) => (
                                   <Checkbox
                                     value={eachEntry[0]}
@@ -1064,7 +1153,57 @@ const Home: NextPage = () => {
                       </div>
                       <div>
                         <p className="text-blue-400 text-xs mt-1">
-                          <strong>Ellis Act Evictions by Year</strong>
+                          <strong>Evictions by Eviction Category</strong>
+                        </p>
+                      </div>
+                      <Intensity
+                        normalizeIntensity={normalizeIntensity}
+                        setNormalizeIntensity={setNormalizeIntensity}
+                      />
+                    </div>
+                  )}
+                  {selectedfilteropened === "notice" && (
+                    <div className="mt-2">
+                      <SelectButtons
+                        onSelect={onSelect}
+                        onUnselect={onUnselect}
+                        onInvert={onInvert}
+                      />
+                      <div className="flex flex-row gap-x-1">
+                        <div className="flex items-center">
+                          <Checkbox.Group
+                            value={filteredNotices.map((notice) =>
+                              String(notice)
+                            )}
+                            onChange={setFilteredNoticesPre}
+                          >
+                            <div
+                              className={`grid grid-cols-3
+                          } gap-x-4 `}
+                            >
+                              {Object.entries(filterableNotices).map(
+                                (eachEntry) => (
+                                  <Checkbox
+                                    value={eachEntry[0]}
+                                    label={
+                                      <span className="text-nowrap text-xs">
+                                        <span className="text-white">
+                                          {eachEntry[0]}
+                                        </span>{" "}
+                                        <span>{eachEntry[1]}</span>
+                                      </span>
+                                    }
+                                    key={eachEntry[0]}
+                                  />
+                                )
+                              )}
+                            </div>
+                          </Checkbox.Group>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-blue-400 text-xs mt-1">
+                          <strong>Evictions by Notice Type</strong>
                         </p>
                       </div>
                       <Intensity
@@ -1115,7 +1254,7 @@ const Home: NextPage = () => {
                       <div>
                         <p className="text-blue-400 text-xs mt-1">
                           <strong>
-                            Ellis Act Evictions by Council District
+                            Evictions by Council District
                           </strong>
                         </p>
                       </div>
@@ -1129,7 +1268,7 @@ const Home: NextPage = () => {
               </div>
               <div
                 className={`text-sm ${
-                  ellisInfoOpen
+                  evictionInfoOpen
                     ? `px-3 pt-2 pb-3 fixed sm:relative top-auto bottom-0 left-0 right-0 w-full sm:mt-2 sm:w-auto 
                                     sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto bg-[#212121] sm:rounded-xl bg-opacity-90 sm:bg-opacity-80 text-white 
                                     border-t-2 border-gray-200 sm:border sm:border-gray-400`
@@ -1140,7 +1279,7 @@ const Home: NextPage = () => {
                   onClose={() => {
                     closeInfoBox();
                     setInfoBoxLength(1);
-                    setEllisInfo(0);
+                    setEvictionInfo(0);
                     if (mapref.current) {
                       var evictionPoint: any =
                         mapref.current.getSource("eviction-point");
@@ -1157,8 +1296,8 @@ const Home: NextPage = () => {
                     evictionData={evictionData}
                     infoBoxLength={infoBoxLength}
                     setInfoBoxLength={setInfoBoxLength}
-                    ellisInfo={ellisInfo}
-                    setEllisInfo={setEllisInfo}
+                    evictionInfo={evictionInfo}
+                    setEvictionInfo={setEvictionInfo}
                   />
                 )}
               </div>

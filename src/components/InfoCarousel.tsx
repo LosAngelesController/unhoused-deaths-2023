@@ -4,20 +4,20 @@ interface CarouselProps {
   evictionData: any[];
   infoBoxLength: number;
   setInfoBoxLength: any;
-  ellisInfo: number;
-  setEllisInfo: any;
+  evictionInfo: number;
+  setEvictionInfo: any;
 }
 
 export function InfoCarousel(props: CarouselProps) {
   const dataLength = props.evictionData.length;
 
   const handleNext = () => {
-    props.setEllisInfo((prev: any) => (prev === dataLength - 1 ? 0 : prev + 1));
+    props.setEvictionInfo((prev: any) => (prev === dataLength - 1 ? 0 : prev + 1));
     props.setInfoBoxLength((prev: any) => (prev === dataLength ? 1 : prev + 1));
   };
 
   const handlePrev = () => {
-    props.setEllisInfo((prev: any) => (prev === 0 ? dataLength - 1 : prev - 1));
+    props.setEvictionInfo((prev: any) => (prev === 0 ? dataLength - 1 : prev - 1));
     props.setInfoBoxLength((prev: any) => (prev === 1 ? dataLength : prev - 1));
   };
 
@@ -30,24 +30,28 @@ export function InfoCarousel(props: CarouselProps) {
         <>
           <div>
             <p className="pr-4">
-              <b className="text-stone-400">APN:</b>{" "}
-              {props.evictionData[props.ellisInfo]?.apn} <br />
-              <b className="text-stone-400">Application Received:</b>{" "}
-              {props.evictionData[props.ellisInfo]?.applicationReceived} <br />
-              <b className="text-stone-400">Application Year:</b>{" "}
-              {props.evictionData[props.ellisInfo]?.year} <br />
-              <b className="text-stone-400">Council District:</b>{" "}
-              {props.evictionData[props.ellisInfo]?.cd} <br />
               <b className="text-stone-400">Address:</b>{" "}
-              {props.evictionData[props.ellisInfo]?.address} <br />
+              {props.evictionData[props.evictionInfo]?.address} <br />
               <b className="text-stone-400">City:</b>{" "}
-              {props.evictionData[props.ellisInfo]?.city} <br />
-              <b className="text-stone-400">Zip:</b>{" "}
-              {props.evictionData[props.ellisInfo]?.zip} <br />
-              <b className="text-stone-400">Units Withdrawn:</b>{" "}
-              {props.evictionData[props.ellisInfo]?.unitsWithdrawn} <br />
-              <b className="text-stone-400">Replacement Unit:</b>{" "}
-              {props.evictionData[props.ellisInfo]?.sex} <br />
+              {props.evictionData[props.evictionInfo]?.city} <br />
+              <b className="text-stone-400">Zip Code:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.zip} <br />
+              <b className="text-stone-400">Council District:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.cd} <br />
+              <b className="text-stone-400">Eviction Category:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.evictionCategory} <br />
+              <b className="text-stone-400">Notice Date:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.date} <br />
+              <b className="text-stone-400">Notice Type:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.noticeType} <br />
+              <b className="text-stone-400">Current Monthly Rent:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.monthlyRent} <br />
+              <b className="text-stone-400">Rent Owed:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.rentOwed} <br />
+              <b className="text-stone-400">Bedroom Count:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.bedroom} <br />
+              <b className="text-stone-400">Just Cause:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.justCause} <br />
             </p>
           </div>
           <div className="mt-3">
