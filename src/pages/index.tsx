@@ -111,10 +111,6 @@ const Home: NextPage = () => {
   const [evictionInfo, setEvictionInfo] = useState(0);
   const [normalizeIntensity, setNormalizeIntensity] = useState(false);
 
-  useEffect(() => {
-    console.log("evictionData updated:", evictionData);
-  }, [evictionData]);
-
   //template name, this is used to submit to the map analytics software what the current state of the map is.
   var mapname = "Evictions_07-31-23";
 
@@ -150,6 +146,14 @@ const Home: NextPage = () => {
     } else {
       setFilteredZipCodes(input.map((x) => Number(x)));
     }
+  };
+
+  const onResetClicked = () => {
+    setselectedfilteropened("category");
+    setFilteredZipCodesPre([]);
+    setFilteredCategoriesPre(filterableCategoriesKeys);
+    setFilteredNoticesPre(filterableNoticesKeys);
+    setFilteredDistrictPre(filterableDistrictsKeys);
   };
 
   var [hasStartedControls, setHasStartedControls] = useState(false);
@@ -211,16 +215,19 @@ const Home: NextPage = () => {
   };
 
   const recomputeIntensity = () => {
-    let levels = ["interpolate", ["linear"], ["zoom"], 7, 1, 22, 2];
+    let levels = ["interpolate", ["linear"], ["zoom"], 7, 0.2, 22, 2];
 
     if (normalizeIntensity === true) {
-      levels = ["interpolate", ["linear"], ["zoom"], 7, 2.5, 15, 3.5];
+      levels = ["interpolate", ["linear"], ["zoom"], 7, 3, 15, 4];
     }
 
     var layer = mapref.current.getLayer("evictions");
+    var layerZip = mapref.current.getLayer("evictions-zipcodes");
 
     if (layer) {
       mapref.current.setPaintProperty("evictions", "heatmap-intensity", levels);
+    } else if (layerZip) {
+      mapref.current.setPaintProperty("evictions-zipcodes", "heatmap-intensity", levels);
     }
   };
 
@@ -621,6 +628,178 @@ const Home: NextPage = () => {
         },
       });
 
+      // map.addSource("eviction-zipcode-point", {
+      //   type: "geojson",
+      //   data: {
+      //     type: "FeatureCollection",
+      //     features: [],
+      //   },
+      // });
+
+      map.on("mouseleave", "evictions-zipcodes", () => {
+        //check if the url query string "stopmouseleave" is true
+        //if it is, then don't do anything
+        //if it is not, then do the following
+
+        if (urlParams.get("stopmouseleave") === null) {
+          map.getCanvas().style.cursor = "";
+          popup.remove();
+        }
+      });
+
+      // map.addSource("eviction-zipcode-point", {
+      //   type: "geojson",
+      //   data: {
+      //     type: "FeatureCollection",
+      //     features: [],
+      //   },
+      // });
+
+      map.on("mouseover", "evictions-zipcodes", (e: any) => {
+        if (e.features) {
+          map.getCanvas().style.cursor = "pointer";
+          const closestcoords: any = computeclosestcoordsfromevent(e);
+
+          const filteredfeatures = e.features.filter((feature: any) => {
+            return (
+              feature.geometry.coordinates[0] === closestcoords[0] &&
+              feature.geometry.coordinates[1] === closestcoords[1]
+            );
+          });
+
+          console.log("filteredfeatures", filteredfeatures);
+
+          // Copy coordinates array.
+          const coordinates = closestcoords.slice();
+
+          /*Ensure that if the map is zoomed out such that multiple
+          copies of the feature are visible, the popup appears
+          over the copy being pointed to.*/
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
+
+          if (filteredfeatures.length > 0) {
+            if (filteredfeatures[0]) {
+              if (filteredfeatures[0].properties) {
+                if (filteredfeatures[0].properties["address"]) {
+                  const areaPC = filteredfeatures[0].properties["address"];
+
+                  const allthelineitems = filteredfeatures.map(
+                    (eachCase: any) => {
+                      if (eachCase.properties?.["eviction_category"]) {
+                        return `<li class="leading-none my-2 text-blue-400">Eviction Category: ${
+                          eachCase.properties["eviction_category"]
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["notice_date"]
+                            ? `<span class="text-sky-400">Notice Date: ${eachCase.properties["notice_date"]}</span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["notice_type"]
+                            ? `<span class="text-sky-400">Notice Type: ${eachCase.properties["notice_type"]}</span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["just_cause"] &&
+                          eachCase.properties["just_cause"] != "UNKNOWN"
+                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["just_cause"]}</span> `
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["cd"]
+                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["cd"]} </span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["address"]
+                            ? `<span class="text-teal-400">Address: ${eachCase.properties["address"]}, </span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["city"]
+                            ? `<span class="text-teal-400">City: ${eachCase.properties["city"]}</span> `
+                            : ""
+                        }
+                        ${" "}
+                        ${
+                          eachCase.properties?.["zip_code"]
+                            ? `<span class="text-teal-400">Zip Code: ${eachCase.properties["zip_code"]}</span>`
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["bedroom_count"]
+                            ? `<span class="text-teal-200">Bedroom Count: ${eachCase.properties["bedroom_count"]}</span> `
+                            : "Bedroom Count: n/a"
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["current_monthly_rent"] &&
+                          eachCase.properties["current_monthly_rent"] !=
+                            "UNKNOWN"
+                            ? `<span class="text-indigo-300">Current Monthly Rent: ${eachCase.properties["current_monthly_rent"]}</span> `
+                            : ""
+                        }
+                        <br />
+                        ${
+                          eachCase.properties?.["rent_owed_currency"] &&
+                          eachCase.properties["rent_owed_currency"] != "UNKNOWN"
+                            ? `<span class="text-red-600">Rent Owed: ${eachCase.properties["rent_owed_currency"]}</span> `
+                            : ""
+                        }
+                  </li>`;
+                      }
+                    }
+                  );
+
+                  popup
+                    .setLngLat(coordinates)
+                    .setHTML(
+                      ` <div>
+                <p class="font-semibold">${areaPC}</p>
+                <p>${filteredfeatures.length} Case${
+                        filteredfeatures.length > 1 ? "s" : ""
+                      }</p>
+
+                <ul class='list-disc leading-none'>${
+                  allthelineitems.length <= 3
+                    ? allthelineitems.join("")
+                    : allthelineitems.splice(0, 3).join("")
+                }</ul> 
+                ${
+                  allthelineitems.length >= 1
+                    ? `<p class="text-xs font-bold text-gray-300 mt-4">CLICK LOCATION TO SEE MORE</p>`
+                    : ""
+                }
+              </div><style>
+              .mapboxgl-popup-content {
+                background: #212121e0;
+                color: #fdfdfd;
+              }
+    
+              .flexcollate {
+                row-gap: 0.5rem;
+                display: flex;
+                flex-direction: column;
+              }
+              </style>`
+                    )
+                    .addTo(map);
+                }
+              }
+            }
+          }
+        }
+      });
+
       map.loadImage("/map-marker.png", (error, image: any) => {
         if (error) throw error;
 
@@ -672,7 +851,42 @@ const Home: NextPage = () => {
           };
         });
 
-        console.log("filteredData", filteredData);
+        // console.log("filteredData", filteredData);
+
+        var evictionPoint: any = map.getSource("eviction-point");
+        evictionPoint.setData(e.features[0].geometry);
+
+        map.setLayoutProperty(
+          "points-selected-evictions-layer",
+          "visibility",
+          "visible"
+        );
+
+        setEvictionData(filteredData);
+      });
+
+      map.on("mousedown", "evictions-zipcodes", (e: any) => {
+        setEvictionInfo(0);
+        setInfoBoxLength(1);
+        setEvictionInfoOpen(true);
+        console.log(e.features);
+        let filteredData = e.features.map((obj: any) => {
+          return {
+            address: obj.properties["address"],
+            cd: obj.properties["cd"],
+            evictionCategory: obj.properties["eviction_category"],
+            date: obj.properties["notice_date"],
+            city: obj.properties.city,
+            zip: obj.properties["zip_code"],
+            monthlyRent: obj.properties["current_monthly_rent"],
+            rentOwed: obj.properties["rent_owed_currency"],
+            bedroom: obj.properties["bedroom_count"],
+            noticeType: obj.properties["notice_type"],
+            justCause: obj.properties["just_cause"],
+          };
+        });
+
+        // console.log("filteredData", filteredData);
 
         var evictionPoint: any = map.getSource("eviction-point");
         evictionPoint.setData(e.features[0].geometry);
@@ -874,6 +1088,32 @@ const Home: NextPage = () => {
     }
   }, [filteredCategories, filteredDistricts, filteredNotices]);
 
+  useEffect(() => {
+    let arrayoffilterables: any = [];
+
+    arrayoffilterables.push([
+      "match",
+      ["get", "zip_code"],
+      filteredZipCodes,
+      true,
+      false,
+    ]);
+
+    if (mapref.current) {
+      if (doneloadingmap) {
+        const filterinput = JSON.parse(
+          JSON.stringify(["all", ...arrayoffilterables])
+        );
+
+        console.log(filterinput);
+
+        if (doneloadingmap === true) {
+          mapref.current.setFilter("evictions-zipcodes", filterinput);
+        }
+      }
+    }
+  }, [filteredZipCodes]);
+
   const onSelect = () => {
     if (selectedfilteropened === "notice") {
       setFilteredNoticesPre(filterableNoticesKeys);
@@ -881,6 +1121,8 @@ const Home: NextPage = () => {
       setFilteredCategoriesPre(filterableCategoriesKeys);
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre(filterableDistrictsKeys);
+    } else if (selectedfilteropened === "zipcodes") {
+      setFilteredZipCodesPre(filterableZipCodeKeys);
     }
   };
 
@@ -891,6 +1133,8 @@ const Home: NextPage = () => {
       setFilteredCategoriesPre([]);
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre([]);
+    } else if (selectedfilteropened === "zipcodes") {
+      setFilteredZipCodesPre([]);
     }
   };
 
@@ -907,6 +1151,12 @@ const Home: NextPage = () => {
       setFilteredDistrictPre(
         filterableDistrictsKeys.filter(
           (n) => !filteredDistricts.includes(Number(n))
+        )
+      );
+    } else if (selectedfilteropened === "zipcodes") {
+      setFilteredZipCodesPre(
+        filterableZipCodeKeys.filter(
+          (n) => !filteredZipCodes.includes(Number(n))
         )
       );
     }
@@ -995,7 +1245,14 @@ const Home: NextPage = () => {
         <div className="flex-initial h-content flex-col flex z-50">
           <div className="max-h-screen flex-col flex z-5">
             <MapTitle />
-
+            <div className="absolute resetButton mt-[3em] md:mt-[3.7em] md:ml-[17em] top-0 z-5 ml-[17em] text-base bold md:semi-bold break-words">
+              <button
+                className="text-red-500 font-bold text-sm"
+                onClick={onResetClicked}
+              >
+                RESET
+              </button>
+            </div>
             <div
               className={`geocoder absolute mt-[2.7em] md:mt-[4.1em] ml-1 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
               id="geocoder"
@@ -1077,6 +1334,7 @@ const Home: NextPage = () => {
                   <button
                     onClick={() => {
                       setselectedfilteropened("category");
+                      setFilteredZipCodesPre([]);
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
                       selectedfilteropened === "category"
@@ -1089,6 +1347,7 @@ const Home: NextPage = () => {
                   <button
                     onClick={() => {
                       setselectedfilteropened("notice");
+                      setFilteredZipCodesPre([]);
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
                       selectedfilteropened === "notice"
@@ -1101,6 +1360,7 @@ const Home: NextPage = () => {
                   <button
                     onClick={() => {
                       setselectedfilteropened("district");
+                      setFilteredZipCodesPre([]);
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
                       selectedfilteropened === "district"
@@ -1109,6 +1369,22 @@ const Home: NextPage = () => {
                     }`}
                   >
                     CD
+                  </button>
+                  <button
+                    onClick={() => {
+                      setselectedfilteropened("zipcodes");
+                      setFilteredZipCodesPre(filterableZipCodeKeys);
+                      setFilteredCategoriesPre([]);
+                      setFilteredNoticesPre([]);
+                      setFilteredDistrictPre([]);
+                    }}
+                    className={`px-2 border-b-2  py-1  font-semibold ${
+                      selectedfilteropened === "zipcodes"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                    Zip
                   </button>
                 </div>
                 <div className="flex flex-col">
@@ -1254,6 +1530,58 @@ const Home: NextPage = () => {
                       <div>
                         <p className="text-blue-400 text-xs mt-1">
                           <strong>Evictions by Council District</strong>
+                        </p>
+                      </div>
+                      <Intensity
+                        normalizeIntensity={normalizeIntensity}
+                        setNormalizeIntensity={setNormalizeIntensity}
+                      />
+                    </div>
+                  )}
+                  {selectedfilteropened === "zipcodes" && (
+                    <div className="mt-1">
+                      <SelectButtons
+                        onSelect={onSelect}
+                        onUnselect={onUnselect}
+                        onInvert={onInvert}
+                      />
+                      <div className="flex flex-row gap-x-1">
+                        <div className="flex items-center">
+                          <Checkbox.Group
+                            value={filteredZipCodes.map((zip) => String(zip))}
+                            onChange={setFilteredZipCodesPre}
+                          >
+                            <div
+                              className={`grid grid-cols-3
+                          } gap-x-4 `}
+                            >
+                              {Object.entries(filterableZipCodes).map(
+                                (eachEntry) => (
+                                  <Checkbox
+                                    value={eachEntry[0]}
+                                    label={
+                                      <span className="text-nowrap text-xs">
+                                        <span className="text-white">
+                                          {eachEntry[0]}
+                                        </span>{" "}
+                                        <span>{eachEntry[1]}</span>
+                                      </span>
+                                    }
+                                    key={eachEntry[0]}
+                                  />
+                                )
+                              )}
+                            </div>
+                          </Checkbox.Group>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-blue-400 text-xs mt-0">
+                          <strong>Evictions by Top 20 Zip Codes</strong>
+                        </p>
+                        <p className="text-[#41ffca] text-xs mt-1">
+                          Reset map to view Eviction Category, Notice Type, and
+                          CD filters
                         </p>
                       </div>
                       <Intensity
