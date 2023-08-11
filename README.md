@@ -1,5 +1,3 @@
-# LAPD Arrests 2019 - Mapped
+# City of Los Angeles Evictions (January - July 2023) - Mapped
 
-## Arrests Filtered by Race, Area, and Arrest Type
-
-Data collected from LAPD via https://data.lacity.org/Public-Safety/Arrest-Data-from-2020-to-Present/amvf-fr72
+## Evictions Filtered by Eviction Category, Notice Type, Council District, and top 20 Zip Codes
