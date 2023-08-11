@@ -227,7 +227,11 @@ const Home: NextPage = () => {
     if (layer) {
       mapref.current.setPaintProperty("evictions", "heatmap-intensity", levels);
     } else if (layerZip) {
-      mapref.current.setPaintProperty("evictions-zipcodes", "heatmap-intensity", levels);
+      mapref.current.setPaintProperty(
+        "evictions-zipcodes",
+        "heatmap-intensity",
+        levels
+      );
     }
   };
 
