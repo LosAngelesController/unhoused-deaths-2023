@@ -1253,9 +1253,7 @@ const Home: NextPage = () => {
                       </div>
                       <div>
                         <p className="text-blue-400 text-xs mt-1">
-                          <strong>
-                            Evictions by Council District
-                          </strong>
+                          <strong>Evictions by Council District</strong>
                         </p>
                       </div>
                       <Intensity

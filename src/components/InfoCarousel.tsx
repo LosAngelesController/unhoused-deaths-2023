@@ -12,12 +12,16 @@ export function InfoCarousel(props: CarouselProps) {
   const dataLength = props.evictionData.length;
 
   const handleNext = () => {
-    props.setEvictionInfo((prev: any) => (prev === dataLength - 1 ? 0 : prev + 1));
+    props.setEvictionInfo((prev: any) =>
+      prev === dataLength - 1 ? 0 : prev + 1
+    );
     props.setInfoBoxLength((prev: any) => (prev === dataLength ? 1 : prev + 1));
   };
 
   const handlePrev = () => {
-    props.setEvictionInfo((prev: any) => (prev === 0 ? dataLength - 1 : prev - 1));
+    props.setEvictionInfo((prev: any) =>
+      prev === 0 ? dataLength - 1 : prev - 1
+    );
     props.setInfoBoxLength((prev: any) => (prev === 1 ? dataLength : prev - 1));
   };
 
