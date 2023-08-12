@@ -1223,10 +1223,7 @@ const Home: NextPage = () => {
             content="City of LA Evictions (Jan - July 2023)"
           />
 
-          <meta
-            property="og:url"
-            content="https://evictions.vercel.app"
-          />
+          <meta property="og:url" content="https://evictions.vercel.app" />
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
