@@ -18,7 +18,7 @@ const navigationPayroll = [
   },
   {
     name: "Analysis",
-    url: "https://controller.lacity.gov/landings/4118",
+    url: "/",
     newtab: true,
   },
 ];

@@ -1216,7 +1216,7 @@ const Home: NextPage = () => {
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://ellis-act-evictions.vercel.app/ellis-act-evictions.png"
+            content="https://evictions.vercel.app/evictions.png"
           ></meta>
           <meta
             name="description"
@@ -1225,7 +1225,7 @@ const Home: NextPage = () => {
 
           <meta
             property="og:url"
-            content="https://ellis-act-evictions.vercel.app"
+            content="https://evictions.vercel.app"
           />
           <meta property="og:type" content="website" />
           <meta
@@ -1238,7 +1238,7 @@ const Home: NextPage = () => {
           />
           <meta
             property="og:image"
-            content="https://ellis-act-evictions.vercel.app/ellis-act-evictions.png"
+            content="https://evictions.vercel.app/evictions.png"
           />
         </Head>
 
