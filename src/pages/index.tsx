@@ -222,16 +222,9 @@ const Home: NextPage = () => {
     }
 
     var layer = mapref.current.getLayer("evictions");
-    var layerZip = mapref.current.getLayer("evictions-zipcodes");
 
     if (layer) {
       mapref.current.setPaintProperty("evictions", "heatmap-intensity", levels);
-    } else if (layerZip) {
-      mapref.current.setPaintProperty(
-        "evictions-zipcodes",
-        "heatmap-intensity",
-        levels
-      );
     }
   };
 
@@ -1174,25 +1167,6 @@ const Home: NextPage = () => {
         withNormalizeCSS
       >
         <Head>
-          <link
-            rel="icon"
-            href="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-32x32.png"
-            sizes="32x32"
-          />
-          <link
-            rel="icon"
-            href="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-192x192.png"
-            sizes="192x192"
-          />
-          <link
-            rel="apple-touch-icon"
-            href="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-180x180.png"
-          />
-          <meta
-            name="msapplication-TileImage"
-            content="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-270x270.png"
-          />
-
           <meta charSet="utf-8" />
           <meta
             name="viewport"
@@ -1245,8 +1219,10 @@ const Home: NextPage = () => {
 
         <div className="flex-initial h-content flex-col flex z-50">
           <div className="max-h-screen flex-col flex z-5">
-            <MapTitle />
-            <div className="absolute resetButton mt-[3em] md:mt-[3.7em] md:ml-[17em] top-0 z-5 ml-[17em] text-base bold md:semi-bold break-words">
+            <div className="hidden sm:block">
+              <MapTitle />
+            </div>
+            <div className="absolute resetButton mt-[0.1em] sm:mt-[3em] md:mt-[3.7em] sm:ml-[17em] md:ml-[17em] top-0 z-5 ml-[16em] text-base bold md:semi-bold break-words">
               <button
                 className="text-red-500 font-bold text-sm"
                 onClick={onResetClicked}
@@ -1255,12 +1231,12 @@ const Home: NextPage = () => {
               </button>
             </div>
             <div
-              className={`geocoder absolute mt-[2.7em] md:mt-[4.1em] ml-1 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
+              className={`geocoder absolute xs:mt-[1.5em] sm:mt-[2.7em] md:mt-[4.1em] ml-1 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
               id="geocoder"
             ></div>
             <div className="w-content"></div>
 
-            <div className="fixed mt-[6em] ml-2 sm:hidden flex flex-row">
+            <div className="fixed mt-[3em] ml-2 sm:hidden flex flex-row">
               {filterpanelopened === false && (
                 <button
                   onClick={() => {
@@ -1585,10 +1561,6 @@ const Home: NextPage = () => {
                           CD filters
                         </p>
                       </div>
-                      <Intensity
-                        normalizeIntensity={normalizeIntensity}
-                        setNormalizeIntensity={setNormalizeIntensity}
-                      />
                     </div>
                   )}
                 </div>
