@@ -1539,7 +1539,7 @@ const Home: NextPage = () => {
                           <strong>Evictions by Top 20 Zip Codes</strong>
                         </p>
                         <p className="text-[#41ffca] text-xs mt-1">
-                          Reset map to view Eviction Category, Notice Type, and
+                          <strong className="text-red-600">RESET</strong> map to view Category, Notice, and
                           CD filters
                         </p>
                       </div>
