@@ -27,7 +27,7 @@ const navigation: any = [
   },
   {
     name: "Analysis",
-    href: "/",
+    href: "https://controller.lacity.gov",
     target: "_blank",
   },
 ];
@@ -35,29 +35,6 @@ const navigation: any = [
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
-
-// const navigationPayroll = [
-//   {
-//     name: "Evictions",
-//     url: "/",
-//     newtab: true,
-//   },
-//   {
-//     name: "LA Controller",
-//     url: "https://controller.lacity.gov",
-//     newtab: true,
-//   },
-//   {
-//     name: "Table",
-//     url: "https://docs.google.com/spreadsheets/d/1d6xgd95m0v914YTePb8m-9Ir9SVKNKx4-Xw8N_4I0pk/edit?usp=sharing",
-//     newtab: true,
-//   },
-//   {
-//     name: "Analysis",
-//     url: "/",
-//     newtab: true,
-//   },
-// ];
 
 function Nav() {
   const navarraycurrent = () => {
@@ -78,7 +55,7 @@ function Nav() {
 
   const messageBox = () => {
     alert(
-      "-Click & Drag to explore locations on the map, or enter a location in the Search bar.\n\n-Click on a map point to view arrest details by location.\n\n-Click Filter button to view by Eviction Category, Notice Type, Council District, and top 20 Zip Codes."
+      "-Click on RESET button before exploring the map.\n\n-Click & Drag to explore locations on the map, or enter a location in the Search bar.\n\n-Click on a map point to view arrest details by location.\n\n-Click Filter button to view by Eviction Category, Notice Type, Council District, and top 20 Zip Codes."
     );
   };
 

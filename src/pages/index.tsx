@@ -110,6 +110,7 @@ const Home: NextPage = () => {
   const [infoBoxLength, setInfoBoxLength] = useState(1);
   const [evictionInfo, setEvictionInfo] = useState(0);
   const [normalizeIntensity, setNormalizeIntensity] = useState(false);
+  const [showLayer, setShowLayer] = useState(false);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
   var mapname = "Evictions_07-31-23";
@@ -625,32 +626,12 @@ const Home: NextPage = () => {
         },
       });
 
-      // map.addSource("eviction-zipcode-point", {
-      //   type: "geojson",
-      //   data: {
-      //     type: "FeatureCollection",
-      //     features: [],
-      //   },
-      // });
-
       map.on("mouseleave", "evictions-zipcodes", () => {
-        //check if the url query string "stopmouseleave" is true
-        //if it is, then don't do anything
-        //if it is not, then do the following
-
         if (urlParams.get("stopmouseleave") === null) {
           map.getCanvas().style.cursor = "";
           popup.remove();
         }
       });
-
-      // map.addSource("eviction-zipcode-point", {
-      //   type: "geojson",
-      //   data: {
-      //     type: "FeatureCollection",
-      //     features: [],
-      //   },
-      // });
 
       map.on("mouseover", "evictions-zipcodes", (e: any) => {
         if (e.features) {
@@ -1349,6 +1330,7 @@ const Home: NextPage = () => {
                   </button>
                   <button
                     onClick={() => {
+                      setShowLayer(true);
                       setselectedfilteropened("zipcodes");
                       setFilteredZipCodesPre(filterableZipCodeKeys);
                       setFilteredCategoriesPre([]);
