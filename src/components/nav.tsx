@@ -84,85 +84,87 @@ function Nav() {
 
   return (
     <Disclosure as="nav" className="z-50 bg-[#1a1a1a] flex flex-col">
-    {({ open }) => (
-      <>
-        <div className="z-50 flex flex-row  h-content">
-          <div className="">
-            {/* Mobile menu button*/}
-            <div className="flex flex-row sm:hidden">
-              <div className="inset-y-0 left-0">
-                <Disclosure.Button className=" rounded-md p-2 hover:bg-[#80ffdc] focus:outline-none bg-[#1a1a1a] text-white hover:text-gray-100">
-                  <span className="sr-only">Open main menu</span>
-                  {open ? (
-                    <XIcon className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <ChevronDoubleDownIcon
-                      className="block h-6 w-6"
-                      aria-hidden="true"
-                    />
-                  )}
-                </Disclosure.Button>
-              </div>
-              <div className="grid content-center ml-2">
-                <strong className="text-white">Evictions (Jan - July 2023)</strong>
-              </div>
-            </div>
-            <div className="hidden sm:ml-4 sm:block lg:ml-6">
-              <div className="flex gap-x-3 lg:gap-x-4">
-                {navarraycurrent().map((item: newiteminterface) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    target={item.target}
-                    className={classNames(
-                      item.current
-                        ? "py-2 md:py-3 px-3 block hover:text-green-300 focus:outline-none text-green-300 border-b-2 font-medium border-green-300"
-                        : "text-white py-2 text-sm md:text-base md:py-3 px-3 block hover:text-green-300 focus:outline-none underline"
+      {({ open }) => (
+        <>
+          <div className="z-50 flex flex-row  h-content">
+            <div className="">
+              {/* Mobile menu button*/}
+              <div className="flex flex-row sm:hidden">
+                <div className="inset-y-0 left-0">
+                  <Disclosure.Button className=" rounded-md p-2 hover:bg-[#80ffdc] focus:outline-none bg-[#1a1a1a] text-white hover:text-gray-100">
+                    <span className="sr-only">Open main menu</span>
+                    {open ? (
+                      <XIcon className="block h-6 w-6" aria-hidden="true" />
+                    ) : (
+                      <ChevronDoubleDownIcon
+                        className="block h-6 w-6"
+                        aria-hidden="true"
+                      />
                     )}
-                    aria-current={item.current ? "page" : undefined}
+                  </Disclosure.Button>
+                </div>
+                <div className="grid content-center ml-2">
+                  <strong className="text-white">
+                    Evictions (Jan - July 2023)
+                  </strong>
+                </div>
+              </div>
+              <div className="hidden sm:ml-4 sm:block lg:ml-6">
+                <div className="flex gap-x-3 lg:gap-x-4">
+                  {navarraycurrent().map((item: newiteminterface) => (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      target={item.target}
+                      className={classNames(
+                        item.current
+                          ? "py-2 md:py-3 px-3 block hover:text-green-300 focus:outline-none text-green-300 border-b-2 font-medium border-green-300"
+                          : "text-white py-2 text-sm md:text-base md:py-3 px-3 block hover:text-green-300 focus:outline-none underline"
+                      )}
+                      aria-current={item.current ? "page" : undefined}
+                    >
+                      {item.name}
+                    </a>
+                  ))}
+                  <p
+                    className="text-white py-2 text-sm md:text-base   md:py-3 px-3 block hover:text-green-300 focus:outline-none underline"
+                    onClick={messageBox}
                   >
-                    {item.name}
-                  </a>
-                ))}
-                <p
-                  className="text-white py-2 text-sm md:text-base   md:py-3 px-3 block hover:text-green-300 focus:outline-none underline"
-                  onClick={messageBox}
-                >
-                  Instructions
-                </p>
+                    Instructions
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <Disclosure.Panel className="md:hidden">
-          <div className="space-y-1 px-2 pt-3 pb-3">
-            {navarraycurrent().map((item: newiteminterface) => (
-              <Disclosure.Button
-                key={item.name}
-                as="a"
-                href={item.href}
-                target={item.target}
-                className={classNames(
-                  item.current ? "bg-green-900 text-white" : "text-gray-100",
-                  "block rounded-md px-3 py-2 text-base font-medium"
-                )}
-                aria-current={item.current ? "page" : undefined}
+          <Disclosure.Panel className="md:hidden">
+            <div className="space-y-1 px-2 pt-3 pb-3">
+              {navarraycurrent().map((item: newiteminterface) => (
+                <Disclosure.Button
+                  key={item.name}
+                  as="a"
+                  href={item.href}
+                  target={item.target}
+                  className={classNames(
+                    item.current ? "bg-green-900 text-white" : "text-gray-100",
+                    "block rounded-md px-3 py-2 text-base font-medium"
+                  )}
+                  aria-current={item.current ? "page" : undefined}
+                >
+                  {item.name}
+                </Disclosure.Button>
+              ))}
+              <p
+                className="text-white font-medium text-base py-2 md:text-base md:py-3 px-3 block focus:outline-none"
+                onClick={messageBox}
               >
-                {item.name}
-              </Disclosure.Button>
-            ))}
-            <p
-              className="text-white font-medium text-base py-2 md:text-base md:py-3 px-3 block focus:outline-none"
-              onClick={messageBox}
-            >
-              Instructions
-            </p>
-          </div>
-        </Disclosure.Panel>
-      </>
-    )}
-  </Disclosure>
+                Instructions
+              </p>
+            </div>
+          </Disclosure.Panel>
+        </>
+      )}
+    </Disclosure>
     // <div className="z-50 bg-[#1a1a1a] flex flex-col">
     //   <nav className="z-50 flex flex-row  h-content">
     //     {navigationPayroll.map((item: any, itemIdx: any) => (
