@@ -87,7 +87,7 @@ const Home: NextPage = () => {
   var mapref: any = useRef(null);
   const okaydeletepoints: any = useRef(null);
   const [doneloadingmap, setdoneloadingmap] = useState(false);
-  const [selectedfilteropened, setselectedfilteropened] = useState("category");
+  const [selectedfilteropened, setselectedfilteropened] = useState("district");
   const [filteredDistricts, setFilteredDistricts] = useState<number[]>(
     filterableDistrictsKeys.map((key) => Number(key))
   );
@@ -110,7 +110,6 @@ const Home: NextPage = () => {
   const [infoBoxLength, setInfoBoxLength] = useState(1);
   const [evictionInfo, setEvictionInfo] = useState(0);
   const [normalizeIntensity, setNormalizeIntensity] = useState(false);
-  const [showLayer, setShowLayer] = useState(false);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
   var mapname = "Evictions_07-31-23";
@@ -150,7 +149,7 @@ const Home: NextPage = () => {
   };
 
   const onResetClicked = () => {
-    setselectedfilteropened("category");
+    setselectedfilteropened("district");
     setFilteredZipCodesPre([]);
     setFilteredCategoriesPre(filterableCategoriesKeys);
     setFilteredNoticesPre(filterableNoticesKeys);
@@ -730,7 +729,7 @@ const Home: NextPage = () => {
                         ${
                           eachCase.properties?.["rent_owed_currency"] &&
                           eachCase.properties["rent_owed_currency"] != "UNKNOWN"
-                            ? `<span class="text-red-600">Rent Owed: ${eachCase.properties["rent_owed_currency"]}</span> `
+                            ? `<span class="text-red-400">Rent Owed: ${eachCase.properties["rent_owed_currency"]}</span> `
                             : ""
                         }
                   </li>`;
@@ -1291,6 +1290,19 @@ const Home: NextPage = () => {
                 <div className="gap-x-0 flex flex-row w-full pr-8">
                   <button
                     onClick={() => {
+                      setselectedfilteropened("district");
+                      setFilteredZipCodesPre([]);
+                    }}
+                    className={`px-2 border-b-2  py-1  font-semibold ${
+                      selectedfilteropened === "district"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                    CD
+                  </button>
+                  <button
+                    onClick={() => {
                       setselectedfilteropened("category");
                       setFilteredZipCodesPre([]);
                     }}
@@ -1317,20 +1329,6 @@ const Home: NextPage = () => {
                   </button>
                   <button
                     onClick={() => {
-                      setselectedfilteropened("district");
-                      setFilteredZipCodesPre([]);
-                    }}
-                    className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "district"
-                        ? "border-[#41ffca] text-[#41ffca]"
-                        : "hover:border-white border-transparent text-gray-50"
-                    }`}
-                  >
-                    CD
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowLayer(true);
                       setselectedfilteropened("zipcodes");
                       setFilteredZipCodesPre(filterableZipCodeKeys);
                       setFilteredCategoriesPre([]);
@@ -1347,6 +1345,56 @@ const Home: NextPage = () => {
                   </button>
                 </div>
                 <div className="flex flex-col">
+                  {selectedfilteropened === "district" && (
+                    <div className="mt-2">
+                      <SelectButtons
+                        onSelect={onSelect}
+                        onUnselect={onUnselect}
+                        onInvert={onInvert}
+                      />
+                      <div className="flex flex-row gap-x-1">
+                        <div className="flex items-center">
+                          <Checkbox.Group
+                            value={filteredDistricts.map((district) =>
+                              String(district)
+                            )}
+                            onChange={setFilteredDistrictPre}
+                          >
+                            <div
+                              className={`grid grid-cols-3
+                          } gap-x-4 `}
+                            >
+                              {Object.entries(filterableDistricts).map(
+                                (eachEntry) => (
+                                  <Checkbox
+                                    value={eachEntry[0]}
+                                    label={
+                                      <span className="text-nowrap text-xs">
+                                        <span className="text-white">
+                                          {eachEntry[0]}
+                                        </span>{" "}
+                                        <span>{eachEntry[1]}</span>
+                                      </span>
+                                    }
+                                    key={eachEntry[0]}
+                                  />
+                                )
+                              )}
+                            </div>
+                          </Checkbox.Group>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-blue-400 text-xs mt-1">
+                          <strong>Evictions by Council District</strong>
+                        </p>
+                      </div>
+                      <Intensity
+                        normalizeIntensity={normalizeIntensity}
+                        setNormalizeIntensity={setNormalizeIntensity}
+                      />
+                    </div>
+                  )}
                   {selectedfilteropened === "category" && (
                     <div className="mt-2">
                       <SelectButtons
@@ -1439,56 +1487,6 @@ const Home: NextPage = () => {
                       <div>
                         <p className="text-blue-400 text-xs mt-1">
                           <strong>Evictions by Notice Type</strong>
-                        </p>
-                      </div>
-                      <Intensity
-                        normalizeIntensity={normalizeIntensity}
-                        setNormalizeIntensity={setNormalizeIntensity}
-                      />
-                    </div>
-                  )}
-                  {selectedfilteropened === "district" && (
-                    <div className="mt-2">
-                      <SelectButtons
-                        onSelect={onSelect}
-                        onUnselect={onUnselect}
-                        onInvert={onInvert}
-                      />
-                      <div className="flex flex-row gap-x-1">
-                        <div className="flex items-center">
-                          <Checkbox.Group
-                            value={filteredDistricts.map((district) =>
-                              String(district)
-                            )}
-                            onChange={setFilteredDistrictPre}
-                          >
-                            <div
-                              className={`grid grid-cols-3
-                          } gap-x-4 `}
-                            >
-                              {Object.entries(filterableDistricts).map(
-                                (eachEntry) => (
-                                  <Checkbox
-                                    value={eachEntry[0]}
-                                    label={
-                                      <span className="text-nowrap text-xs">
-                                        <span className="text-white">
-                                          {eachEntry[0]}
-                                        </span>{" "}
-                                        <span>{eachEntry[1]}</span>
-                                      </span>
-                                    }
-                                    key={eachEntry[0]}
-                                  />
-                                )
-                              )}
-                            </div>
-                          </Checkbox.Group>
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-blue-400 text-xs mt-1">
-                          <strong>Evictions by Council District</strong>
                         </p>
                       </div>
                       <Intensity
