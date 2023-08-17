@@ -82,7 +82,7 @@ function Nav() {
                 </div>
                 <div className="grid content-center ml-2">
                   <strong className="text-white">
-                    Evictions (Jan - July 2023)
+                    Eviction Notices
                   </strong>
                 </div>
               </div>
@@ -115,7 +115,8 @@ function Nav() {
           </div>
 
           <Disclosure.Panel className="md:hidden">
-            <div className="space-y-1 px-2 pt-3 pb-3">
+            <div className="space-y-1 px-2 pt-0 pb-3">
+            <p className="text-[#41ffca] font-medium text-base pt-0 pb-1 px-3 block">Eviction Notices Feb - Jul 2023</p>
               {navarraycurrent().map((item: newiteminterface) => (
                 <Disclosure.Button
                   key={item.name}
@@ -142,28 +143,6 @@ function Nav() {
         </>
       )}
     </Disclosure>
-    // <div className="z-50 bg-[#1a1a1a] flex flex-col">
-    //   <nav className="z-50 flex flex-row  h-content">
-    //     {navigationPayroll.map((item: any, itemIdx: any) => (
-    //       <ActiveLink
-    //         activeClassName="text-white py-2 md:py-3 px-6 block hover:text-green-300 focus:outline-none text-green-300 border-b-2 font-medium border-green-300"
-    //         href={item.url}
-    //         key={itemIdx}
-    //         target={`${item.newtab === true ? "_blank" : ""}`}
-    //       >
-    //         <p className="text-white py-2 text-sm md:text-base   md:py-3 px-3 block hover:text-green-300 focus:outline-none underline">
-    //           {item.name}
-    //         </p>
-    //       </ActiveLink>
-    //     ))}
-    //     <p
-    //       className="text-white py-2 text-sm md:text-base   md:py-3 px-3 block hover:text-green-300 focus:outline-none underline"
-    //       onClick={messageBox}
-    //     >
-    //       Instructions
-    //     </p>
-    //   </nav>
-    // </div>
   );
 }
 
