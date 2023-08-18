@@ -27,7 +27,7 @@ const navigation: any = [
   },
   {
     name: "Analysis",
-    href: "https://controller-website.vercel.app/landings/evictions",
+    href: "https://controller.lacity.gov/landings/evictions",
     target: "_blank",
   },
 ];
