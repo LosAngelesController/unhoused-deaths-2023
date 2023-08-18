@@ -558,7 +558,7 @@ const Home: NextPage = () => {
                         ${
                           eachCase.properties?.["rent_owed_currency"] &&
                           eachCase.properties["rent_owed_currency"] != "UNKNOWN"
-                            ? `<span class="text-red-600">Rent Owed: ${eachCase.properties["rent_owed_currency"]}</span> `
+                            ? `<span class="text-red-400">Rent Owed: ${eachCase.properties["rent_owed_currency"]}</span> `
                             : ""
                         }
                   </li>`;
