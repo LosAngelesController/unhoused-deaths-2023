@@ -55,7 +55,7 @@ function Nav() {
 
   const messageBox = () => {
     alert(
-      "-Click on RESET button before exploring the map.\n\n-Click & Drag to explore locations on the map, or enter a location in the Search bar.\n\n-Click on a map point to view arrest details by location.\n\n-Click Filter button to view by Eviction Category, Notice Type, Council District, and top 20 Zip Codes."
+      "-Click & Drag to explore locations on the map, or enter a location in the Search bar.\n\n-Click on a map point to view eviction details by location.\n\n-Click Filter button to view by Eviction Category, Notice Type, Council District, and top 20 Zip Codes."
     );
   };
 

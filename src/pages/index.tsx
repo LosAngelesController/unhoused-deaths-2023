@@ -1098,6 +1098,7 @@ const Home: NextPage = () => {
       setFilteredCategoriesPre(filterableCategoriesKeys);
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre(filterableDistrictsKeys);
+      setFilteredZipCodesPre([]);
     } else if (selectedfilteropened === "zipcodes") {
       setFilteredZipCodesPre(filterableZipCodeKeys);
     }
@@ -1110,6 +1111,7 @@ const Home: NextPage = () => {
       setFilteredCategoriesPre([]);
     } else if (selectedfilteropened === "district") {
       setFilteredDistrictPre([]);
+      setFilteredZipCodesPre([]);
     } else if (selectedfilteropened === "zipcodes") {
       setFilteredZipCodesPre([]);
     }
@@ -1130,6 +1132,7 @@ const Home: NextPage = () => {
           (n) => !filteredDistricts.includes(Number(n))
         )
       );
+      setFilteredZipCodesPre([]);
     } else if (selectedfilteropened === "zipcodes") {
       setFilteredZipCodesPre(
         filterableZipCodeKeys.filter(
@@ -1170,14 +1173,14 @@ const Home: NextPage = () => {
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://evictions.vercel.app/eviction-notices.png"
+            content="https://evictions.lacontroller.io/eviction-notices.png"
           ></meta>
           <meta
             name="description"
             content="City of LA Eviction Notices (Feb - July 2023)"
           />
 
-          <meta property="og:url" content="https://evictions.vercel.app" />
+          <meta property="og:url" content="https://evictions.lacontroller.io" />
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
@@ -1189,7 +1192,7 @@ const Home: NextPage = () => {
           />
           <meta
             property="og:image"
-            content="https://evictions.vercel.app/eviction-notices.png"
+            content="https://evictions.lacontroller.io/eviction-notices.png"
           />
         </Head>
 
