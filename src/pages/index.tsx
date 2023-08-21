@@ -548,14 +548,6 @@ const Home: NextPage = () => {
                         }
                         <br />
                         ${
-                          eachCase.properties?.["current_monthly_rent"] &&
-                          eachCase.properties["current_monthly_rent"] !=
-                            "UNKNOWN"
-                            ? `<span class="text-indigo-300">Current Monthly Rent: ${eachCase.properties["current_monthly_rent"]}</span> `
-                            : ""
-                        }
-                        <br />
-                        ${
                           eachCase.properties?.["rent_owed_currency"] &&
                           eachCase.properties["rent_owed_currency"] != "UNKNOWN"
                             ? `<span class="text-red-400">Rent Owed: ${eachCase.properties["rent_owed_currency"]}</span> `
@@ -716,14 +708,6 @@ const Home: NextPage = () => {
                           eachCase.properties?.["bedroom_count"]
                             ? `<span class="text-teal-200">Bedroom Count: ${eachCase.properties["bedroom_count"]}</span> `
                             : "Bedroom Count: n/a"
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["current_monthly_rent"] &&
-                          eachCase.properties["current_monthly_rent"] !=
-                            "UNKNOWN"
-                            ? `<span class="text-indigo-300">Current Monthly Rent: ${eachCase.properties["current_monthly_rent"]}</span> `
-                            : ""
                         }
                         <br />
                         ${

@@ -48,8 +48,8 @@ export function InfoCarousel(props: CarouselProps) {
               {props.evictionData[props.evictionInfo]?.date} <br />
               <b className="text-stone-400">Notice Type:</b>{" "}
               {props.evictionData[props.evictionInfo]?.noticeType} <br />
-              <b className="text-stone-400">Current Monthly Rent:</b>{" "}
-              {props.evictionData[props.evictionInfo]?.monthlyRent} <br />
+              {/* <b className="text-stone-400">Current Monthly Rent:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.monthlyRent} <br /> */}
               <b className="text-stone-400">Rent Owed:</b>{" "}
               {props.evictionData[props.evictionInfo]?.rentOwed} <br />
               <b className="text-stone-400">Bedroom Count:</b>{" "}
