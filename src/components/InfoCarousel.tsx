@@ -34,28 +34,28 @@ export function InfoCarousel(props: CarouselProps) {
         <>
           <div>
             <p className="pr-4">
-              <b className="text-stone-400">Address:</b>{" "}
-              {props.evictionData[props.evictionInfo]?.address} <br />
-              <b className="text-stone-400">City:</b>{" "}
-              {props.evictionData[props.evictionInfo]?.city} <br />
-              <b className="text-stone-400">Zip Code:</b>{" "}
-              {props.evictionData[props.evictionInfo]?.zip} <br />
               <b className="text-stone-400">Council District:</b>{" "}
               {props.evictionData[props.evictionInfo]?.cd} <br />
-              <b className="text-stone-400">Eviction Category:</b>{" "}
-              {props.evictionData[props.evictionInfo]?.evictionCategory} <br />
-              <b className="text-stone-400">Notice Date:</b>{" "}
-              {props.evictionData[props.evictionInfo]?.date} <br />
-              <b className="text-stone-400">Notice Type:</b>{" "}
-              {props.evictionData[props.evictionInfo]?.noticeType} <br />
+              <b className="text-stone-400">Council File No:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.councilFileNo} <br />
+              <b className="text-stone-400">Title:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.title} <br />
+              <b className="text-stone-400">Date Introduced:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.dateIntroduced} <br />
+              <b className="text-stone-400">Last Change Date:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.lastChangeDate} <br />
+              <b className="text-stone-400">Location Description:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.locationDescription} <br />
+              <b className="text-stone-400">Mover/Seconder/Initiated By:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.mover} <br />
+              <b className="text-stone-400">Start:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.start} <br />
               {/* <b className="text-stone-400">Current Monthly Rent:</b>{" "}
               {props.evictionData[props.evictionInfo]?.monthlyRent} <br /> */}
-              <b className="text-stone-400">Rent Owed:</b>{" "}
-              {props.evictionData[props.evictionInfo]?.rentOwed} <br />
-              <b className="text-stone-400">Bedroom Count:</b>{" "}
-              {props.evictionData[props.evictionInfo]?.bedroom} <br />
-              <b className="text-stone-400">Just Cause:</b>{" "}
-              {props.evictionData[props.evictionInfo]?.justCause} <br />
+              <b className="text-stone-400">End:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.end} <br />
+              <b className="text-stone-400">Time Limit:</b>{" "}
+              {props.evictionData[props.evictionInfo]?.timeLimit} <br />
             </p>
           </div>
           <div className="mt-3">

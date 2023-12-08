@@ -11,7 +11,7 @@ interface newiteminterface {
 
 const navigation: any = [
   {
-    name: "Evictions",
+    name: "OVPR",
     href: "/",
     target: "_self",
   },
@@ -20,16 +20,16 @@ const navigation: any = [
     href: "https://controller.lacity.gov",
     target: "_blank",
   },
-  {
-    name: "Table",
-    href: "https://docs.google.com/spreadsheets/d/1d6xgd95m0v914YTePb8m-9Ir9SVKNKx4-Xw8N_4I0pk/edit?usp=sharing",
-    target: "_blank",
-  },
-  {
-    name: "Analysis",
-    href: "https://controller.lacity.gov/landings/evictions",
-    target: "_blank",
-  },
+  // {
+  //   name: "Table",
+  //   href: "https://docs.google.com/spreadsheets/d/1d6xgd95m0v914YTePb8m-9Ir9SVKNKx4-Xw8N_4I0pk/edit?usp=sharing",
+  //   target: "_blank",
+  // },
+  // {
+  //   name: "Analysis",
+  //   href: "https://controller.lacity.gov/landings/evictions",
+  //   target: "_blank",
+  // },
 ];
 
 function classNames(...classes: any) {
@@ -55,7 +55,7 @@ function Nav() {
 
   const messageBox = () => {
     alert(
-      "-Click & Drag to explore locations on the map, or enter a location in the Search bar.\n\n-Click on a map point to view eviction details by location.\n\n-Click Filter button to view by Eviction Category, Notice Type, Council District, and top 20 Zip Codes."
+      "-Click & Drag to explore locations on the map, or enter a location in the Search bar.\n\n-Click on a map point to view OVPR details by location.\n\n-Click Filter button to view Oversized Vehicle Restriction Zones by Council District."
     );
   };
 

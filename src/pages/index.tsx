@@ -16,69 +16,79 @@ const citybounds = require("./citybounds.json");
 import mapboxgl from "mapbox-gl";
 import { Intensity } from "@/components/Intensity";
 
+// const evictionPoints = require("./evictions.json");
+
+// function assignPointsToDistrict(points: any, districtJson: any) {
+//   const districtPolygons = districtJson.features.map((feature: any) => feature.geometry.coordinates[0][0]);
+
+//   const pointDistricts = points.map((point: any) => {
+//     for (let i = 0; i < districtPolygons.length; i++) {
+//       const polygon = districtPolygons[i];
+//       const [pointInside, reportNum] = insidePolygon(point, polygon);
+//       if (pointInside) {
+//         let distName = Number(districtJson.features[i].properties.district);
+//         return {"ID": reportNum, "CD#": distName};
+//       }
+//     }
+//   });
+//   return pointDistricts;
+// }
+
+// function insidePolygon(point: any, polygon: any): [boolean, number] {
+//   const x = point.lon;
+//   const y = point.lat;
+//   const id = point.id;
+
+//   let inside = false;
+
+//   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+//     const [xi, yi] = polygon[i];
+//     const [xj, yj] = polygon[j];
+
+//     const intersect = ((yi > y) !== (yj > y)) &&
+//       (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+
+//     if (intersect) {
+//       inside = !inside;
+//     }
+//   }
+//   return [inside, id];
+// }
+
+// const locationPoints = evictionPoints.map((arrest: any) => {
+//   return {
+//     id: arrest.ID,
+//     lon: arrest.Longitude,
+//     lat: arrest.Latitude,
+//   };
+// });
+
+// const districtNumbers = assignPointsToDistrict(locationPoints, councildistricts);
+// console.log("locationPoints", locationPoints);
+
+// console.log("districtNumbers", districtNumbers);
+// var jsonString = JSON.stringify(districtNumbers);
+// console.log(jsonString);
+
 const filterableDistricts: any = {
-  1: 2819,
-  2: 2297,
-  3: 3301,
-  4: 2532,
-  5: 3857,
-  6: 1684,
-  7: 607,
-  8: 1184,
-  9: 828,
-  10: 3697,
-  11: 2700,
-  12: 1492,
-  13: 5246,
-  14: 5819,
-  15: 1016,
+  1: "",
+  2: "",
+  3: "",
+  4: "",
+  5: "",
+  6: "",
+  7: "",
+  8: "",
+  9: "",
+  10: "",
+  11: "",
+  12: "",
+  13: "",
+  14: "",
+  15: "",
 };
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
-
-const filterableCategories: any = {
-  "At-Fault": 39631,
-  "No-Fault": 46,
-};
-
-const filterableCategoriesKeys = Object.keys(filterableCategories);
-
-const filterableNotices: any = {
-  "3 Day": 37082,
-  "10 Day": 459,
-  "15 Day": 1,
-  "30 Day": 2017,
-  "60 Day": 97,
-  "90 Day": 16,
-  "120 Day": 5,
-};
-
-const filterableNoticesKeys = Object.keys(filterableNotices);
-
-const filterableZipCodes: any = {
-  90028: 2923,
-  90036: 2228,
-  90015: 1635,
-  90014: 1281,
-  90012: 1272,
-  91367: 1265,
-  90005: 1178,
-  90017: 1033,
-  91601: 1023,
-  90020: 965,
-  90013: 903,
-  90004: 850,
-  90057: 759,
-  91303: 747,
-  90046: 715,
-  90006: 703,
-  90045: 532,
-  90038: 523,
-  91325: 517,
-  91335: 504,
-};
-
-const filterableZipCodeKeys = Object.keys(filterableZipCodes);
 
 const Home: NextPage = () => {
   const shouldfilteropeninit =
@@ -91,16 +101,6 @@ const Home: NextPage = () => {
   const [filteredDistricts, setFilteredDistricts] = useState<number[]>(
     filterableDistrictsKeys.map((key) => Number(key))
   );
-  const [filteredCategories, setFilteredCategories] = useState<string[]>(
-    filterableCategoriesKeys
-  );
-
-  const [filteredNotices, setFilteredNotices] = useState<string[]>(
-    filterableNoticesKeys
-  );
-  const [filteredZipCodes, setFilteredZipCodes] = useState<number[]>(
-    filterableZipCodeKeys.map((key) => Number(key))
-  );
 
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
@@ -109,10 +109,9 @@ const Home: NextPage = () => {
   let [evictionInfoOpen, setEvictionInfoOpen] = useState(false);
   const [infoBoxLength, setInfoBoxLength] = useState(1);
   const [evictionInfo, setEvictionInfo] = useState(0);
-  const [normalizeIntensity, setNormalizeIntensity] = useState(false);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "Evictions_07-31-23";
+  var mapname = "Oversized_Vehicles_CD1-15";
 
   const setFilteredDistrictPre = (input: string[]) => {
     if (input.length === 0) {
@@ -120,40 +119,6 @@ const Home: NextPage = () => {
     } else {
       setFilteredDistricts(input.map((x) => Number(x)));
     }
-  };
-
-  const setFilteredCategoriesPre = (input: string[]) => {
-    console.log("inputvalidator", input);
-    if (input.length === 0) {
-      setFilteredCategories(["99999"]);
-    } else {
-      setFilteredCategories(input);
-    }
-  };
-
-  const setFilteredNoticesPre = (input: string[]) => {
-    console.log("inputvalidator", input);
-    if (input.length === 0) {
-      setFilteredNotices(["99999"]);
-    } else {
-      setFilteredNotices(input);
-    }
-  };
-
-  const setFilteredZipCodesPre = (input: string[]) => {
-    if (input.length === 0) {
-      setFilteredZipCodes([99999]);
-    } else {
-      setFilteredZipCodes(input.map((x) => Number(x)));
-    }
-  };
-
-  const onResetClicked = () => {
-    setselectedfilteropened("district");
-    setFilteredZipCodesPre([]);
-    setFilteredCategoriesPre(filterableCategoriesKeys);
-    setFilteredNoticesPre(filterableNoticesKeys);
-    setFilteredDistrictPre(filterableDistrictsKeys);
   };
 
   var [hasStartedControls, setHasStartedControls] = useState(false);
@@ -187,12 +152,12 @@ const Home: NextPage = () => {
   const closeInfoBox = () => {
     console.log("mapref.current", mapref.current);
     console.log(
-      "mapref.current.getSource eviction-point",
-      mapref.current.getSource("eviction-point")
+      "mapref.current.getSource linestring-hover",
+      mapref.current.getSource("linestring-hover")
     );
 
     mapref.current.setLayoutProperty(
-      "points-selected-evictions-layer",
+      "line-selected",
       "visibility",
       "none"
     );
@@ -200,7 +165,7 @@ const Home: NextPage = () => {
     setEvictionInfoOpen(false);
     if (mapref) {
       if (mapref.current) {
-        var evictionPoint: any = mapref.current.getSource("eviction-point");
+        var evictionPoint: any = mapref.current.getSource("linestring-hover");
         evictionPoint.setData(null);
       } else {
         console.log("no current ref");
@@ -213,26 +178,6 @@ const Home: NextPage = () => {
       okaydeletepoints.current();
     }
   };
-
-  const recomputeIntensity = () => {
-    let levels = ["interpolate", ["linear"], ["zoom"], 7, 0.2, 22, 2];
-
-    if (normalizeIntensity === true) {
-      levels = ["interpolate", ["linear"], ["zoom"], 7, 3, 15, 4];
-    }
-
-    var layer = mapref.current.getLayer("evictions");
-
-    if (layer) {
-      mapref.current.setPaintProperty("evictions", "heatmap-intensity", levels);
-    }
-  };
-
-  useEffect(() => {
-    if (mapref.current) {
-      recomputeIntensity();
-    }
-  }, [normalizeIntensity]);
 
   useEffect(() => {
     mapboxgl.accessToken =
@@ -258,7 +203,7 @@ const Home: NextPage = () => {
 
     var mapparams: any = {
       container: divRef.current, // container ID
-      style: "mapbox://styles/kennethmejia/cll1gnmuz005t01rgh4h873vd", // style URL (THIS IS STREET VIEW)
+      style: "mapbox://styles/kennethmejia/clpwzn1nv00ix01op4ynk2fpj", // style URL (THIS IS STREET VIEW)
       center: [-118.41, 34], // starting position [lng, lat]
       zoom: formulaForZoom(), // starting zoom
     };
@@ -296,7 +241,7 @@ const Home: NextPage = () => {
 
       okaydeletepoints.current = () => {
         try {
-          var evictionPoint: any = map.getSource("eviction-point");
+          var evictionPoint: any = map.getSource("linestring-hover");
           evictionPoint.setData(null);
         } catch (err) {
           console.error(err);
@@ -304,7 +249,7 @@ const Home: NextPage = () => {
       };
 
       const processgeocodereventresult = (eventmapbox: any) => {
-        var singlePointSet: any = map.getSource("single-point");
+        var singlePointSet: any = map.getSource("line-source");
 
         singlePointSet.setData({
           type: "FeatureCollection",
@@ -319,7 +264,7 @@ const Home: NextPage = () => {
 
       const processgeocodereventselect = (object: any) => {
         var coord = object.feature.geometry.coordinates;
-        var singlePointSet: any = map.getSource("single-point");
+        var singlePointSet: any = map.getSource("line-source");
 
         singlePointSet.setData({
           type: "FeatureCollection",
@@ -415,25 +360,13 @@ const Home: NextPage = () => {
         });
       }
 
-      map.addSource("single-point", {
+      map.addSource("line-source", {
         type: "geojson",
         data: {
           type: "FeatureCollection",
           features: [],
         },
       });
-
-      if (true) {
-        map.addLayer({
-          id: "point",
-          source: "single-point",
-          type: "circle",
-          paint: {
-            "circle-radius": 10,
-            "circle-color": "#41ffca",
-          },
-        });
-      }
 
       if (debugParam) {
         map.showTileBoundaries = true;
@@ -461,155 +394,7 @@ const Home: NextPage = () => {
         closeOnClick: false,
       });
 
-      map.on("mouseover", "evictions", (e: any) => {
-        if (e.features) {
-          map.getCanvas().style.cursor = "pointer";
-          const closestcoords: any = computeclosestcoordsfromevent(e);
-
-          const filteredfeatures = e.features.filter((feature: any) => {
-            return (
-              feature.geometry.coordinates[0] === closestcoords[0] &&
-              feature.geometry.coordinates[1] === closestcoords[1]
-            );
-          });
-
-          console.log("filteredfeatures", filteredfeatures);
-
-          // Copy coordinates array.
-          const coordinates = closestcoords.slice();
-
-          /*Ensure that if the map is zoomed out such that multiple
-          copies of the feature are visible, the popup appears
-          over the copy being pointed to.*/
-          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
-
-          if (filteredfeatures.length > 0) {
-            if (filteredfeatures[0]) {
-              if (filteredfeatures[0].properties) {
-                if (filteredfeatures[0].properties["address"]) {
-                  const areaPC = filteredfeatures[0].properties["address"];
-
-                  const allthelineitems = filteredfeatures.map(
-                    (eachCase: any) => {
-                      if (eachCase.properties?.["eviction_category"]) {
-                        return `<li class="leading-none my-2 text-blue-400">Eviction Category: ${
-                          eachCase.properties["eviction_category"]
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["notice_date"]
-                            ? `<span class="text-sky-400">Notice Date: ${eachCase.properties["notice_date"]}</span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["notice_type"]
-                            ? `<span class="text-sky-400">Notice Type: ${eachCase.properties["notice_type"]}</span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["just_cause"] &&
-                          eachCase.properties["just_cause"] != "UNKNOWN"
-                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["just_cause"]}</span> `
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["cd"]
-                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["cd"]} </span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["address"]
-                            ? `<span class="text-teal-400">Address: ${eachCase.properties["address"]}, </span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["city"]
-                            ? `<span class="text-teal-400">City: ${eachCase.properties["city"]}</span> `
-                            : ""
-                        }
-                        ${" "}
-                        ${
-                          eachCase.properties?.["zip_code"]
-                            ? `<span class="text-teal-400">Zip Code: ${eachCase.properties["zip_code"]}</span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["bedroom_count"]
-                            ? `<span class="text-teal-200">Bedroom Count: ${eachCase.properties["bedroom_count"]}</span> `
-                            : "Bedroom Count: n/a"
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["rent_owed_currency"] &&
-                          eachCase.properties["rent_owed_currency"] != "UNKNOWN"
-                            ? `<span class="text-red-400">Rent Owed: ${eachCase.properties["rent_owed_currency"]}</span> `
-                            : ""
-                        }
-                  </li>`;
-                      }
-                    }
-                  );
-
-                  popup
-                    .setLngLat(coordinates)
-                    .setHTML(
-                      ` <div>
-                <p class="font-semibold">${areaPC}</p>
-                <p>${filteredfeatures.length} Case${
-                        filteredfeatures.length > 1 ? "s" : ""
-                      }</p>
-
-                <ul class='list-disc leading-none'>${
-                  allthelineitems.length <= 3
-                    ? allthelineitems.join("")
-                    : allthelineitems.splice(0, 3).join("")
-                }</ul> 
-                ${
-                  allthelineitems.length >= 1
-                    ? `<p class="text-xs font-bold text-gray-300 mt-4">CLICK LOCATION TO SEE MORE</p>`
-                    : ""
-                }
-              </div><style>
-              .mapboxgl-popup-content {
-                background: #212121e0;
-                color: #fdfdfd;
-              }
-    
-              .flexcollate {
-                row-gap: 0.5rem;
-                display: flex;
-                flex-direction: column;
-              }
-              </style>`
-                    )
-                    .addTo(map);
-                }
-              }
-            }
-          }
-        }
-      });
-
-      map.on("mouseleave", "evictions", () => {
-        //check if the url query string "stopmouseleave" is true
-        //if it is, then don't do anything
-        //if it is not, then do the following
-
-        if (urlParams.get("stopmouseleave") === null) {
-          map.getCanvas().style.cursor = "";
-          popup.remove();
-        }
-      });
-
-      map.addSource("eviction-point", {
+      map.addSource("linestring-hover", {
         type: "geojson",
         data: {
           type: "FeatureCollection",
@@ -617,124 +402,70 @@ const Home: NextPage = () => {
         },
       });
 
-      map.on("mouseleave", "evictions-zipcodes", () => {
-        if (urlParams.get("stopmouseleave") === null) {
-          map.getCanvas().style.cursor = "";
-          popup.remove();
-        }
-      });
+      map.on("mouseenter", "ovpr-cd1-15", (e: any) => {
+        const hoveredFeature = e.features[0];
 
-      map.on("mouseover", "evictions-zipcodes", (e: any) => {
-        if (e.features) {
+        if (hoveredFeature && hoveredFeature.geometry) {
           map.getCanvas().style.cursor = "pointer";
-          const closestcoords: any = computeclosestcoordsfromevent(e);
 
-          const filteredfeatures = e.features.filter((feature: any) => {
-            return (
-              feature.geometry.coordinates[0] === closestcoords[0] &&
-              feature.geometry.coordinates[1] === closestcoords[1]
-            );
+          popup.setLngLat(e.lngLat);
+
+          const areaPC = hoveredFeature.properties["Council District"];
+
+          const allthelineitems = e.features.map((eachCase: any) => {
+            if (eachCase.properties?.["Council File No."]) {
+              return `<li class="leading-none my-2 text-blue-400">Council File No: ${
+                eachCase.properties["Council File No."]
+              }
+                            <br />
+                            ${
+                              eachCase.properties?.["Title"]
+                                ? `<span class="text-amber-200">Title: ${eachCase.properties["Title"]}</span>`
+                                : ""
+                            }
+                            <br />
+                            ${
+                              eachCase.properties?.["Date Introduced"]
+                                ? `<span class="text-sky-400">Date Introduced: ${eachCase.properties["Date Introduced"]}</span>`
+                                : ""
+                            }
+                            <br />
+                            ${
+                              eachCase.properties?.["Location Description"] &&
+                              eachCase.properties["just_cause"] != "UNKNOWN"
+                                ? `<span class="text-lime-300">Location Description: ${eachCase.properties["Location Description"]}</span> `
+                                : ""
+                            }
+                            <br />
+                            ${
+                              eachCase.properties?.["Start"]
+                                ? `<span class="text-slate-100">Start: ${eachCase.properties["Start"]}</span>`
+                                : ""
+                            }
+                            <br />
+                            ${
+                              eachCase.properties?.["End"]
+                                ? `<span class="text-teal-400">End: ${eachCase.properties["End"]}</span>`
+                                : ""
+                            }
+                      </li>`;
+            }
           });
 
-          console.log("filteredfeatures", filteredfeatures);
-
-          // Copy coordinates array.
-          const coordinates = closestcoords.slice();
-
-          /*Ensure that if the map is zoomed out such that multiple
-          copies of the feature are visible, the popup appears
-          over the copy being pointed to.*/
-          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
-
-          if (filteredfeatures.length > 0) {
-            if (filteredfeatures[0]) {
-              if (filteredfeatures[0].properties) {
-                if (filteredfeatures[0].properties["address"]) {
-                  const areaPC = filteredfeatures[0].properties["address"];
-
-                  const allthelineitems = filteredfeatures.map(
-                    (eachCase: any) => {
-                      if (eachCase.properties?.["eviction_category"]) {
-                        return `<li class="leading-none my-2 text-blue-400">Eviction Category: ${
-                          eachCase.properties["eviction_category"]
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["notice_date"]
-                            ? `<span class="text-sky-400">Notice Date: ${eachCase.properties["notice_date"]}</span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["notice_type"]
-                            ? `<span class="text-sky-400">Notice Type: ${eachCase.properties["notice_type"]}</span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["just_cause"] &&
-                          eachCase.properties["just_cause"] != "UNKNOWN"
-                            ? `<span class="text-lime-300">Just Cause: ${eachCase.properties["just_cause"]}</span> `
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["cd"]
-                            ? `<span class="text-slate-100">CD#: ${eachCase.properties["cd"]} </span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["address"]
-                            ? `<span class="text-teal-400">Address: ${eachCase.properties["address"]}, </span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["city"]
-                            ? `<span class="text-teal-400">City: ${eachCase.properties["city"]}</span> `
-                            : ""
-                        }
-                        ${" "}
-                        ${
-                          eachCase.properties?.["zip_code"]
-                            ? `<span class="text-teal-400">Zip Code: ${eachCase.properties["zip_code"]}</span>`
-                            : ""
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["bedroom_count"]
-                            ? `<span class="text-teal-200">Bedroom Count: ${eachCase.properties["bedroom_count"]}</span> `
-                            : "Bedroom Count: n/a"
-                        }
-                        <br />
-                        ${
-                          eachCase.properties?.["rent_owed_currency"] &&
-                          eachCase.properties["rent_owed_currency"] != "UNKNOWN"
-                            ? `<span class="text-red-400">Rent Owed: ${eachCase.properties["rent_owed_currency"]}</span> `
-                            : ""
-                        }
-                  </li>`;
-                      }
-                    }
-                  );
-
-                  popup
-                    .setLngLat(coordinates)
-                    .setHTML(
-                      ` <div>
-                <p class="font-semibold">${areaPC}</p>
-                <p>${filteredfeatures.length} Case${
-                        filteredfeatures.length > 1 ? "s" : ""
-                      }</p>
-
-                <ul class='list-disc leading-none'>${
-                  allthelineitems.length <= 3
-                    ? allthelineitems.join("")
-                    : allthelineitems.splice(0, 3).join("")
-                }</ul> 
+          popup
+            .setHTML(
+              ` <div>
+                <p class="font-semibold">Council District: ${areaPC}</p>
+                <p>${e.features.length} Restriction Zone${
+                e.features.length > 1 ? "s" : ""
+              }</p>
+                <ul class='list-disc leading-none'>
+                  ${
+                    allthelineitems.length <= 3
+                      ? allthelineitems.join("")
+                      : allthelineitems.splice(0, 3).join("")
+                  }
+                </ul> 
                 ${
                   allthelineitems.length >= 1
                     ? `<p class="text-xs font-bold text-gray-300 mt-4">CLICK LOCATION TO SEE MORE</p>`
@@ -745,20 +476,21 @@ const Home: NextPage = () => {
                 background: #212121e0;
                 color: #fdfdfd;
               }
-    
+      
               .flexcollate {
                 row-gap: 0.5rem;
                 display: flex;
                 flex-direction: column;
               }
               </style>`
-                    )
-                    .addTo(map);
-                }
-              }
-            }
-          }
+            )
+            .addTo(map);
         }
+      });
+
+      map.on("mouseleave", "ovpr-cd1-15", () => {
+        map.getCanvas().style.cursor = "";
+        popup.remove();
       });
 
       map.loadImage("/map-marker.png", (error, image: any) => {
@@ -770,9 +502,9 @@ const Home: NextPage = () => {
         if (true) {
           // example of how to add a pointer to what is currently selected
           map.addLayer({
-            id: "points-selected-evictions-layer",
+            id: "line-selected",
             type: "symbol",
-            source: "eviction-point",
+            source: "linestring-hover",
             paint: {
               "icon-color": "#FF8C00",
               "icon-translate": [0, -13],
@@ -791,69 +523,37 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mousedown", "evictions", (e: any) => {
+      map.on("mousedown", "ovpr-cd1-15", (e: any) => {
         setEvictionInfo(0);
         setInfoBoxLength(1);
         setEvictionInfoOpen(true);
-        console.log(e.features);
+        console.log("e.features", e.features);
         let filteredData = e.features.map((obj: any) => {
           return {
-            address: obj.properties["address"],
-            cd: obj.properties["cd"],
-            evictionCategory: obj.properties["eviction_category"],
-            date: obj.properties["notice_date"],
-            city: obj.properties.city,
-            zip: obj.properties["zip_code"],
-            monthlyRent: obj.properties["current_monthly_rent"],
-            rentOwed: obj.properties["rent_owed_currency"],
-            bedroom: obj.properties["bedroom_count"],
-            noticeType: obj.properties["notice_type"],
-            justCause: obj.properties["just_cause"],
+            cd: obj.properties["Council District"],
+            councilFileNo: obj.properties["Council File No."],
+            dateIntroduced: obj.properties["Date Introduced"],
+            end: obj.properties.End,
+            expirationDate: obj.properties["Expiration Date"],
+            lastActivity: obj.properties["Last Activity"],
+            lastChangeDate: obj.properties["Last Change Date"],
+            lastDayToAct: obj.properties["Last Day To Act"],
+            locationDescription: obj.properties["Location Description"],
+            mover: obj.properties["Mover/Seconder/Initiated by"],
+            pendingInCommittee: obj.properties["Pending in Committee"],
+            pursuantTo: obj.properties["Pursuant To"],
+            start: obj.properties["Start"],
+            summary: obj.properties["Summary"],
+            timeLimit: obj.properties["Time Limit"],
+            title: obj.properties["Title"],
           };
         });
 
-        // console.log("filteredData", filteredData);
-
-        var evictionPoint: any = map.getSource("eviction-point");
+        var evictionPoint: any = map.getSource("linestring-hover");
         evictionPoint.setData(e.features[0].geometry);
 
         map.setLayoutProperty(
-          "points-selected-evictions-layer",
-          "visibility",
-          "visible"
-        );
-
-        setEvictionData(filteredData);
-      });
-
-      map.on("mousedown", "evictions-zipcodes", (e: any) => {
-        setEvictionInfo(0);
-        setInfoBoxLength(1);
-        setEvictionInfoOpen(true);
-        console.log(e.features);
-        let filteredData = e.features.map((obj: any) => {
-          return {
-            address: obj.properties["address"],
-            cd: obj.properties["cd"],
-            evictionCategory: obj.properties["eviction_category"],
-            date: obj.properties["notice_date"],
-            city: obj.properties.city,
-            zip: obj.properties["zip_code"],
-            monthlyRent: obj.properties["current_monthly_rent"],
-            rentOwed: obj.properties["rent_owed_currency"],
-            bedroom: obj.properties["bedroom_count"],
-            noticeType: obj.properties["notice_type"],
-            justCause: obj.properties["just_cause"],
-          };
-        });
-
-        // console.log("filteredData", filteredData);
-
-        var evictionPoint: any = map.getSource("eviction-point");
-        evictionPoint.setData(e.features[0].geometry);
-
-        map.setLayoutProperty(
-          "points-selected-evictions-layer",
+          "line-selected",
           "visibility",
           "visible"
         );
@@ -876,7 +576,7 @@ const Home: NextPage = () => {
               "line-width": 1,
             },
           },
-          "road-label-navigation"
+          "road-label-simple"
         );
 
         map.addSource("citycouncildist", {
@@ -890,12 +590,12 @@ const Home: NextPage = () => {
             type: "line",
             source: "citycouncildist",
             paint: {
-              "line-color": "#7FE5D4",
+              "line-color": "#52525b",
               "line-opacity": 1,
               "line-width": 0.8,
             },
           },
-          "road-label-navigation"
+          "road-label-simple"
         );
 
         map.addLayer(
@@ -908,7 +608,7 @@ const Home: NextPage = () => {
               "fill-opacity": 0,
             },
           },
-          "road-label-navigation"
+          "road-label-simple"
         );
 
         map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
@@ -947,7 +647,7 @@ const Home: NextPage = () => {
               "fill-opacity": 0.3,
             },
           },
-          "road-label-navigation"
+          "road-label-simple"
         );
       }
 
@@ -1014,28 +714,12 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "cd"],
+      ["get", "Council District"],
       filteredDistricts,
       true,
       false,
     ]);
 
-    arrayoffilterables.push([
-      "match",
-      ["get", "eviction_category"],
-      filteredCategories.map((category) => String(category)),
-      true,
-      false,
-    ]);
-
-    arrayoffilterables.push([
-      "match",
-      ["get", "notice_type"],
-      filteredNotices.map((noticeType) => String(noticeType)),
-      true,
-      false,
-    ]);
-
     if (mapref.current) {
       if (doneloadingmap) {
         const filterinput = JSON.parse(
@@ -1043,84 +727,29 @@ const Home: NextPage = () => {
         );
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("evictions", filterinput);
+          mapref.current.setFilter("ovpr-cd1-15", filterinput);
         }
       }
     }
-  }, [filteredCategories, filteredDistricts, filteredNotices]);
-
-  useEffect(() => {
-    let arrayoffilterables: any = [];
-
-    arrayoffilterables.push([
-      "match",
-      ["get", "zip_code"],
-      filteredZipCodes,
-      true,
-      false,
-    ]);
-
-    if (mapref.current) {
-      if (doneloadingmap) {
-        const filterinput = JSON.parse(
-          JSON.stringify(["all", ...arrayoffilterables])
-        );
-
-        console.log(filterinput);
-
-        if (doneloadingmap === true) {
-          mapref.current.setFilter("evictions-zipcodes", filterinput);
-        }
-      }
-    }
-  }, [filteredZipCodes]);
+  }, [filteredDistricts]);
 
   const onSelect = () => {
-    if (selectedfilteropened === "notice") {
-      setFilteredNoticesPre(filterableNoticesKeys);
-    } else if (selectedfilteropened === "category") {
-      setFilteredCategoriesPre(filterableCategoriesKeys);
-    } else if (selectedfilteropened === "district") {
+    if (selectedfilteropened === "district") {
       setFilteredDistrictPre(filterableDistrictsKeys);
-      setFilteredZipCodesPre([]);
-    } else if (selectedfilteropened === "zipcodes") {
-      setFilteredZipCodesPre(filterableZipCodeKeys);
     }
   };
 
   const onUnselect = () => {
-    if (selectedfilteropened === "notice") {
-      setFilteredNoticesPre([]);
-    } else if (selectedfilteropened === "category") {
-      setFilteredCategoriesPre([]);
-    } else if (selectedfilteropened === "district") {
+    if (selectedfilteropened === "district") {
       setFilteredDistrictPre([]);
-      setFilteredZipCodesPre([]);
-    } else if (selectedfilteropened === "zipcodes") {
-      setFilteredZipCodesPre([]);
     }
   };
 
   const onInvert = () => {
-    if (selectedfilteropened === "notice") {
-      setFilteredNoticesPre(
-        filterableNoticesKeys.filter((n) => !filteredNotices.includes(n))
-      );
-    } else if (selectedfilteropened === "category") {
-      setFilteredCategoriesPre(
-        filterableCategoriesKeys.filter((n) => !filteredCategories.includes(n))
-      );
-    } else if (selectedfilteropened === "district") {
+    if (selectedfilteropened === "district") {
       setFilteredDistrictPre(
         filterableDistrictsKeys.filter(
           (n) => !filteredDistricts.includes(Number(n))
-        )
-      );
-      setFilteredZipCodesPre([]);
-    } else if (selectedfilteropened === "zipcodes") {
-      setFilteredZipCodesPre(
-        filterableZipCodeKeys.filter(
-          (n) => !filteredZipCodes.includes(Number(n))
         )
       );
     }
@@ -1139,7 +768,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>City of LA Eviction Notices (Feb - July 2023) | Map</title>
+          <title>City of LA Oversized Vehicle Restriction Zones | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -1188,14 +817,6 @@ const Home: NextPage = () => {
           <div className="max-h-screen flex-col flex z-5">
             <div className="hidden sm:block">
               <MapTitle />
-            </div>
-            <div className="absolute resetButton mt-[0.1em] sm:mt-[3em] md:mt-[3.7em] sm:ml-[17em] md:ml-[17em] top-0 z-5 ml-[12em] text-base bold md:semi-bold break-words">
-              <button
-                className="text-red-500 font-bold text-sm"
-                onClick={onResetClicked}
-              >
-                RESET
-              </button>
             </div>
             <div
               className={`geocoder absolute xs:mt-[1.5em] sm:mt-[2.7em] md:mt-[4.1em] ml-1 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
@@ -1286,49 +907,7 @@ const Home: NextPage = () => {
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                    CD
-                  </button>
-                  <button
-                    onClick={() => {
-                      setselectedfilteropened("category");
-                      setFilteredZipCodesPre([]);
-                    }}
-                    className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "category"
-                        ? "border-[#41ffca] text-[#41ffca]"
-                        : "hover:border-white border-transparent text-gray-50"
-                    }`}
-                  >
-                    Category
-                  </button>
-                  <button
-                    onClick={() => {
-                      setselectedfilteropened("notice");
-                      setFilteredZipCodesPre([]);
-                    }}
-                    className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "notice"
-                        ? "border-[#41ffca] text-[#41ffca]"
-                        : "hover:border-white border-transparent text-gray-50"
-                    }`}
-                  >
-                    Notice
-                  </button>
-                  <button
-                    onClick={() => {
-                      setselectedfilteropened("zipcodes");
-                      setFilteredZipCodesPre(filterableZipCodeKeys);
-                      setFilteredCategoriesPre([]);
-                      setFilteredNoticesPre([]);
-                      setFilteredDistrictPre([]);
-                    }}
-                    className={`px-2 border-b-2  py-1  font-semibold ${
-                      selectedfilteropened === "zipcodes"
-                        ? "border-[#41ffca] text-[#41ffca]"
-                        : "hover:border-white border-transparent text-gray-50"
-                    }`}
-                  >
-                    Zip
+                    Council District
                   </button>
                 </div>
                 <div className="flex flex-col">
@@ -1373,159 +952,10 @@ const Home: NextPage = () => {
                       </div>
                       <div>
                         <p className="text-blue-400 text-xs mt-1">
-                          <strong>Evictions by Council District</strong>
-                        </p>
-                      </div>
-                      <Intensity
-                        normalizeIntensity={normalizeIntensity}
-                        setNormalizeIntensity={setNormalizeIntensity}
-                      />
-                    </div>
-                  )}
-                  {selectedfilteropened === "category" && (
-                    <div className="mt-2">
-                      <SelectButtons
-                        onSelect={onSelect}
-                        onUnselect={onUnselect}
-                        onInvert={onInvert}
-                      />
-                      <div className="flex flex-row gap-x-1">
-                        <div className="flex items-center">
-                          <Checkbox.Group
-                            value={filteredCategories.map((category) =>
-                              String(category)
-                            )}
-                            onChange={setFilteredCategoriesPre}
-                          >
-                            <div
-                              className={`grid grid-cols-3
-                          } gap-x-4 `}
-                            >
-                              {Object.entries(filterableCategories).map(
-                                (eachEntry) => (
-                                  <Checkbox
-                                    value={eachEntry[0]}
-                                    label={
-                                      <span className="text-nowrap text-xs">
-                                        <span className="text-white">
-                                          {eachEntry[0]}
-                                        </span>{" "}
-                                        <span>{eachEntry[1]}</span>
-                                      </span>
-                                    }
-                                    key={eachEntry[0]}
-                                  />
-                                )
-                              )}
-                            </div>
-                          </Checkbox.Group>
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-blue-400 text-xs mt-1">
-                          <strong>Evictions by Eviction Category</strong>
-                        </p>
-                      </div>
-                      <Intensity
-                        normalizeIntensity={normalizeIntensity}
-                        setNormalizeIntensity={setNormalizeIntensity}
-                      />
-                    </div>
-                  )}
-                  {selectedfilteropened === "notice" && (
-                    <div className="mt-2">
-                      <SelectButtons
-                        onSelect={onSelect}
-                        onUnselect={onUnselect}
-                        onInvert={onInvert}
-                      />
-                      <div className="flex flex-row gap-x-1">
-                        <div className="flex items-center">
-                          <Checkbox.Group
-                            value={filteredNotices.map((notice) =>
-                              String(notice)
-                            )}
-                            onChange={setFilteredNoticesPre}
-                          >
-                            <div
-                              className={`grid grid-cols-3
-                          } gap-x-4 `}
-                            >
-                              {Object.entries(filterableNotices).map(
-                                (eachEntry) => (
-                                  <Checkbox
-                                    value={eachEntry[0]}
-                                    label={
-                                      <span className="text-nowrap text-xs">
-                                        <span className="text-white">
-                                          {eachEntry[0]}
-                                        </span>{" "}
-                                        <span>{eachEntry[1]}</span>
-                                      </span>
-                                    }
-                                    key={eachEntry[0]}
-                                  />
-                                )
-                              )}
-                            </div>
-                          </Checkbox.Group>
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-blue-400 text-xs mt-1">
-                          <strong>Evictions by Notice Type</strong>
-                        </p>
-                      </div>
-                      <Intensity
-                        normalizeIntensity={normalizeIntensity}
-                        setNormalizeIntensity={setNormalizeIntensity}
-                      />
-                    </div>
-                  )}
-                  {selectedfilteropened === "zipcodes" && (
-                    <div className="mt-1">
-                      <SelectButtons
-                        onSelect={onSelect}
-                        onUnselect={onUnselect}
-                        onInvert={onInvert}
-                      />
-                      <div className="flex flex-row gap-x-1">
-                        <div className="flex items-center">
-                          <Checkbox.Group
-                            value={filteredZipCodes.map((zip) => String(zip))}
-                            onChange={setFilteredZipCodesPre}
-                          >
-                            <div
-                              className={`grid grid-cols-3
-                          } gap-x-4 `}
-                            >
-                              {Object.entries(filterableZipCodes).map(
-                                (eachEntry) => (
-                                  <Checkbox
-                                    value={eachEntry[0]}
-                                    label={
-                                      <span className="text-nowrap text-xs">
-                                        <span className="text-white">
-                                          {eachEntry[0]}
-                                        </span>{" "}
-                                        <span>{eachEntry[1]}</span>
-                                      </span>
-                                    }
-                                    key={eachEntry[0]}
-                                  />
-                                )
-                              )}
-                            </div>
-                          </Checkbox.Group>
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-blue-400 text-xs mt-0">
-                          <strong>Evictions by Top 20 Zip Codes</strong>
-                        </p>
-                        <p className="text-[#41ffca] text-xs mt-1">
-                          <strong className="text-red-500">RESET</strong> map to
-                          view Category, Notice, and CD filters
+                          <strong>
+                            Oversized Vehicle Restriction Zones by Council
+                            District
+                          </strong>
                         </p>
                       </div>
                     </div>
@@ -1548,7 +978,7 @@ const Home: NextPage = () => {
                     setEvictionInfo(0);
                     if (mapref.current) {
                       var evictionPoint: any =
-                        mapref.current.getSource("eviction-point");
+                        mapref.current.getSource("linestring-hover");
                       if (evictionPoint) {
                         evictionPoint.setData(null);
                       }
