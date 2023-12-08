@@ -156,11 +156,7 @@ const Home: NextPage = () => {
       mapref.current.getSource("linestring-hover")
     );
 
-    mapref.current.setLayoutProperty(
-      "line-selected",
-      "visibility",
-      "none"
-    );
+    mapref.current.setLayoutProperty("line-selected", "visibility", "none");
 
     setEvictionInfoOpen(false);
     if (mapref) {
@@ -552,11 +548,7 @@ const Home: NextPage = () => {
         var evictionPoint: any = map.getSource("linestring-hover");
         evictionPoint.setData(e.features[0].geometry);
 
-        map.setLayoutProperty(
-          "line-selected",
-          "visibility",
-          "visible"
-        );
+        map.setLayoutProperty("line-selected", "visibility", "visible");
 
         setEvictionData(filteredData);
       });
