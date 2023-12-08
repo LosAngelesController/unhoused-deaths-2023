@@ -782,22 +782,22 @@ const Home: NextPage = () => {
           ></meta>
           <meta
             name="description"
-            content="City of LA Eviction Notices (Feb - July 2023)"
+            content="City of LA Oversized Vehicle Restriction Zones | Map"
           />
 
-          <meta property="og:url" content="https://evictions.lacontroller.io" />
+          <meta property="og:url" content="https://oversized-vehicles.vercel.app/" />
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
-            content="City of LA Eviction Notices (Feb - July 2023) | Map"
+            content="City of LA Oversized Vehicle Restriction Zones | Map"
           />
           <meta
             property="og:description"
-            content="City of LA Eviction Notices (Feb - July 2023)"
+            content="City of LA Oversized Vehicle Restriction Zones | Map"
           />
           <meta
             property="og:image"
-            content="https://evictions.lacontroller.io/eviction-notices.png"
+            // content="https://evictions.lacontroller.io/eviction-notices.png"
           />
         </Head>
 
