@@ -156,7 +156,11 @@ const Home: NextPage = () => {
       mapref.current.getSource("linestring-hover")
     );
 
-    mapref.current.setLayoutProperty("line-selected", "visibility", "none");
+    mapref.current.setLayoutProperty(
+      "line-selected",
+      "visibility",
+      "none"
+    );
 
     setEvictionInfoOpen(false);
     if (mapref) {
@@ -548,7 +552,11 @@ const Home: NextPage = () => {
         var evictionPoint: any = map.getSource("linestring-hover");
         evictionPoint.setData(e.features[0].geometry);
 
-        map.setLayoutProperty("line-selected", "visibility", "visible");
+        map.setLayoutProperty(
+          "line-selected",
+          "visibility",
+          "visible"
+        );
 
         setEvictionData(filteredData);
       });
@@ -768,12 +776,12 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="City of LA Eviction Notices (Feb - July 2023) | Map"
+            content="City of LA Oversized Vehicle Restriction Zones | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="City of LA Eviction Notices (Feb - July 2023)"
+            content="City of LA Oversized Vehicle Restriction Zones"
           ></meta>
           <meta
             name="twitter:image"
