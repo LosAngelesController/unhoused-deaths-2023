@@ -785,7 +785,10 @@ const Home: NextPage = () => {
             content="City of LA Oversized Vehicle Restriction Zones | Map"
           />
 
-          <meta property="og:url" content="https://oversized-vehicles.vercel.app/" />
+          <meta
+            property="og:url"
+            content="https://oversized-vehicles.vercel.app/"
+          />
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
