@@ -118,7 +118,7 @@ function Nav() {
                   </Disclosure.Button>
                 </div>
                 <div className="grid content-center ml-2">
-                  <strong className="text-white">OVPR</strong>
+                  <strong className="text-white">Oversized Vehicle Parking Restrictions</strong>
                 </div>
               </div>
               <div className="hidden sm:ml-4 sm:block lg:ml-6">
@@ -161,9 +161,9 @@ function Nav() {
 
           <Disclosure.Panel className="md:hidden">
             <div className="space-y-1 px-2 pt-0 pb-3">
-              <p className="text-[#41ffca] font-medium text-base pt-0 pb-1 px-3 block">
+              {/* <p className="text-[#41ffca] font-medium text-base pt-0 pb-1 px-3 block">
                 OVPR
-              </p>
+              </p> */}
               {navarraycurrent().map((item: newiteminterface) => (
                 <Disclosure.Button
                   key={item.name}

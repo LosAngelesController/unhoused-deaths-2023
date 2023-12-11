@@ -9,7 +9,7 @@ export function MapTitle() {
         color: "#ffffff",
       }}
     >
-      <strong className="">Oversized Vehicle Restriction Zones</strong>
+      <strong className="">Oversized Vehicle Parking Restriction Zones</strong>
     </div>
   );
 }
