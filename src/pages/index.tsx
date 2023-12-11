@@ -409,9 +409,13 @@ const Home: NextPage = () => {
           const areaPC = hoveredFeature.properties["Council District"];
 
           const allthelineitems = e.features.map((eachCase: any) => {
-            if (eachCase.properties?.["Council File No."] || eachCase.properties?.["Council File"]) {
+            if (
+              eachCase.properties?.["Council File No."] ||
+              eachCase.properties?.["Council File"]
+            ) {
               return `<li class="leading-none my-2 text-blue-400">Council File No: ${
-                eachCase.properties["Council File No."] || eachCase.properties["Council File"]
+                eachCase.properties["Council File No."] ||
+                eachCase.properties["Council File"]
               }
                             <br />
                             ${
@@ -527,7 +531,9 @@ const Home: NextPage = () => {
         let filteredData = e.features.map((obj: any) => {
           return {
             cd: obj.properties["Council District"],
-            councilFileNo: obj.properties["Council File No."] || obj.properties["Council File"],
+            councilFileNo:
+              obj.properties["Council File No."] ||
+              obj.properties["Council File"],
             dateIntroduced: obj.properties["Date Introduced"],
             end: obj.properties.End,
             expirationDate: obj.properties["Expiration Date"],
