@@ -538,7 +538,9 @@ const Home: NextPage = () => {
             end: obj.properties.End,
             expirationDate: obj.properties["Expiration Date"],
             lastActivity: obj.properties["Last Activity"],
-            lastChangeDate: obj.properties["Last Change Date"],
+            lastChangeDate:
+              obj.properties["Last Change Date"] ||
+              obj.properties["Last Changed"],
             lastDayToAct: obj.properties["Last Day To Act"],
             locationDescription: obj.properties["Location Description"],
             mover: obj.properties["Mover/Seconder/Initiated by"],

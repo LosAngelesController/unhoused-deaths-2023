@@ -118,7 +118,9 @@ function Nav() {
                   </Disclosure.Button>
                 </div>
                 <div className="grid content-center ml-2">
-                  <strong className="text-white">Oversized Vehicle Parking Restrictions</strong>
+                  <strong className="text-white">
+                    Oversized Vehicle Parking Restrictions
+                  </strong>
                 </div>
               </div>
               <div className="hidden sm:ml-4 sm:block lg:ml-6">
