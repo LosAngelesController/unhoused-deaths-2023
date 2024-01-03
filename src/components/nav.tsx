@@ -31,7 +31,7 @@ const showTranslateDropdown = () => {
 
 const navigation: any = [
   {
-    name: "OVPR",
+    name: "Cash for Keys LA",
     href: "/",
     target: "_self",
   },
@@ -92,7 +92,7 @@ function Nav() {
 
   const messageBox = () => {
     alert(
-      "-Click & Drag to explore locations on the map, or enter a location in the Search bar.\n\n-Click on a map point to view OVPR details by location.\n\n-Click Filter button to view Oversized Vehicle Restriction Zones by Council District."
+      "-Click & Drag to explore locations on the map, or enter a location in the Search bar.\n\n-Click on a map point to view tenant buyout details by location.\n\n-Click Filter button to view tenant buyouts by Council District."
     );
   };
 
@@ -119,7 +119,7 @@ function Nav() {
                 </div>
                 <div className="grid content-center ml-2">
                   <strong className="text-white">
-                    Oversized Vehicle Parking Restrictions
+                    Cash for Keys LA
                   </strong>
                 </div>
               </div>

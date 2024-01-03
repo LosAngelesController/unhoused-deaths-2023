@@ -71,21 +71,21 @@ import { Intensity } from "@/components/Intensity";
 // console.log(jsonString);
 
 const filterableDistricts: any = {
-  1: "",
-  2: "",
-  3: "",
-  4: "",
-  5: "",
-  6: "",
-  7: "",
-  8: "",
-  9: "",
-  10: "",
-  11: "",
-  12: "",
-  13: "",
-  14: "",
-  15: "",
+  1: "565",
+  2: "167",
+  3: "40",
+  4: "184",
+  5: "358",
+  6: "104",
+  7: "59",
+  8: "300",
+  9: "387",
+  10: "984",
+  11: "350",
+  12: "4",
+  13: "967",
+  14: "244",
+  15: "65",
 };
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
@@ -109,9 +109,10 @@ const Home: NextPage = () => {
   let [evictionInfoOpen, setEvictionInfoOpen] = useState(false);
   const [infoBoxLength, setInfoBoxLength] = useState(1);
   const [evictionInfo, setEvictionInfo] = useState(0);
+  const [normalizeIntensity, setNormalizeIntensity] = useState(false);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "Oversized_Vehicles_CD1-15";
+  var mapname = "Tenant-Buyouts";
 
   const setFilteredDistrictPre = (input: string[]) => {
     if (input.length === 0) {
@@ -152,16 +153,16 @@ const Home: NextPage = () => {
   const closeInfoBox = () => {
     console.log("mapref.current", mapref.current);
     console.log(
-      "mapref.current.getSource linestring-hover",
-      mapref.current.getSource("linestring-hover")
+      "mapref.current.getSource tenant-point",
+      mapref.current.getSource("tenant-point")
     );
 
-    mapref.current.setLayoutProperty("line-selected", "visibility", "none");
+    mapref.current.setLayoutProperty("point-selected", "visibility", "none");
 
     setEvictionInfoOpen(false);
     if (mapref) {
       if (mapref.current) {
-        var evictionPoint: any = mapref.current.getSource("linestring-hover");
+        var evictionPoint: any = mapref.current.getSource("tenant-point");
         evictionPoint.setData(null);
       } else {
         console.log("no current ref");
@@ -174,6 +175,30 @@ const Home: NextPage = () => {
       okaydeletepoints.current();
     }
   };
+
+  const recomputeIntensity = () => {
+    let levels = ["interpolate", ["linear"], ["zoom"], 7, 0.2, 22, 2];
+
+    if (normalizeIntensity === true) {
+      levels = ["interpolate", ["linear"], ["zoom"], 7, 3, 15, 4];
+    }
+
+    var layer = mapref.current.getLayer("tenant-buyouts-2019-2023");
+
+    if (layer) {
+      mapref.current.setPaintProperty(
+        "tenant-buyouts-2019-2023",
+        "heatmap-intensity",
+        levels
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (mapref.current) {
+      recomputeIntensity();
+    }
+  }, [normalizeIntensity]);
 
   useEffect(() => {
     mapboxgl.accessToken =
@@ -199,7 +224,7 @@ const Home: NextPage = () => {
 
     var mapparams: any = {
       container: divRef.current, // container ID
-      style: "mapbox://styles/kennethmejia/clpwzn1nv00ix01op4ynk2fpj", // style URL (THIS IS STREET VIEW)
+      style: "mapbox://styles/kennethmejia/clqy3aerb00fj01ob1tj3b5m2", // style URL (THIS IS STREET VIEW)
       center: [-118.41, 34], // starting position [lng, lat]
       zoom: formulaForZoom(), // starting zoom
     };
@@ -237,7 +262,7 @@ const Home: NextPage = () => {
 
       okaydeletepoints.current = () => {
         try {
-          var evictionPoint: any = map.getSource("linestring-hover");
+          var evictionPoint: any = map.getSource("tenant-point");
           evictionPoint.setData(null);
         } catch (err) {
           console.error(err);
@@ -245,7 +270,7 @@ const Home: NextPage = () => {
       };
 
       const processgeocodereventresult = (eventmapbox: any) => {
-        var singlePointSet: any = map.getSource("line-source");
+        var singlePointSet: any = map.getSource("single-point");
 
         singlePointSet.setData({
           type: "FeatureCollection",
@@ -260,7 +285,7 @@ const Home: NextPage = () => {
 
       const processgeocodereventselect = (object: any) => {
         var coord = object.feature.geometry.coordinates;
-        var singlePointSet: any = map.getSource("line-source");
+        var singlePointSet: any = map.getSource("single-point");
 
         singlePointSet.setData({
           type: "FeatureCollection",
@@ -356,7 +381,7 @@ const Home: NextPage = () => {
         });
       }
 
-      map.addSource("line-source", {
+      map.addSource("single-point", {
         type: "geojson",
         data: {
           type: "FeatureCollection",
@@ -390,7 +415,7 @@ const Home: NextPage = () => {
         closeOnClick: false,
       });
 
-      map.addSource("linestring-hover", {
+      map.addSource("tenant-point", {
         type: "geojson",
         data: {
           type: "FeatureCollection",
@@ -398,7 +423,7 @@ const Home: NextPage = () => {
         },
       });
 
-      map.on("mouseenter", "ovpr-cd1-15", (e: any) => {
+      map.on("mouseenter", "tenant-buyouts-2019-2023", (e: any) => {
         const hoveredFeature = e.features[0];
 
         if (hoveredFeature && hoveredFeature.geometry) {
@@ -406,46 +431,37 @@ const Home: NextPage = () => {
 
           popup.setLngLat(e.lngLat);
 
-          const areaPC = hoveredFeature.properties["Council District"];
+          const areaPC = hoveredFeature.properties["CD#"];
 
           const allthelineitems = e.features.map((eachCase: any) => {
             if (
-              eachCase.properties?.["Council File No."] ||
-              eachCase.properties?.["Council File"]
+              eachCase.properties?.["Address"]
             ) {
-              return `<li class="leading-none my-2 text-blue-400">Council File No: ${
-                eachCase.properties["Council File No."] ||
-                eachCase.properties["Council File"]
+              return `<li class="leading-none my-2 text-blue-400">Address: ${
+                eachCase.properties["Address"]
               }
                             <br />
                             ${
-                              eachCase.properties?.["Title"]
-                                ? `<span class="text-amber-200">Title: ${eachCase.properties["Title"]}</span>`
+                              eachCase.properties?.["City"]
+                                ? `<span class="text-blue-400">City: ${eachCase.properties["City"]}</span>`
                                 : ""
                             }
                             <br />
                             ${
-                              eachCase.properties?.["Date Introduced"]
-                                ? `<span class="text-sky-400">Date Introduced: ${eachCase.properties["Date Introduced"]}</span>`
+                              eachCase.properties?.["State"]
+                                ? `<span class="text-blue-400">State: ${eachCase.properties["State"]}</span>`
                                 : ""
                             }
                             <br />
                             ${
-                              eachCase.properties?.["Location Description"] &&
-                              eachCase.properties["just_cause"] != "UNKNOWN"
-                                ? `<span class="text-lime-300">Location Description: ${eachCase.properties["Location Description"]}</span> `
+                              eachCase.properties?.["Zip"]
+                                ? `<span class="text-blue-400">Zip: ${eachCase.properties["Zip"]}</span> `
                                 : ""
                             }
                             <br />
                             ${
-                              eachCase.properties?.["Start"]
-                                ? `<span class="text-slate-100">Start: ${eachCase.properties["Start"]}</span>`
-                                : ""
-                            }
-                            <br />
-                            ${
-                              eachCase.properties?.["End"]
-                                ? `<span class="text-teal-400">End: ${eachCase.properties["End"]}</span>`
+                              eachCase.properties?.["Amount"]
+                                ? `<span class="text-slate-100">Amount: ${eachCase.properties["Amount"]}</span>`
                                 : ""
                             }
                       </li>`;
@@ -456,7 +472,7 @@ const Home: NextPage = () => {
             .setHTML(
               ` <div>
                 <p class="font-semibold">Council District: ${areaPC}</p>
-                <p>${e.features.length} Restriction Zone${
+                <p>${e.features.length} Tenant Buyouts${
                 e.features.length > 1 ? "s" : ""
               }</p>
                 <ul class='list-disc leading-none'>
@@ -488,7 +504,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mouseleave", "ovpr-cd1-15", () => {
+      map.on("mouseleave", "tenant-buyouts-2019-2023", () => {
         map.getCanvas().style.cursor = "";
         popup.remove();
       });
@@ -502,9 +518,9 @@ const Home: NextPage = () => {
         if (true) {
           // example of how to add a pointer to what is currently selected
           map.addLayer({
-            id: "line-selected",
+            id: "point-selected",
             type: "symbol",
-            source: "linestring-hover",
+            source: "tenant-point",
             paint: {
               "icon-color": "#FF8C00",
               "icon-translate": [0, -13],
@@ -523,40 +539,28 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mousedown", "ovpr-cd1-15", (e: any) => {
+      map.on("mousedown", "tenant-buyouts-2019-2023", (e: any) => {
         setEvictionInfo(0);
         setInfoBoxLength(1);
         setEvictionInfoOpen(true);
         console.log("e.features", e.features);
         let filteredData = e.features.map((obj: any) => {
           return {
-            cd: obj.properties["Council District"],
-            councilFileNo:
-              obj.properties["Council File No."] ||
-              obj.properties["Council File"],
-            dateIntroduced: obj.properties["Date Introduced"],
-            end: obj.properties.End,
-            expirationDate: obj.properties["Expiration Date"],
-            lastActivity: obj.properties["Last Activity"],
-            lastChangeDate:
-              obj.properties["Last Change Date"] ||
-              obj.properties["Last Changed"],
-            lastDayToAct: obj.properties["Last Day To Act"],
-            locationDescription: obj.properties["Location Description"],
-            mover: obj.properties["Mover/Seconder/Initiated by"],
-            pendingInCommittee: obj.properties["Pending in Committee"],
-            pursuantTo: obj.properties["Pursuant To"],
-            start: obj.properties["Start"],
-            summary: obj.properties["Summary"],
-            timeLimit: obj.properties["Time Limit"],
-            title: obj.properties["Title"],
+            cd: obj.properties["CD#"],
+            address:
+              obj.properties["Address"],
+            city: obj.properties["City"],
+            zip: obj.properties.Zip,
+            state: obj.properties["State"],
+            filed: obj.properties["Filed Date"],
+            amount: obj.properties.Amount,
           };
         });
 
-        var evictionPoint: any = map.getSource("linestring-hover");
+        var evictionPoint: any = map.getSource("tenant-point");
         evictionPoint.setData(e.features[0].geometry);
 
-        map.setLayoutProperty("line-selected", "visibility", "visible");
+        map.setLayoutProperty("point-selected", "visibility", "visible");
 
         setEvictionData(filteredData);
       });
@@ -714,7 +718,7 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "Council District"],
+      ["get", "CD#"],
       filteredDistricts,
       true,
       false,
@@ -727,7 +731,7 @@ const Home: NextPage = () => {
         );
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("ovpr-cd1-15", filterinput);
+          mapref.current.setFilter("tenant-buyouts-2019-2023", filterinput);
         }
       }
     }
@@ -768,7 +772,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>City of LA Oversized Vehicle Restriction Zones | Map</title>
+          <title>Cash for Keys LA | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -776,12 +780,12 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="City of LA Oversized Vehicle Restriction Zones | Map"
+            content="Cash for Keys LA | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="City of LA Oversized Vehicle Restriction Zones"
+            content="Cash for Keys LA"
           ></meta>
           <meta
             name="twitter:image"
@@ -790,21 +794,21 @@ const Home: NextPage = () => {
           ></meta>
           <meta
             name="description"
-            content="City of LA Oversized Vehicle Restriction Zones | Map"
+            content="Cash for Keys LA | Map"
           />
 
           <meta
             property="og:url"
-            content="https://oversized-vehicles.vercel.app/"
+            // content="https://oversized-vehicles.vercel.app/"
           />
           <meta property="og:type" content="website" />
           <meta
             property="og:title"
-            content="City of LA Oversized Vehicle Restriction Zones | Map"
+            content="Cash for Keys LA | Map"
           />
           <meta
             property="og:description"
-            content="City of LA Oversized Vehicle Restriction Zones | Map"
+            content="Cash for Keys LA | Map"
           />
           <meta
             property="og:image"
@@ -955,11 +959,15 @@ const Home: NextPage = () => {
                       <div>
                         <p className="text-blue-400 text-xs mt-1">
                           <strong>
-                            Oversized Vehicle Restriction Zones by Council
+                            Tenant Buyouts by Council
                             District
                           </strong>
                         </p>
                       </div>
+                      <Intensity
+                        normalizeIntensity={normalizeIntensity}
+                        setNormalizeIntensity={setNormalizeIntensity}
+                      />
                     </div>
                   )}
                 </div>
@@ -980,7 +988,7 @@ const Home: NextPage = () => {
                     setEvictionInfo(0);
                     if (mapref.current) {
                       var evictionPoint: any =
-                        mapref.current.getSource("linestring-hover");
+                        mapref.current.getSource("tenant-point");
                       if (evictionPoint) {
                         evictionPoint.setData(null);
                       }
