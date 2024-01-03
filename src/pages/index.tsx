@@ -462,6 +462,12 @@ const Home: NextPage = () => {
                                 ? `<span class="text-slate-100">Amount: ${eachCase.properties["Amount"]}</span>`
                                 : ""
                             }
+                            <br />
+                            ${
+                              eachCase.properties?.["Year"]
+                                ? `<span class="text-amber-400">Year: ${eachCase.properties["Year"]}</span>`
+                                : ""
+                            }
                       </li>`;
             }
           });
@@ -551,6 +557,7 @@ const Home: NextPage = () => {
             state: obj.properties["State"],
             filed: obj.properties["Filed Date"],
             amount: obj.properties.Amount,
+            year: obj.properties.Year,
           };
         });
 
