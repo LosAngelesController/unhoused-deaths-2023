@@ -574,10 +574,10 @@ const Home: NextPage = () => {
             paint: {
               "line-color": "#dddddd",
               "line-opacity": 1,
-              "line-width": 1,
+              "line-width": 2,
             },
           },
-          "road-label-simple"
+          "road-label-navigation"
         );
 
         map.addSource("citycouncildist", {
@@ -591,12 +591,12 @@ const Home: NextPage = () => {
             type: "line",
             source: "citycouncildist",
             paint: {
-              "line-color": "#52525b",
+              "line-color": "#dddddd",
               "line-opacity": 1,
-              "line-width": 0.8,
+              "line-width": 1,
             },
           },
-          "road-label-simple"
+          "road-label-navigation"
         );
 
         map.addLayer(
@@ -609,7 +609,7 @@ const Home: NextPage = () => {
               "fill-opacity": 0,
             },
           },
-          "road-label-simple"
+          "road-label-navigation"
         );
 
         map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
@@ -648,7 +648,7 @@ const Home: NextPage = () => {
               "fill-opacity": 0.3,
             },
           },
-          "road-label-simple"
+          "road-label-navigation"
         );
       }
 
