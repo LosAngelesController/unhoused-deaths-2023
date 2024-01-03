@@ -434,9 +434,7 @@ const Home: NextPage = () => {
           const areaPC = hoveredFeature.properties["CD#"];
 
           const allthelineitems = e.features.map((eachCase: any) => {
-            if (
-              eachCase.properties?.["Address"]
-            ) {
+            if (eachCase.properties?.["Address"]) {
               return `<li class="leading-none my-2 text-blue-400">Address: ${
                 eachCase.properties["Address"]
               }
@@ -547,8 +545,7 @@ const Home: NextPage = () => {
         let filteredData = e.features.map((obj: any) => {
           return {
             cd: obj.properties["CD#"],
-            address:
-              obj.properties["Address"],
+            address: obj.properties["Address"],
             city: obj.properties["City"],
             zip: obj.properties.Zip,
             state: obj.properties["State"],
@@ -792,24 +789,15 @@ const Home: NextPage = () => {
             key="twitterimg"
             // content="https://firebasestorage.googleapis.com/v0/b/lacontroller-2b7de.appspot.com/o/evictionmap.png?alt=media&token=ac8415cd-302b-4066-8e8f-be843073e03b"
           ></meta>
-          <meta
-            name="description"
-            content="Cash for Keys LA | Map"
-          />
+          <meta name="description" content="Cash for Keys LA | Map" />
 
           <meta
             property="og:url"
             // content="https://oversized-vehicles.vercel.app/"
           />
           <meta property="og:type" content="website" />
-          <meta
-            property="og:title"
-            content="Cash for Keys LA | Map"
-          />
-          <meta
-            property="og:description"
-            content="Cash for Keys LA | Map"
-          />
+          <meta property="og:title" content="Cash for Keys LA | Map" />
+          <meta property="og:description" content="Cash for Keys LA | Map" />
           <meta
             property="og:image"
             // content="https://evictions.lacontroller.io/eviction-notices.png"
@@ -958,10 +946,7 @@ const Home: NextPage = () => {
                       </div>
                       <div>
                         <p className="text-blue-400 text-xs mt-1">
-                          <strong>
-                            Tenant Buyouts by Council
-                            District
-                          </strong>
+                          <strong>Tenant Buyouts by Council District</strong>
                         </p>
                       </div>
                       <Intensity
