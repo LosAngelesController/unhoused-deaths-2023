@@ -40,16 +40,16 @@ const navigation: any = [
     href: "https://controller.lacity.gov",
     target: "_blank",
   },
-  // {
-  //   name: "Table",
-  //   href: "https://docs.google.com/spreadsheets/d/1d6xgd95m0v914YTePb8m-9Ir9SVKNKx4-Xw8N_4I0pk/edit?usp=sharing",
-  //   target: "_blank",
-  // },
-  // {
-  //   name: "Analysis",
-  //   href: "https://controller.lacity.gov/landings/evictions",
-  //   target: "_blank",
-  // },
+  {
+    name: "Table",
+    href: "https://docs.google.com/spreadsheets/d/19d9FlQv0wiv0d04_VKJt9B0kEVf19-ata2_H75B-uDo/edit?usp=sharing",
+    target: "_blank",
+  },
+  {
+    name: "Analysis",
+    href: "https://controller.lacity.gov/landings/cash-for-keys",
+    target: "_blank",
+  },
 ];
 
 function classNames(...classes: any) {
@@ -68,7 +68,6 @@ function Nav() {
       const script = document.createElement("script");
       script.src =
         "https://translate.google.com/translate_a/element.js?cb=showTranslateDropdown";
-      // "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
       script.async = true;
       document.body.appendChild(script);
     }

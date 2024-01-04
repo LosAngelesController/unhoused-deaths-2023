@@ -16,60 +16,6 @@ const citybounds = require("./citybounds.json");
 import mapboxgl from "mapbox-gl";
 import { Intensity } from "@/components/Intensity";
 
-// const evictionPoints = require("./evictions.json");
-
-// function assignPointsToDistrict(points: any, districtJson: any) {
-//   const districtPolygons = districtJson.features.map((feature: any) => feature.geometry.coordinates[0][0]);
-
-//   const pointDistricts = points.map((point: any) => {
-//     for (let i = 0; i < districtPolygons.length; i++) {
-//       const polygon = districtPolygons[i];
-//       const [pointInside, reportNum] = insidePolygon(point, polygon);
-//       if (pointInside) {
-//         let distName = Number(districtJson.features[i].properties.district);
-//         return {"ID": reportNum, "CD#": distName};
-//       }
-//     }
-//   });
-//   return pointDistricts;
-// }
-
-// function insidePolygon(point: any, polygon: any): [boolean, number] {
-//   const x = point.lon;
-//   const y = point.lat;
-//   const id = point.id;
-
-//   let inside = false;
-
-//   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-//     const [xi, yi] = polygon[i];
-//     const [xj, yj] = polygon[j];
-
-//     const intersect = ((yi > y) !== (yj > y)) &&
-//       (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-
-//     if (intersect) {
-//       inside = !inside;
-//     }
-//   }
-//   return [inside, id];
-// }
-
-// const locationPoints = evictionPoints.map((arrest: any) => {
-//   return {
-//     id: arrest.ID,
-//     lon: arrest.Longitude,
-//     lat: arrest.Latitude,
-//   };
-// });
-
-// const districtNumbers = assignPointsToDistrict(locationPoints, councildistricts);
-// console.log("locationPoints", locationPoints);
-
-// console.log("districtNumbers", districtNumbers);
-// var jsonString = JSON.stringify(districtNumbers);
-// console.log(jsonString);
-
 const filterableDistricts: any = {
   1: "565",
   2: "167",
@@ -794,20 +740,20 @@ const Home: NextPage = () => {
           <meta
             name="twitter:image"
             key="twitterimg"
-            // content="https://firebasestorage.googleapis.com/v0/b/lacontroller-2b7de.appspot.com/o/evictionmap.png?alt=media&token=ac8415cd-302b-4066-8e8f-be843073e03b"
+            content="https://cashforkeys.lacontroller.app/cash-for-keys.png"
           ></meta>
           <meta name="description" content="Cash for Keys LA | Map" />
 
           <meta
             property="og:url"
-            // content="https://oversized-vehicles.vercel.app/"
+            content="https://cashforkeys.lacontroller.app/"
           />
           <meta property="og:type" content="website" />
           <meta property="og:title" content="Cash for Keys LA | Map" />
           <meta property="og:description" content="Cash for Keys LA | Map" />
           <meta
             property="og:image"
-            // content="https://evictions.lacontroller.io/eviction-notices.png"
+            content="https://cashforkeys.lacontroller.app/cash-for-keys.png"
           />
         </Head>
 
