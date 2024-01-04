@@ -17,21 +17,21 @@ import mapboxgl from "mapbox-gl";
 import { Intensity } from "@/components/Intensity";
 
 const filterableDistricts: any = {
-  1: "565",
-  2: "167",
-  3: "40",
-  4: "184",
-  5: "358",
+  1: "569",
+  2: "171",
+  3: "41",
+  4: "188",
+  5: "362",
   6: "104",
-  7: "59",
-  8: "300",
-  9: "387",
-  10: "984",
-  11: "350",
+  7: "56",
+  8: "302",
+  9: "388",
+  10: "997",
+  11: "383",
   12: "4",
-  13: "967",
-  14: "244",
-  15: "65",
+  13: "970",
+  14: "246",
+  15: "87",
 };
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
@@ -422,7 +422,7 @@ const Home: NextPage = () => {
             .setHTML(
               ` <div>
                 <p class="font-semibold">Council District: ${areaPC}</p>
-                <p>${e.features.length} Tenant Buyouts${
+                <p>${e.features.length} Tenant Buyout${
                 e.features.length > 1 ? "s" : ""
               }</p>
                 <ul class='list-disc leading-none'>
