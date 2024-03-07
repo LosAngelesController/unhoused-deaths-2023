@@ -117,7 +117,9 @@ function Nav() {
                   </Disclosure.Button>
                 </div>
                 <div className="grid content-center ml-2">
-                  <strong className="text-white">2023 Unhoused Deaths in LA</strong>
+                  <strong className="text-white">
+                    2023 Unhoused Deaths in LA
+                  </strong>
                 </div>
               </div>
               <div className="hidden sm:ml-4 sm:block lg:ml-6">

@@ -407,7 +407,9 @@ const Home: NextPage = () => {
 
           const allthelineitems = e.features.map((eachCase: any) => {
             if (eachCase.properties?.["DeathLocation"]) {
-              return `<li class="leading-none my-2 text-blue-50">${eachCase.properties["DeathDate"]}
+              return `<li class="leading-none my-2 text-blue-50">${
+                eachCase.properties["DeathDate"]
+              }
                             ${" "}
                             ${
                               eachCase.properties?.["Age"]
