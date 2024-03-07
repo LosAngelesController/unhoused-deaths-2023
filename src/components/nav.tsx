@@ -31,7 +31,7 @@ const showTranslateDropdown = () => {
 
 const navigation: any = [
   {
-    name: "Cash for Keys LA",
+    name: "Map",
     href: "/",
     target: "_self",
   },
@@ -42,12 +42,12 @@ const navigation: any = [
   },
   {
     name: "Table",
-    href: "https://docs.google.com/spreadsheets/d/19d9FlQv0wiv0d04_VKJt9B0kEVf19-ata2_H75B-uDo/edit?usp=sharing",
+    href: "https://docs.google.com/spreadsheets/d/1d1dfpxcHKBXoqpGhzPxAbwcbovDVKwU5lZHWviwxQsE/edit?usp=sharing",
     target: "_blank",
   },
   {
     name: "Analysis",
-    href: "https://controller.lacity.gov/landings/cash-for-keys",
+    // href: "https://controller.lacity.gov/landings/cash-for-keys",
     target: "_blank",
   },
 ];
@@ -117,7 +117,7 @@ function Nav() {
                   </Disclosure.Button>
                 </div>
                 <div className="grid content-center ml-2">
-                  <strong className="text-white">Cash for Keys LA</strong>
+                  <strong className="text-white">2023 Unhoused Deaths in LA</strong>
                 </div>
               </div>
               <div className="hidden sm:ml-4 sm:block lg:ml-6">

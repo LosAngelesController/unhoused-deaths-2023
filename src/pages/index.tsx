@@ -17,24 +17,39 @@ import mapboxgl from "mapbox-gl";
 import { Intensity } from "@/components/Intensity";
 
 const filterableDistricts: any = {
-  1: "569",
-  2: "171",
-  3: "41",
-  4: "188",
-  5: "362",
-  6: "104",
-  7: "56",
-  8: "302",
-  9: "388",
-  10: "997",
-  11: "383",
-  12: "4",
-  13: "970",
-  14: "246",
-  15: "87",
+  1: "105",
+  2: "37",
+  3: "20",
+  4: "35",
+  5: "45",
+  6: "46",
+  7: "36",
+  8: "30",
+  9: "40",
+  10: "39",
+  11: "48",
+  12: "38",
+  13: "77",
+  14: "267",
+  15: "33",
 };
 
 const filterableDistrictsKeys = Object.keys(filterableDistricts);
+
+const filterableraces: any = {
+  "American Indian": 4,
+  Asian: 17,
+  Black: 280,
+  "Hawaiian/Pacific Islander": 1,
+  "Hispanic/Latino": 287,
+  "Hispanic/ Latino/Black": 1,
+  "Hispanic/ Latino/White": 6,
+  "Middle Eastern": 3,
+  Unknown: 23,
+  White: 274,
+};
+
+const filterableRacesKeys = Object.keys(filterableraces);
 
 const Home: NextPage = () => {
   const shouldfilteropeninit =
@@ -43,10 +58,12 @@ const Home: NextPage = () => {
   var mapref: any = useRef(null);
   const okaydeletepoints: any = useRef(null);
   const [doneloadingmap, setdoneloadingmap] = useState(false);
-  const [selectedfilteropened, setselectedfilteropened] = useState("district");
+  const [selectedfilteropened, setselectedfilteropened] = useState("race");
   const [filteredDistricts, setFilteredDistricts] = useState<number[]>(
     filterableDistrictsKeys.map((key) => Number(key))
   );
+  const [filteredRaces, setFilteredRaces] =
+    useState<string[]>(filterableRacesKeys);
 
   const [filterpanelopened, setfilterpanelopened] =
     useState(shouldfilteropeninit);
@@ -58,13 +75,22 @@ const Home: NextPage = () => {
   const [normalizeIntensity, setNormalizeIntensity] = useState(false);
 
   //template name, this is used to submit to the map analytics software what the current state of the map is.
-  var mapname = "Tenant-Buyouts";
+  var mapname = "Unhoused-Deaths-2023";
 
   const setFilteredDistrictPre = (input: string[]) => {
     if (input.length === 0) {
       setFilteredDistricts([99999]);
     } else {
       setFilteredDistricts(input.map((x) => Number(x)));
+    }
+  };
+
+  const setFilteredRacePre = (input: string[]) => {
+    console.log("inputvalidator", input);
+    if (input.length === 0) {
+      setFilteredRaces(["99999"]);
+    } else {
+      setFilteredRaces(input);
     }
   };
 
@@ -99,8 +125,8 @@ const Home: NextPage = () => {
   const closeInfoBox = () => {
     console.log("mapref.current", mapref.current);
     console.log(
-      "mapref.current.getSource tenant-point",
-      mapref.current.getSource("tenant-point")
+      "mapref.current.getSource death-point",
+      mapref.current.getSource("death-point")
     );
 
     mapref.current.setLayoutProperty("point-selected", "visibility", "none");
@@ -108,7 +134,7 @@ const Home: NextPage = () => {
     setEvictionInfoOpen(false);
     if (mapref) {
       if (mapref.current) {
-        var evictionPoint: any = mapref.current.getSource("tenant-point");
+        var evictionPoint: any = mapref.current.getSource("death-point");
         evictionPoint.setData(null);
       } else {
         console.log("no current ref");
@@ -129,11 +155,11 @@ const Home: NextPage = () => {
       levels = ["interpolate", ["linear"], ["zoom"], 7, 3, 15, 4];
     }
 
-    var layer = mapref.current.getLayer("tenant-buyouts-2019-2023");
+    var layer = mapref.current.getLayer("unhoused-deaths-2023");
 
     if (layer) {
       mapref.current.setPaintProperty(
-        "tenant-buyouts-2019-2023",
+        "unhoused-deaths-2023",
         "heatmap-intensity",
         levels
       );
@@ -170,7 +196,7 @@ const Home: NextPage = () => {
 
     var mapparams: any = {
       container: divRef.current, // container ID
-      style: "mapbox://styles/kennethmejia/clqy3aerb00fj01ob1tj3b5m2", // style URL (THIS IS STREET VIEW)
+      style: "mapbox://styles/kennethmejia/clt7t4g5n00if01pt6awa5arx", // style URL (THIS IS STREET VIEW)
       center: [-118.41, 34], // starting position [lng, lat]
       zoom: formulaForZoom(), // starting zoom
     };
@@ -208,7 +234,7 @@ const Home: NextPage = () => {
 
       okaydeletepoints.current = () => {
         try {
-          var evictionPoint: any = map.getSource("tenant-point");
+          var evictionPoint: any = map.getSource("death-point");
           evictionPoint.setData(null);
         } catch (err) {
           console.error(err);
@@ -361,7 +387,7 @@ const Home: NextPage = () => {
         closeOnClick: false,
       });
 
-      map.addSource("tenant-point", {
+      map.addSource("death-point", {
         type: "geojson",
         data: {
           type: "FeatureCollection",
@@ -369,7 +395,7 @@ const Home: NextPage = () => {
         },
       });
 
-      map.on("mouseenter", "tenant-buyouts-2019-2023", (e: any) => {
+      map.on("mouseenter", "unhoused-deaths-2023", (e: any) => {
         const hoveredFeature = e.features[0];
 
         if (hoveredFeature && hoveredFeature.geometry) {
@@ -377,41 +403,39 @@ const Home: NextPage = () => {
 
           popup.setLngLat(e.lngLat);
 
-          const areaPC = hoveredFeature.properties["CD#"];
+          const areaPC = hoveredFeature.properties["DeathLocation"];
 
           const allthelineitems = e.features.map((eachCase: any) => {
-            if (eachCase.properties?.["Address"]) {
-              return `<li class="leading-none my-2 text-blue-400">Address: ${
-                eachCase.properties["Address"]
-              }
-                            <br />
+            if (eachCase.properties?.["DeathLocation"]) {
+              return `<li class="leading-none my-2 text-blue-50">${eachCase.properties["DeathDate"]}
+                            ${" "}
                             ${
-                              eachCase.properties?.["City"]
-                                ? `<span class="text-blue-400">City: ${eachCase.properties["City"]}</span>`
+                              eachCase.properties?.["Age"]
+                                ? `<span class="text-amber-300">${eachCase.properties["Age"]}</span>`
                                 : ""
                             }
-                            <br />
+                            ${" "}
                             ${
-                              eachCase.properties?.["State"]
-                                ? `<span class="text-blue-400">State: ${eachCase.properties["State"]}</span>`
+                              eachCase.properties?.["Gender"]
+                                ? `<span class="text-lime-300">${eachCase.properties["Gender"]}</span>`
                                 : ""
                             }
-                            <br />
+                            ${" "}
                             ${
-                              eachCase.properties?.["Zip"]
-                                ? `<span class="text-blue-400">Zip: ${eachCase.properties["Zip"]}</span> `
+                              eachCase.properties?.["Race"]
+                                ? `<span class="text-fuchsia-100">${eachCase.properties["Race"]}</span> `
                                 : ""
                             }
-                            <br />
+                            ${" "}
                             ${
-                              eachCase.properties?.["Amount"]
-                                ? `<span class="text-slate-100">Amount: ${eachCase.properties["Amount"]}</span>`
+                              eachCase.properties?.["DeathPlace"]
+                                ? `<span class="text-sky-300">${eachCase.properties["DeathPlace"]}</span>`
                                 : ""
                             }
-                            <br />
+                            ${" "}
                             ${
-                              eachCase.properties?.["Year"]
-                                ? `<span class="text-amber-400">Year: ${eachCase.properties["Year"]}</span>`
+                              eachCase.properties?.["Mode"]
+                                ? `<span class="text-violet-300">${eachCase.properties["Mode"]}</span>`
                                 : ""
                             }
                       </li>`;
@@ -421,8 +445,8 @@ const Home: NextPage = () => {
           popup
             .setHTML(
               ` <div>
-                <p class="font-semibold">Council District: ${areaPC}</p>
-                <p>${e.features.length} Tenant Buyout${
+                <p class="font-semibold">${areaPC}</p>
+                <p>${e.features.length} Death${
                 e.features.length > 1 ? "s" : ""
               }</p>
                 <ul class='list-disc leading-none'>
@@ -454,7 +478,7 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mouseleave", "tenant-buyouts-2019-2023", () => {
+      map.on("mouseleave", "unhoused-deaths-2023", () => {
         map.getCanvas().style.cursor = "";
         popup.remove();
       });
@@ -470,7 +494,7 @@ const Home: NextPage = () => {
           map.addLayer({
             id: "point-selected",
             type: "symbol",
-            source: "tenant-point",
+            source: "death-point",
             paint: {
               "icon-color": "#FF8C00",
               "icon-translate": [0, -13],
@@ -489,25 +513,28 @@ const Home: NextPage = () => {
         }
       });
 
-      map.on("mousedown", "tenant-buyouts-2019-2023", (e: any) => {
+      map.on("mousedown", "unhoused-deaths-2023", (e: any) => {
         setEvictionInfo(0);
         setInfoBoxLength(1);
         setEvictionInfoOpen(true);
         console.log("e.features", e.features);
         let filteredData = e.features.map((obj: any) => {
           return {
-            cd: obj.properties["CD#"],
-            address: obj.properties["Address"],
-            city: obj.properties["City"],
-            zip: obj.properties.Zip,
-            state: obj.properties["State"],
-            filed: obj.properties["Filed Date"],
-            amount: obj.properties.Amount,
-            year: obj.properties.Year,
+            cd: obj.properties["CD"],
+            caseNo: obj.properties.CaseNum,
+            location: obj.properties["DeathLocation"],
+            city: obj.properties["DeathCity"],
+            zip: obj.properties.DeathZip,
+            place: obj.properties["DeathPlace"],
+            date: obj.properties["DeathDate"],
+            gender: obj.properties.Gender,
+            race: obj.properties.Race,
+            mode: obj.properties.Mode,
+            cause: obj.properties.CauseA,
           };
         });
 
-        var evictionPoint: any = map.getSource("tenant-point");
+        var evictionPoint: any = map.getSource("death-point");
         evictionPoint.setData(e.features[0].geometry);
 
         map.setLayoutProperty("point-selected", "visibility", "visible");
@@ -530,7 +557,7 @@ const Home: NextPage = () => {
               "line-width": 2,
             },
           },
-          "road-label-navigation"
+          "road-label-simple"
         );
 
         map.addSource("citycouncildist", {
@@ -549,7 +576,7 @@ const Home: NextPage = () => {
               "line-width": 1,
             },
           },
-          "road-label-navigation"
+          "road-label-simple"
         );
 
         map.addLayer(
@@ -562,7 +589,7 @@ const Home: NextPage = () => {
               "fill-opacity": 0,
             },
           },
-          "road-label-navigation"
+          "road-label-simple"
         );
 
         map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
@@ -601,7 +628,7 @@ const Home: NextPage = () => {
               "fill-opacity": 0.3,
             },
           },
-          "road-label-navigation"
+          "road-label-simple"
         );
       }
 
@@ -668,8 +695,16 @@ const Home: NextPage = () => {
 
     arrayoffilterables.push([
       "match",
-      ["get", "CD#"],
+      ["get", "CD"],
       filteredDistricts,
+      true,
+      false,
+    ]);
+
+    arrayoffilterables.push([
+      "match",
+      ["get", "Race"],
+      filteredRaces,
       true,
       false,
     ]);
@@ -681,21 +716,26 @@ const Home: NextPage = () => {
         );
 
         if (doneloadingmap === true) {
-          mapref.current.setFilter("tenant-buyouts-2019-2023", filterinput);
+          mapref.current.setFilter("unhoused-deaths-2023", filterinput);
+          mapref.current.setFilter("deathsdots", filterinput);
         }
       }
     }
-  }, [filteredDistricts]);
+  }, [filteredDistricts, filteredRaces]);
 
   const onSelect = () => {
     if (selectedfilteropened === "district") {
       setFilteredDistrictPre(filterableDistrictsKeys);
+    } else if (selectedfilteropened === "race") {
+      setFilteredRacePre(filterableRacesKeys);
     }
   };
 
   const onUnselect = () => {
     if (selectedfilteropened === "district") {
       setFilteredDistrictPre([]);
+    } else if (selectedfilteropened === "race") {
+      setFilteredRacePre([]);
     }
   };
 
@@ -705,6 +745,10 @@ const Home: NextPage = () => {
         filterableDistrictsKeys.filter(
           (n) => !filteredDistricts.includes(Number(n))
         )
+      );
+    } else if (selectedfilteropened === "race") {
+      setFilteredRacePre(
+        filterableRacesKeys.filter((n) => !filteredRaces.includes(n))
       );
     }
   };
@@ -722,7 +766,7 @@ const Home: NextPage = () => {
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
           />
-          <title>Cash for Keys LA | Map</title>
+          <title>Unhoused Deaths in LA (2023) | Map</title>
           <meta property="og:type" content="website" />
           <meta name="twitter:site" content="@lacontroller" />
           <meta name="twitter:creator" content="@lacontroller" />
@@ -730,30 +774,39 @@ const Home: NextPage = () => {
           <meta
             name="twitter:title"
             key="twittertitle"
-            content="Cash for Keys LA | Map"
+            content="Unhoused Deaths in LA (2023) | Map"
           ></meta>
           <meta
             name="twitter:description"
             key="twitterdesc"
-            content="Cash for Keys LA"
+            content="Unhoused Deaths in LA (2023)"
           ></meta>
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://cashforkeys.lacontroller.app/cash-for-keys.png"
+            // content="https://cashforkeys.lacontroller.app/unhoused-deaths-2023.png"
           ></meta>
-          <meta name="description" content="Cash for Keys LA | Map" />
+          <meta
+            name="description"
+            content="Unhoused Deaths in LA (2023) | Map"
+          />
 
           <meta
             property="og:url"
-            content="https://cashforkeys.lacontroller.app/"
+            // content="https://cashforkeys.lacontroller.app/"
           />
           <meta property="og:type" content="website" />
-          <meta property="og:title" content="Cash for Keys LA | Map" />
-          <meta property="og:description" content="Cash for Keys LA | Map" />
+          <meta
+            property="og:title"
+            content="Unhoused Deaths in LA (2023) | Map"
+          />
+          <meta
+            property="og:description"
+            content="Unhoused Deaths in LA (2023) | Map"
+          />
           <meta
             property="og:image"
-            content="https://cashforkeys.lacontroller.app/cash-for-keys.png"
+            // content="https://cashforkeys.lacontroller.app/unhoused-deaths-2023.png"
           />
         </Head>
 
@@ -846,6 +899,18 @@ const Home: NextPage = () => {
                 <div className="gap-x-0 flex flex-row w-full pr-8">
                   <button
                     onClick={() => {
+                      setselectedfilteropened("race");
+                    }}
+                    className={`px-2 border-b-2  py-1  font-semibold ${
+                      selectedfilteropened === "race"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                    Race
+                  </button>
+                  <button
+                    onClick={() => {
                       setselectedfilteropened("district");
                     }}
                     className={`px-2 border-b-2  py-1  font-semibold ${
@@ -854,10 +919,58 @@ const Home: NextPage = () => {
                         : "hover:border-white border-transparent text-gray-50"
                     }`}
                   >
-                    Council District
+                    CD#
                   </button>
                 </div>
                 <div className="flex flex-col">
+                  {selectedfilteropened === "race" && (
+                    <div className="mt-2">
+                      <SelectButtons
+                        onSelect={onSelect}
+                        onUnselect={onUnselect}
+                        onInvert={onInvert}
+                      />
+                      <div className="flex flex-row gap-x-1">
+                        <div className="flex items-center">
+                          <Checkbox.Group
+                            value={filteredRaces.map((race) => String(race))}
+                            onChange={setFilteredRacePre}
+                          >
+                            <div
+                              className={`grid grid-cols-3
+                          } gap-x-4 `}
+                            >
+                              {Object.entries(filterableraces).map(
+                                (eachEntry) => (
+                                  <Checkbox
+                                    value={eachEntry[0]}
+                                    label={
+                                      <span className="text-nowrap text-xs">
+                                        <span className="text-white">
+                                          {eachEntry[0]}
+                                        </span>{" "}
+                                        <span>{eachEntry[1]}</span>
+                                      </span>
+                                    }
+                                    key={eachEntry[0]}
+                                  />
+                                )
+                              )}
+                            </div>
+                          </Checkbox.Group>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-blue-400 text-xs mt-1">
+                          <strong>Unhoused Deaths by Race</strong>
+                        </p>
+                      </div>
+                      <Intensity
+                        normalizeIntensity={normalizeIntensity}
+                        setNormalizeIntensity={setNormalizeIntensity}
+                      />
+                    </div>
+                  )}
                   {selectedfilteropened === "district" && (
                     <div className="mt-2">
                       <SelectButtons
@@ -899,7 +1012,7 @@ const Home: NextPage = () => {
                       </div>
                       <div>
                         <p className="text-blue-400 text-xs mt-1">
-                          <strong>Tenant Buyouts by Council District</strong>
+                          <strong>Unhoused Deaths by Council District</strong>
                         </p>
                       </div>
                       <Intensity
@@ -926,7 +1039,7 @@ const Home: NextPage = () => {
                     setEvictionInfo(0);
                     if (mapref.current) {
                       var evictionPoint: any =
-                        mapref.current.getSource("tenant-point");
+                        mapref.current.getSource("death-point");
                       if (evictionPoint) {
                         evictionPoint.setData(null);
                       }

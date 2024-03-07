@@ -9,7 +9,7 @@ export function MapTitle() {
         color: "#ffffff",
       }}
     >
-      <strong className="">Cash for Keys LA</strong>
+      <strong className="">2023 Unhoused Deaths in City of LA</strong>
     </div>
   );
 }
