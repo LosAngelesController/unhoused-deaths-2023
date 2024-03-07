@@ -786,7 +786,7 @@ const Home: NextPage = () => {
           <meta
             name="twitter:image"
             key="twitterimg"
-            // content="https://cashforkeys.lacontroller.app/unhoused-deaths-2023.png"
+            content="https://unhoused-deaths-2023.vercel.app/unhoused-deaths-2023.png"
           ></meta>
           <meta
             name="description"
@@ -795,7 +795,7 @@ const Home: NextPage = () => {
 
           <meta
             property="og:url"
-            // content="https://cashforkeys.lacontroller.app/"
+            content="https://unhoused-deaths-2023.vercel.app/"
           />
           <meta property="og:type" content="website" />
           <meta
@@ -808,7 +808,7 @@ const Home: NextPage = () => {
           />
           <meta
             property="og:image"
-            // content="https://cashforkeys.lacontroller.app/unhoused-deaths-2023.png"
+            content="https://unhoused-deaths-2023.vercel.app/unhoused-deaths-2023.png"
           />
         </Head>
 
