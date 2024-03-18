@@ -786,7 +786,7 @@ const Home: NextPage = () => {
           <meta
             name="twitter:image"
             key="twitterimg"
-            content="https://unhoused-deaths-2023.vercel.app/unhoused-deaths-2023.png"
+            content="https://unhouseddeaths2023.lacontroller.app/unhoused-deaths-2023.png"
           ></meta>
           <meta
             name="description"
@@ -795,7 +795,7 @@ const Home: NextPage = () => {
 
           <meta
             property="og:url"
-            content="https://unhoused-deaths-2023.vercel.app/"
+            content="https://unhouseddeaths2023.lacontroller.app/"
           />
           <meta property="og:type" content="website" />
           <meta
@@ -808,7 +808,7 @@ const Home: NextPage = () => {
           />
           <meta
             property="og:image"
-            content="https://unhoused-deaths-2023.vercel.app/unhoused-deaths-2023.png"
+            content="https://unhouseddeaths2023.lacontroller.app/unhoused-deaths-2023.png"
           />
         </Head>
 
