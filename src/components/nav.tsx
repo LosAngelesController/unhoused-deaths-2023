@@ -45,11 +45,11 @@ const navigation: any = [
     href: "https://docs.google.com/spreadsheets/d/1d1dfpxcHKBXoqpGhzPxAbwcbovDVKwU5lZHWviwxQsE/edit?usp=sharing",
     target: "_blank",
   },
-  {
-    name: "Analysis",
-    href: "https://controller.lacity.gov/landings/unhoused-deaths-2023",
-    target: "_blank",
-  },
+  // {
+  //   name: "Analysis",
+  //   href: "https://controller.lacity.gov/landings/unhoused-deaths-2023",
+  //   target: "_blank",
+  // },
 ];
 
 function classNames(...classes: any) {

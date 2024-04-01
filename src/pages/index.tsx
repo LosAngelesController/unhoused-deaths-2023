@@ -820,14 +820,20 @@ const Home: NextPage = () => {
           <div className="max-h-screen flex-col flex z-5">
             <div className="hidden sm:block">
               <MapTitle />
+ 
+    
             </div>
+          
             <div
               className={`geocoder absolute xs:mt-[1.5em] sm:mt-[2.7em] md:mt-[4.1em] ml-1 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
               id="geocoder"
             ></div>
+            
+     
             <div className="w-content"></div>
-
+          
             <div className="fixed mt-[3em] ml-2 sm:hidden flex flex-row">
+              
               {filterpanelopened === false && (
                 <button
                   onClick={() => {
@@ -853,7 +859,7 @@ const Home: NextPage = () => {
                 </button>
               )}
             </div>
-
+           
             <div
               className="filterandinfobox fixed top-auto bottom-0 left-0 right-0 sm:max-w-sm sm:absolute sm:mt-[6em] md:mt-[3em] sm:ml-3 
                         sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto flex flex-col gap-y-2"
@@ -880,10 +886,12 @@ const Home: NextPage = () => {
                         d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
                       />
                     </svg>
+                    
                     <span>Filter</span>
                   </button>
                 </div>
               )}
+                  <br></br>
               <div
                 className={`
               ${
@@ -893,11 +901,14 @@ const Home: NextPage = () => {
               }
               `}
               >
+               
+         
                 <CloseButton
                   onClose={() => {
                     setfilterpanelopened(false);
                   }}
                 />
+
                 <div className="gap-x-0 flex flex-row w-full pr-8">
                   <button
                     onClick={() => {
