@@ -9,13 +9,14 @@ export function MapTitle() {
         color: "#ffffff",
       }}
     >
-      <strong className="">2023 Unhoused Deaths in City of LA (Completed Cases)</strong>
-   <br></br>
-   <strong className=""> More cases will be added as cases are finalized.</strong>
-     
-      
-      
+      <strong className="">
+        2023 Unhoused Deaths in City of LA (Completed Cases)
+      </strong>
+      <br></br>
+      <strong className="">
+        {" "}
+        More cases will be added as cases are finalized.
+      </strong>
     </div>
-    
   );
 }

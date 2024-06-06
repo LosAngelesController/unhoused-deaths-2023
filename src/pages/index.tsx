@@ -194,240 +194,240 @@ const Home: NextPage = () => {
     if (mapboxConfig && divRef.current) {
       mapboxgl.accessToken = mapboxConfig.mapboxToken;
 
-    const formulaForZoom = () => {
-      if (typeof window != "undefined") {
-        if (window.innerWidth > 700) {
-          return 10;
-        } else {
-          return 9.1;
-        }
-      }
-    };
-
-    const urlParams = new URLSearchParams(
-      typeof window != "undefined" ? window.location.search : ""
-    );
-    const latParam = urlParams.get("lat");
-    const lngParam = urlParams.get("lng");
-    const zoomParam = urlParams.get("zoom");
-    const debugParam = urlParams.get("debug");
-
-    var mapparams: any = {
-      container: divRef.current, // container ID
-      style: mapboxConfig.mapboxStyle,
-      center: [-118.41, 34], // starting position [lng, lat]
-      zoom: formulaForZoom(), // starting zoom
-    };
-
-    const map = new mapboxgl.Map(mapparams);
-    mapref.current = map;
-
-    var rtldone = false;
-
-    try {
-      if (rtldone === false && hasStartedControls === false) {
-        setHasStartedControls(true);
-        //multilingual support
-        //right to left allows arabic rendering
-        mapboxgl.setRTLTextPlugin(
-          "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.10.1/mapbox-gl-rtl-text.js",
-          (callbackinfo: any) => {
-            console.log(callbackinfo);
-            rtldone = true;
+      const formulaForZoom = () => {
+        if (typeof window != "undefined") {
+          if (window.innerWidth > 700) {
+            return 10;
+          } else {
+            return 9.1;
           }
-        );
-      }
-
-      const language = new MapboxLanguage();
-      map.addControl(language);
-    } catch (error) {
-      console.error(error);
-    }
-
-    window.addEventListener("resize", handleResize);
-
-    map.on("load", () => {
-      setdoneloadingmap(true);
-      setshowtotalarea(window.innerWidth > 640 ? true : false);
-
-      okaydeletepoints.current = () => {
-        try {
-          var evictionPoint: any = map.getSource("death-point");
-          evictionPoint.setData(null);
-        } catch (err) {
-          console.error(err);
         }
       };
 
-      const processgeocodereventresult = (eventmapbox: any) => {
-        var singlePointSet: any = map.getSource("single-point");
+      const urlParams = new URLSearchParams(
+        typeof window != "undefined" ? window.location.search : ""
+      );
+      const latParam = urlParams.get("lat");
+      const lngParam = urlParams.get("lng");
+      const zoomParam = urlParams.get("zoom");
+      const debugParam = urlParams.get("debug");
 
-        singlePointSet.setData({
-          type: "FeatureCollection",
-          features: [
-            {
-              type: "Feature",
-              geometry: eventmapbox.result.geometry,
-            },
-          ],
-        });
+      var mapparams: any = {
+        container: divRef.current, // container ID
+        style: mapboxConfig.mapboxStyle,
+        center: [-118.41, 34], // starting position [lng, lat]
+        zoom: formulaForZoom(), // starting zoom
       };
 
-      const processgeocodereventselect = (object: any) => {
-        var coord = object.feature.geometry.coordinates;
-        var singlePointSet: any = map.getSource("single-point");
+      const map = new mapboxgl.Map(mapparams);
+      mapref.current = map;
 
-        singlePointSet.setData({
-          type: "FeatureCollection",
-          features: [
-            {
-              type: "Feature",
-              geometry: object.feature.geometry,
-            },
-          ],
-        });
-      };
+      var rtldone = false;
 
-      const geocoder: any = new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: map,
-        proximity: {
-          longitude: -118.41,
-          latitude: 34,
-        },
-        marker: true,
-      });
-
-      var colormarker = new mapboxgl.Marker({
-        color: "#41ffca",
-      });
-
-      const geocoderopt: any = {
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl,
-        marker: {
-          color: "#41ffca",
-        },
-      };
-
-      const geocoder2 = new MapboxGeocoder(geocoderopt);
-      const geocoder3 = new MapboxGeocoder(geocoderopt);
-
-      geocoder.on("result", (event: any) => {
-        processgeocodereventresult(event);
-      });
-
-      geocoder.on("select", function (object: any) {
-        processgeocodereventselect(object);
-      });
-
-      var geocoderId = document.getElementById("geocoder");
-
-      if (geocoderId) {
-        if (!document.querySelector(".geocoder input")) {
-          geocoderId.appendChild(geocoder3.onAdd(map));
-
-          var inputMobile = document.querySelector(".geocoder input");
-
-          try {
-            var loadboi = document.querySelector(
-              ".mapboxgl-ctrl-geocoder--icon-loading"
-            );
-            if (loadboi) {
-              var brightspin: any = loadboi.firstChild;
-              if (brightspin) {
-                brightspin.setAttribute("style", "fill: #e2e8f0");
-              }
-              var darkspin: any = loadboi.lastChild;
-              if (darkspin) {
-                darkspin.setAttribute("style", "fill: #94a3b8");
-              }
+      try {
+        if (rtldone === false && hasStartedControls === false) {
+          setHasStartedControls(true);
+          //multilingual support
+          //right to left allows arabic rendering
+          mapboxgl.setRTLTextPlugin(
+            "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.10.1/mapbox-gl-rtl-text.js",
+            (callbackinfo: any) => {
+              console.log(callbackinfo);
+              rtldone = true;
             }
+          );
+        }
+
+        const language = new MapboxLanguage();
+        map.addControl(language);
+      } catch (error) {
+        console.error(error);
+      }
+
+      window.addEventListener("resize", handleResize);
+
+      map.on("load", () => {
+        setdoneloadingmap(true);
+        setshowtotalarea(window.innerWidth > 640 ? true : false);
+
+        okaydeletepoints.current = () => {
+          try {
+            var evictionPoint: any = map.getSource("death-point");
+            evictionPoint.setData(null);
           } catch (err) {
             console.error(err);
           }
+        };
 
-          if (inputMobile) {
-            inputMobile.addEventListener("focus", () => {
-              //make the box below go away
-            });
+        const processgeocodereventresult = (eventmapbox: any) => {
+          var singlePointSet: any = map.getSource("single-point");
+
+          singlePointSet.setData({
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                geometry: eventmapbox.result.geometry,
+              },
+            ],
+          });
+        };
+
+        const processgeocodereventselect = (object: any) => {
+          var coord = object.feature.geometry.coordinates;
+          var singlePointSet: any = map.getSource("single-point");
+
+          singlePointSet.setData({
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                geometry: object.feature.geometry,
+              },
+            ],
+          });
+        };
+
+        const geocoder: any = new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: map,
+          proximity: {
+            longitude: -118.41,
+            latitude: 34,
+          },
+          marker: true,
+        });
+
+        var colormarker = new mapboxgl.Marker({
+          color: "#41ffca",
+        });
+
+        const geocoderopt: any = {
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: mapboxgl,
+          marker: {
+            color: "#41ffca",
+          },
+        };
+
+        const geocoder2 = new MapboxGeocoder(geocoderopt);
+        const geocoder3 = new MapboxGeocoder(geocoderopt);
+
+        geocoder.on("result", (event: any) => {
+          processgeocodereventresult(event);
+        });
+
+        geocoder.on("select", function (object: any) {
+          processgeocodereventselect(object);
+        });
+
+        var geocoderId = document.getElementById("geocoder");
+
+        if (geocoderId) {
+          if (!document.querySelector(".geocoder input")) {
+            geocoderId.appendChild(geocoder3.onAdd(map));
+
+            var inputMobile = document.querySelector(".geocoder input");
+
+            try {
+              var loadboi = document.querySelector(
+                ".mapboxgl-ctrl-geocoder--icon-loading"
+              );
+              if (loadboi) {
+                var brightspin: any = loadboi.firstChild;
+                if (brightspin) {
+                  brightspin.setAttribute("style", "fill: #e2e8f0");
+                }
+                var darkspin: any = loadboi.lastChild;
+                if (darkspin) {
+                  darkspin.setAttribute("style", "fill: #94a3b8");
+                }
+              }
+            } catch (err) {
+              console.error(err);
+            }
+
+            if (inputMobile) {
+              inputMobile.addEventListener("focus", () => {
+                //make the box below go away
+              });
+            }
           }
+
+          geocoder2.on("result", (event: any) => {
+            processgeocodereventresult(event);
+          });
+
+          geocoder2.on("select", function (object: any) {
+            processgeocodereventselect(object);
+          });
+
+          geocoder3.on("result", (event: any) => {
+            processgeocodereventresult(event);
+          });
+
+          geocoder3.on("select", function (object: any) {
+            processgeocodereventselect(object);
+          });
         }
 
-        geocoder2.on("result", (event: any) => {
-          processgeocodereventresult(event);
+        map.addSource("single-point", {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [],
+          },
         });
 
-        geocoder2.on("select", function (object: any) {
-          processgeocodereventselect(object);
+        if (debugParam) {
+          map.showTileBoundaries = true;
+          map.showCollisionBoxes = true;
+          map.showPadding = true;
+        }
+
+        if (urlParams.get("terraindebug")) {
+          map.showTerrainWireframe = true;
+        }
+
+        if (
+          !document.querySelector(
+            ".mapboxgl-ctrl-top-right > .mapboxgl-ctrl-geocoder"
+          )
+        ) {
+          map.addControl(geocoder2);
+        }
+
+        checkHideOrShowTopRightGeocoder();
+
+        // Create a popup, but don't add it to the map yet.
+        const popup = new mapboxgl.Popup({
+          closeButton: false,
+          closeOnClick: false,
         });
 
-        geocoder3.on("result", (event: any) => {
-          processgeocodereventresult(event);
+        map.addSource("death-point", {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [],
+          },
         });
 
-        geocoder3.on("select", function (object: any) {
-          processgeocodereventselect(object);
-        });
-      }
+        map.on("mouseenter", "unhoused-deaths-2023", (e: any) => {
+          const hoveredFeature = e.features[0];
 
-      map.addSource("single-point", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [],
-        },
-      });
+          if (hoveredFeature && hoveredFeature.geometry) {
+            map.getCanvas().style.cursor = "pointer";
 
-      if (debugParam) {
-        map.showTileBoundaries = true;
-        map.showCollisionBoxes = true;
-        map.showPadding = true;
-      }
+            popup.setLngLat(e.lngLat);
 
-      if (urlParams.get("terraindebug")) {
-        map.showTerrainWireframe = true;
-      }
+            const areaPC = hoveredFeature.properties["DeathLocation"];
 
-      if (
-        !document.querySelector(
-          ".mapboxgl-ctrl-top-right > .mapboxgl-ctrl-geocoder"
-        )
-      ) {
-        map.addControl(geocoder2);
-      }
-
-      checkHideOrShowTopRightGeocoder();
-
-      // Create a popup, but don't add it to the map yet.
-      const popup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false,
-      });
-
-      map.addSource("death-point", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [],
-        },
-      });
-
-      map.on("mouseenter", "unhoused-deaths-2023", (e: any) => {
-        const hoveredFeature = e.features[0];
-
-        if (hoveredFeature && hoveredFeature.geometry) {
-          map.getCanvas().style.cursor = "pointer";
-
-          popup.setLngLat(e.lngLat);
-
-          const areaPC = hoveredFeature.properties["DeathLocation"];
-
-          const allthelineitems = e.features.map((eachCase: any) => {
-            if (eachCase.properties?.["DeathLocation"]) {
-              return `<li class="leading-none my-2 text-blue-50">${
-                eachCase.properties["DeathDate"]
-              }
+            const allthelineitems = e.features.map((eachCase: any) => {
+              if (eachCase.properties?.["DeathLocation"]) {
+                return `<li class="leading-none my-2 text-blue-50">${
+                  eachCase.properties["DeathDate"]
+                }
                             ${" "}
                             ${
                               eachCase.properties?.["Age"]
@@ -459,16 +459,16 @@ const Home: NextPage = () => {
                                 : ""
                             }
                       </li>`;
-            }
-          });
+              }
+            });
 
-          popup
-            .setHTML(
-              ` <div>
+            popup
+              .setHTML(
+                ` <div>
                 <p class="font-semibold">${areaPC}</p>
                 <p>${e.features.length} Death${
-                e.features.length > 1 ? "s" : ""
-              }</p>
+                  e.features.length > 1 ? "s" : ""
+                }</p>
                 <ul class='list-disc leading-none'>
                   ${
                     allthelineitems.length <= 3
@@ -493,222 +493,223 @@ const Home: NextPage = () => {
                 flex-direction: column;
               }
               </style>`
-            )
-            .addTo(map);
-        }
-      });
-
-      map.on("mouseleave", "unhoused-deaths-2023", () => {
-        map.getCanvas().style.cursor = "";
-        popup.remove();
-      });
-
-      map.loadImage("/map-marker.png", (error, image: any) => {
-        if (error) throw error;
-
-        // Add the image to the map style.
-        map.addImage("map-marker", image);
-
-        if (true) {
-          // example of how to add a pointer to what is currently selected
-          map.addLayer({
-            id: "point-selected",
-            type: "symbol",
-            source: "death-point",
-            paint: {
-              "icon-color": "#FF8C00",
-              "icon-translate": [0, -13],
-            },
-            layout: {
-              "icon-image": "map-marker",
-              // get the title name from the source's "title" property
-              "text-allow-overlap": true,
-              "icon-allow-overlap": true,
-              "icon-ignore-placement": true,
-              "text-ignore-placement": true,
-              "icon-size": 0.5,
-              "icon-text-fit": "both",
-            },
-          });
-        }
-      });
-
-      map.on("mousedown", "unhoused-deaths-2023", (e: any) => {
-        setEvictionInfo(0);
-        setInfoBoxLength(1);
-        setEvictionInfoOpen(true);
-        console.log("e.features", e.features);
-        let filteredData = e.features.map((obj: any) => {
-          return {
-            cd: obj.properties["CD"],
-            caseNo: obj.properties.CaseNum,
-            location: obj.properties["DeathLocation"],
-            city: obj.properties["DeathCity"],
-            zip: obj.properties.DeathZip,
-            place: obj.properties["DeathPlace"],
-            date: obj.properties["DeathDate"],
-            gender: obj.properties.Gender,
-            race: obj.properties.Race,
-            mode: obj.properties.Mode,
-            cause: obj.properties.CauseA,
-          };
-        });
-
-        var evictionPoint: any = map.getSource("death-point");
-        evictionPoint.setData(e.features[0].geometry);
-
-        map.setLayoutProperty("point-selected", "visibility", "visible");
-
-        setEvictionData(filteredData);
-      });
-
-      if (true) {
-        map.addLayer(
-          {
-            id: "citybound",
-            type: "line",
-            source: {
-              type: "geojson",
-              data: citybounds,
-            },
-            paint: {
-              "line-color": "#dddddd",
-              "line-opacity": 1,
-              "line-width": 2,
-            },
-          },
-          "road-label-simple"
-        );
-
-        map.addSource("citycouncildist", {
-          type: "geojson",
-          data: councildistricts,
-        });
-
-        map.addLayer(
-          {
-            id: "councildistrictslayer",
-            type: "line",
-            source: "citycouncildist",
-            paint: {
-              "line-color": "#dddddd",
-              "line-opacity": 1,
-              "line-width": 1,
-            },
-          },
-          "road-label-simple"
-        );
-
-        map.addLayer(
-          {
-            id: "councildistrictsselectlayer",
-            type: "fill",
-            source: "citycouncildist",
-            paint: {
-              "fill-color": "#000000",
-              "fill-opacity": 0,
-            },
-          },
-          "road-label-simple"
-        );
-
-        map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
-          var sourceofcouncildistselect: any = map.getSource(
-            "selected-council-dist"
-          );
-
-          var clickeddata = e.features[0].properties.district;
-
-          var councildistpolygonfound = councildistricts.features.find(
-            (eachDist: any) => eachDist.properties.district === clickeddata
-          );
-
-          if (sourceofcouncildistselect) {
-            if (councildistpolygonfound) {
-              sourceofcouncildistselect.setData(councildistpolygonfound);
-            }
+              )
+              .addTo(map);
           }
         });
 
-        map.addSource("selected-council-dist", {
-          type: "geojson",
-          data: {
-            type: "FeatureCollection",
-            features: [],
-          },
+        map.on("mouseleave", "unhoused-deaths-2023", () => {
+          map.getCanvas().style.cursor = "";
+          popup.remove();
         });
 
-        map.addLayer(
-          {
-            id: "selected-council-dist-layer",
-            type: "fill",
-            source: "selected-council-dist",
-            paint: {
-              "fill-color": "#000000",
-              "fill-opacity": 0.3,
+        map.loadImage("/map-marker.png", (error, image: any) => {
+          if (error) throw error;
+
+          // Add the image to the map style.
+          map.addImage("map-marker", image);
+
+          if (true) {
+            // example of how to add a pointer to what is currently selected
+            map.addLayer({
+              id: "point-selected",
+              type: "symbol",
+              source: "death-point",
+              paint: {
+                "icon-color": "#FF8C00",
+                "icon-translate": [0, -13],
+              },
+              layout: {
+                "icon-image": "map-marker",
+                // get the title name from the source's "title" property
+                "text-allow-overlap": true,
+                "icon-allow-overlap": true,
+                "icon-ignore-placement": true,
+                "text-ignore-placement": true,
+                "icon-size": 0.5,
+                "icon-text-fit": "both",
+              },
+            });
+          }
+        });
+
+        map.on("mousedown", "unhoused-deaths-2023", (e: any) => {
+          setEvictionInfo(0);
+          setInfoBoxLength(1);
+          setEvictionInfoOpen(true);
+          console.log("e.features", e.features);
+          let filteredData = e.features.map((obj: any) => {
+            return {
+              cd: obj.properties["CD"],
+              caseNo: obj.properties.CaseNum,
+              location: obj.properties["DeathLocation"],
+              city: obj.properties["DeathCity"],
+              zip: obj.properties.DeathZip,
+              place: obj.properties["DeathPlace"],
+              date: obj.properties["DeathDate"],
+              gender: obj.properties.Gender,
+              race: obj.properties.Race,
+              mode: obj.properties.Mode,
+              cause: obj.properties.CauseA,
+            };
+          });
+
+          var evictionPoint: any = map.getSource("death-point");
+          evictionPoint.setData(e.features[0].geometry);
+
+          map.setLayoutProperty("point-selected", "visibility", "visible");
+
+          setEvictionData(filteredData);
+        });
+
+        if (true) {
+          map.addLayer(
+            {
+              id: "citybound",
+              type: "line",
+              source: {
+                type: "geojson",
+                data: citybounds,
+              },
+              paint: {
+                "line-color": "#dddddd",
+                "line-opacity": 1,
+                "line-width": 2,
+              },
             },
-          },
-          "road-label-simple"
-        );
-      }
+            "road-label-simple"
+          );
 
-      if (hasStartedControls === false) {
-        // Add zoom and rotation controls to the map.
-        map.addControl(new mapboxgl.NavigationControl());
+          map.addSource("citycouncildist", {
+            type: "geojson",
+            data: councildistricts,
+          });
 
-        // Add geolocate control to the map.
-        map.addControl(
-          new mapboxgl.GeolocateControl({
-            positionOptions: {
-              enableHighAccuracy: true,
+          map.addLayer(
+            {
+              id: "councildistrictslayer",
+              type: "line",
+              source: "citycouncildist",
+              paint: {
+                "line-color": "#dddddd",
+                "line-opacity": 1,
+                "line-width": 1,
+              },
             },
-            // When active the map will receive updates to the device's location as it changes.
-            trackUserLocation: true,
-            // Draw an arrow next to the location dot to indicate which direction the device is heading.
-            showUserHeading: true,
-          })
-        );
+            "road-label-simple"
+          );
+
+          map.addLayer(
+            {
+              id: "councildistrictsselectlayer",
+              type: "fill",
+              source: "citycouncildist",
+              paint: {
+                "fill-color": "#000000",
+                "fill-opacity": 0,
+              },
+            },
+            "road-label-simple"
+          );
+
+          map.on("mousedown", "councildistrictsselectlayer", (e: any) => {
+            var sourceofcouncildistselect: any = map.getSource(
+              "selected-council-dist"
+            );
+
+            var clickeddata = e.features[0].properties.district;
+
+            var councildistpolygonfound = councildistricts.features.find(
+              (eachDist: any) => eachDist.properties.district === clickeddata
+            );
+
+            if (sourceofcouncildistselect) {
+              if (councildistpolygonfound) {
+                sourceofcouncildistselect.setData(councildistpolygonfound);
+              }
+            }
+          });
+
+          map.addSource("selected-council-dist", {
+            type: "geojson",
+            data: {
+              type: "FeatureCollection",
+              features: [],
+            },
+          });
+
+          map.addLayer(
+            {
+              id: "selected-council-dist-layer",
+              type: "fill",
+              source: "selected-council-dist",
+              paint: {
+                "fill-color": "#000000",
+                "fill-opacity": 0.3,
+              },
+            },
+            "road-label-simple"
+          );
+        }
+
+        if (hasStartedControls === false) {
+          // Add zoom and rotation controls to the map.
+          map.addControl(new mapboxgl.NavigationControl());
+
+          // Add geolocate control to the map.
+          map.addControl(
+            new mapboxgl.GeolocateControl({
+              positionOptions: {
+                enableHighAccuracy: true,
+              },
+              // When active the map will receive updates to the device's location as it changes.
+              trackUserLocation: true,
+              // Draw an arrow next to the location dot to indicate which direction the device is heading.
+              showUserHeading: true,
+            })
+          );
+        }
+
+        checkHideOrShowTopRightGeocoder();
+
+        map.on("dragstart", (e) => {
+          uploadMapboxTrack({
+            mapname,
+            eventtype: "dragstart",
+            globallng: map.getCenter().lng,
+            globallat: map.getCenter().lat,
+            globalzoom: map.getZoom(),
+          });
+        });
+
+        map.on("dragend", (e) => {
+          uploadMapboxTrack({
+            mapname,
+            eventtype: "dragend",
+            globallng: map.getCenter().lng,
+            globallat: map.getCenter().lat,
+            globalzoom: map.getZoom(),
+          });
+        });
+
+        map.on("zoomstart", (e) => {
+          uploadMapboxTrack({
+            mapname,
+            eventtype: "dragstart",
+            globallng: map.getCenter().lng,
+            globallat: map.getCenter().lat,
+            globalzoom: map.getZoom(),
+          });
+        });
+      });
+
+      var getmapboxlogo: any = document.querySelector(".mapboxgl-ctrl-logo");
+
+      if (getmapboxlogo) {
+        getmapboxlogo.remove();
       }
-
-      checkHideOrShowTopRightGeocoder();
-
-      map.on("dragstart", (e) => {
-        uploadMapboxTrack({
-          mapname,
-          eventtype: "dragstart",
-          globallng: map.getCenter().lng,
-          globallat: map.getCenter().lat,
-          globalzoom: map.getZoom(),
-        });
-      });
-
-      map.on("dragend", (e) => {
-        uploadMapboxTrack({
-          mapname,
-          eventtype: "dragend",
-          globallng: map.getCenter().lng,
-          globallat: map.getCenter().lat,
-          globalzoom: map.getZoom(),
-        });
-      });
-
-      map.on("zoomstart", (e) => {
-        uploadMapboxTrack({
-          mapname,
-          eventtype: "dragstart",
-          globallng: map.getCenter().lng,
-          globallat: map.getCenter().lat,
-          globalzoom: map.getZoom(),
-        });
-      });
-    });
-
-    var getmapboxlogo: any = document.querySelector(".mapboxgl-ctrl-logo");
-
-    if (getmapboxlogo) {
-      getmapboxlogo.remove();
     }
-  }}, [mapboxConfig]);
+  }, [mapboxConfig]);
 
   useEffect(() => {
     let arrayoffilterables: any = [];
@@ -838,20 +839,16 @@ const Home: NextPage = () => {
           <div className="max-h-screen flex-col flex z-5">
             <div className="hidden sm:block">
               <MapTitle />
- 
-    
             </div>
-          
+
             <div
               className={`geocoder absolute xs:mt-[1.5em] sm:mt-[2.7em] md:mt-[4.1em] ml-1 left-1 md:hidden xs:text-sm sm:text-base md:text-lg`}
               id="geocoder"
             ></div>
-            
-     
+
             <div className="w-content"></div>
-          
+
             <div className="fixed mt-[3em] ml-2 sm:hidden flex flex-row">
-              
               {filterpanelopened === false && (
                 <button
                   onClick={() => {
@@ -877,7 +874,7 @@ const Home: NextPage = () => {
                 </button>
               )}
             </div>
-           
+
             <div
               className="filterandinfobox fixed top-auto bottom-0 left-0 right-0 sm:max-w-sm sm:absolute sm:mt-[6em] md:mt-[3em] sm:ml-3 
                         sm:top-auto sm:bottom-auto sm:left-auto sm:right-auto flex flex-col gap-y-2"
@@ -904,12 +901,12 @@ const Home: NextPage = () => {
                         d="M14,12V19.88C14.04,20.18 13.94,20.5 13.71,20.71C13.32,21.1 12.69,21.1 12.3,20.71L10.29,18.7C10.06,18.47 9.96,18.16 10,17.87V12H9.97L4.21,4.62C3.87,4.19 3.95,3.56 4.38,3.22C4.57,3.08 4.78,3 5,3V3H19V3C19.22,3 19.43,3.08 19.62,3.22C20.05,3.56 20.13,4.19 19.79,4.62L14.03,12H14Z"
                       />
                     </svg>
-                    
+
                     <span>Filter</span>
                   </button>
                 </div>
               )}
-                  <br></br>
+              <br></br>
               <div
                 className={`
               ${
@@ -919,8 +916,6 @@ const Home: NextPage = () => {
               }
               `}
               >
-               
-         
                 <CloseButton
                   onClose={() => {
                     setfilterpanelopened(false);
